@@ -183,7 +183,7 @@ box-shadow: 0 8px 20px rgba(26, 71, 42, 0.4);
         <div class="form-group">
             <span class="label-en">Enter university ID</span>
             <span class="label-ar">ادخل الرقم الطلابي</span>
-            <input type="text" class="input-field">
+           <input type="text" class="input-field" maxlength="9" inputmode="numeric" pattern="[0-9]*">
         </div>
         
         <button class="checkin-btn">
@@ -195,5 +195,31 @@ box-shadow: 0 8px 20px rgba(26, 71, 42, 0.4);
         
         <!-- تم إزالة قسم الـ footer بالكامل -->
     </div>
+    <script>
+const scriptURL = https://script.google.com/macros/s/AKfycbzf16SmnpGqyicHdSWZfQariIwJQGI1MvLpnmBxMW2guMwxSql3UULbA-ntiFpPOPw/exec;
+
+document.querySelector(".checkin-btn").addEventListener("click", () => {
+  const studentId = document.querySelector(".input-field").value.trim();
+
+  const isValid = /^[0-9]{9}$/.test(studentId);
+
+  if (!isValid) {
+    alert("❌ فشل تسجيل الدخول\nالرقم الجامعي يجب أن يتكون من 9 أرقام");
+    return;
+  }
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify({ studentId }),
+  })
+  .then(() => {
+    alert("✅ تم تسجيل الدخول بنجاح");
+    document.querySelector(".input-field").value = "";
+  })
+  .catch(() => {
+    alert("❌ حدث خطأ، حاول مرة أخرى");
+  });
+});
+</script>
 </body>
 </html>
