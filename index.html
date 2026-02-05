@@ -6,87 +6,167 @@
 <title>Hather - حاضر</title>
 
 <style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI','Arial',sans-serif;
+}
+
 body{
-background:linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
+background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 50%,#2d7d46 100%);
 display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
-font-family:Arial;
+padding:20px;
 }
 
-.app{
-background:white;
-padding:25px;
-border-radius:14px;
-width:320px;
-text-align:center;
-}
-
-input{
+.app-container{
 width:100%;
-padding:12px;
-margin:15px 0;
-font-size:16px;
+max-width:380px;
+background:rgba(255,255,255,0.95);
+padding:25px;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(0,0,0,.3);
 }
 
-button{
+.header{
+text-align:center;
+margin-bottom:35px;
+}
+
+.app-title{
+font-size:42px;
+font-weight:800;
+background:linear-gradient(135deg,#0d2c1a,#2d7d46);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.app-title-ar{
+font-size:34px;
+font-weight:700;
+background:linear-gradient(135deg,#1a472a,#3a9e5f);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.form-group{
+margin-bottom:28px;
+}
+
+.label-en{
+font-size:15px;
+color:#1a472a;
+text-align:left;
+display:block;
+}
+
+.label-ar{
+font-size:18px;
+font-weight:700;
+color:#0d2c1a;
+margin-bottom:8px;
+display:block;
+}
+
+.input-field{
 width:100%;
 padding:14px;
-background:#1a472a;
-color:white;
-border:none;
-font-size:18px;
-cursor:pointer;
+border:2px solid #d1e7dd;
+border-radius:10px;
+font-size:16px;
+background:#f8fff8;
 }
 
-#msg{margin-top:10px;font-weight:bold;}
-.success{color:green;}
-.error{color:red;}
+.checkin-btn{
+width:100%;
+padding:16px;
+background:linear-gradient(135deg,#1a472a,#2d7d46,#3a9e5f);
+border:none;
+border-radius:10px;
+color:white;
+font-size:18px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.checkin-btn:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
+
+.message{
+margin-top:15px;
+text-align:center;
+font-weight:700;
+}
+
+.success{color:#2d7d46;}
+.error{color:#c0392b;}
+.wait{color:#e67e22;}
 </style>
 </head>
 
 <body>
 
-<div class="app">
-<h2>Hather</h2>
-<h3>حاضر</h3>
+<div class="app-container">
+<div class="header">
+<div class="app-title">Hather</div>
+<div class="app-title-ar">حاضر</div>
+</div>
 
-<input id="studentId" placeholder="الرقم الجامعي (9 أرقام)">
-<button onclick="send()">تسجيل</button>
-<div id="msg"></div>
+<div class="form-group">
+<span class="label-en">Enter university ID</span>
+<span class="label-ar">ادخل الرقم الجامعي</span>
+<input id="studentId" class="input-field" placeholder="9 digits">
+</div>
+
+<button class="checkin-btn" onclick="sendAttendance()">
+تسجيل الحضور
+</button>
+
+<div id="msg" class="message"></div>
 </div>
 
 <script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbwVkvAhB49J2xaJE4ZqZN7NKAOqT_G1uyx76M3otmJH-vB-mwghmUoWQi2AB4kB1Hk_/exec";
 
-function send(){
+function sendAttendance(){
 const id = document.getElementById("studentId").value.trim();
 const msg = document.getElementById("msg");
+const btn = document.querySelector(".checkin-btn");
 
 if(!/^\d{9}$/.test(id)){
-msg.textContent="❌ الرقم غير صحيح";
-msg.className="error";
+msg.textContent="❌ الرقم الجامعي غير صحيح";
+msg.className="message error";
 return;
 }
+
+msg.textContent="⏳ جاري تسجيل الحضور...";
+msg.className="message wait";
+btn.disabled=true;
 
 fetch(scriptURL,{
 method:"POST",
 headers:{ "Content-Type":"application/json" },
 body:JSON.stringify({ studentId:id })
 })
-.then(r=>r.json())
-.then(d=>{
-if(d.success){
-msg.textContent="✅ تم تسجيل الحضور";
-msg.className="success";
+.then(res=>res.json())
+.then(data=>{
+if(data.success){
+msg.textContent="✅ تم تسجيل الحضور بنجاح";
+msg.className="message success";
 }else{
 throw 0;
 }
+btn.disabled=false;
 })
 .catch(()=>{
-msg.textContent="❌ فشل التسجيل";
-msg.className="error";
+msg.textContent="❌ حدث خطأ أثناء التسجيل";
+msg.className="message error";
+btn.disabled=false;
 });
 }
 </script>
