@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقارير الحضور - Hather</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.app {
+  background: rgba(255,255,255,.96);
+  width: 100%;
+  max-width: 420px;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 15px 35px rgba(0,0,0,.35);
+}
+
+h1 {
+  text-align: center;
+  color: #1a472a;
+  margin-bottom: 5px;
+}
+
+h2 {
+  text-align: center;
+  color: #2d7d46;
+  margin-bottom: 25px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  font-size: 17px;
+  border-radius: 10px;
+  border: 2px solid #d1e7dd;
+  direction: ltr;
+}
+
+button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 14px;
+  background: linear-gradient(135deg,#1a472a,#2d7d46);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.card {
+  width: 48%;
+  background: #f4faf6;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.card.present { color: #1a472a; }
+.card.late { color: #c57c00; }
+
+canvas {
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <h1>Hather</h1>
+  <h2>تقارير الحضور</h2>
+
+  <input id="studentId" placeholder="الرقم الجامعي" maxlength="9" inputmode="numeric">
+  <button onclick="loadReport()">عرض التقرير</button>
+
+  <div class="stats">
+    <div class="card present">
+      حضور<br><span id="presentCount">0</span>
+    </div>
+    <div class="card late">
+      تأخير<br><span id="lateCount">0</span>
+    </div>
+  </div>
+
+  <canvas id="pieChart"></canvas>
+  <canvas id="barChart"></canvas>
+</div>
+
+<script>
+const SCRIPT_URL = "ضع_رابط_السكربت_هنا";
+let pieChart, barChart;
+
+function loadReport() {
+  const id = document.getElementById("studentId").value.trim();
+
+  if (!/^[0-9]{9}$/.test(id)) {
+    alert("الرقم الجامعي غير صحيح");
+    return;
+  }
+
+  fetch(`${SCRIPT_URL}?studentId=${id}`)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById("presentCount").textContent = data.present;
+      document.getElementById("lateCount").textContent = data.late;
+      drawCharts(data.present, data.late);
+    });
+}
+
+function drawCharts(present, late) {
+  if (pieChart) pieChart.destroy();
+  if (barChart) barChart.destroy();
+
+  pieChart = new Chart(document.getElementById("pieChart"), {
+    type: "doughnut",
+    data: {
+      labels: ["حضور", "تأخير"],
+      datasets: [{
+        data: [present, late],
+        backgroundColor: ["#2d7d46", "#f4b400"]
+      }]
+    }
+  });
+
+  barChart = new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+      labels: ["حضور", "تأخير"],
+      datasets: [{
+        data: [present, late],
+        backgroundColor: ["#2d7d46", "#f4b400"]
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+</script>
+
+</body>
+</html>
