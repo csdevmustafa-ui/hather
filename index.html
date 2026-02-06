@@ -6,192 +6,134 @@
 <title>Hather - حاضر</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-
 body {
-  background: linear-gradient(135deg, #0d2c1a 0%, #1a472a 50%, #2d7d46 100%);
+  margin: 0;
   min-height: 100vh;
+  background: linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.app-container {
+.app {
+  background: rgba(255,255,255,.95);
   width: 100%;
   max-width: 380px;
-  background: rgba(255,255,255,.95);
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  border-radius: 18px;
+  box-shadow: 0 15px 35px rgba(0,0,0,.35);
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 30px;
-}
+h1 { text-align:center; color:#1a472a; margin-bottom:0 }
+h2 { text-align:center; color:#2d7d46; margin-top:5px }
 
-.app-title {
-  font-size: 40px;
-  font-weight: 800;
-  color: #0d2c1a;
-}
-
-.app-title-ar {
-  font-size: 30px;
-  font-weight: 700;
-  color: #2d7d46;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.label-en {
-  display: block;
-  font-size: 14px;
-  color: #444;
-}
-
-.label-ar {
-  display: block;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.input-field {
+input, select {
   width: 100%;
   padding: 14px;
-  font-size: 18px;
+  font-size: 17px;
   border-radius: 10px;
   border: 2px solid #d1e7dd;
+  margin-top: 15px;
   direction: ltr;
-  text-align: left;
 }
 
-.checkin-btn {
+button {
   width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg, #1a472a, #2d7d46);
-  color: white;
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg,#1a472a,#2d7d46);
+  color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 18px;
   cursor: pointer;
 }
 
-.checkin-btn:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-
-#status {
-  text-align: center;
+#msg {
   margin-top: 15px;
+  text-align: center;
   font-weight: bold;
-  min-height: 24px;
-}
-
-.spinner {
-  width: 22px;
-  height: 22px;
-  border: 3px solid #d1e7dd;
-  border-top: 3px solid #2d7d46;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 10px auto;
-  display: none;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="app-container">
-  <div class="header">
-    <div class="app-title">Hather</div>
-    <div class="app-title-ar">حاضر</div>
-  </div>
+<div class="app">
+  <h1>Hather</h1>
+  <h2>حاضر</h2>
 
-  <div class="form-group">
-    <span class="label-en">University ID</span>
-    <span class="label-ar">الرقم الجامعي</span>
-    <input id="studentId" class="input-field" maxlength="9" inputmode="numeric">
-  </div>
+  <input id="studentId" maxlength="9" inputmode="numeric" placeholder="الرقم الجامعي">
 
-  <div class="form-group">
-    <span class="label-en">Lecture ID</span>
-    <span class="label-ar">رمز المحاضرة</span>
-    <input id="lectureId" class="input-field">
-  </div>
+  <select id="lectureSelect" style="display:none"></select>
 
-  <button id="btn" class="checkin-btn">تسجيل الحضور</button>
+  <button onclick="submitAttendance()">تسجيل الحضور</button>
 
-  <div class="spinner" id="spinner"></div>
-  <div id="status"></div>
+  <div id="msg"></div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxp191jvUZD8QwjUR-NG7VJduAhAVFssssjU62MKvf2Pf748ZzZ0ccd_eVJvsWI1lgL/exec";
+const SCRIPT_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLib1m8H3ug0g1J9Zz_AO6fmsALklvN-JkOSw9mHRxQnBLwP-wTgVaGd9lFtqQiMXGwrTvrjRTkDLwRlX4xzY1dIEPue-INVbMLFDzvkVXQDZ9VXDgAS-z450MLLBRacOQm9Z2XYcG3zngj4Sey5CimTioUDCYXwT1Umi06LJnvCDFP7xjknyqjzav_wEZp-Za99Bu98kZbv7jZ8iCykpJYfl0uIiBFjGlZUKnFwYLoAEDdiGTeMeYugX8G-J3Kx3KjcZgxzSAwXNn4Q0m6ciA8LJnwDZQ&lib=MhsQQyz0LWRzEvVBZwS_EoQ9yXvOO6Xh-";
+let selectedLecture = null;
 
-const btn = document.getElementById("btn");
-const studentInput = document.getElementById("studentId");
-const lectureInput = document.getElementById("lectureId");
-const statusDiv = document.getElementById("status");
-const spinner = document.getElementById("spinner");
+fetch(SCRIPT_URL)
+  .then(r => r.json())
+  .then(list => {
+    if (list.length === 1) {
+      selectedLecture = list[0].id;
+    } else if (list.length > 1) {
+      const sel = document.getElementById("lectureSelect");
+      sel.style.display = "block";
+      list.forEach(l => {
+        const o = document.createElement("option");
+        o.value = l.id;
+        o.textContent = `${l.course} - شعبة ${l.section}`;
+        sel.appendChild(o);
+      });
+      selectedLecture = sel.value;
+      sel.onchange = () => selectedLecture = sel.value;
+    } else {
+      document.getElementById("msg").textContent = "لا توجد محاضرة حالياً";
+    }
+  });
 
-btn.addEventListener("click", () => {
-  const studentId = studentInput.value.trim();
-  const lectureId = lectureInput.value.trim();
+function submitAttendance() {
+  const id = document.getElementById("studentId").value.trim();
+  const msg = document.getElementById("msg");
 
-  if (!/^[0-9]{9}$/.test(studentId)) {
-    statusDiv.style.color = "red";
-    statusDiv.textContent = "❌ الرقم الجامعي يجب أن يكون 9 أرقام";
+  if (!/^[0-9]{9}$/.test(id)) {
+    msg.style.color = "red";
+    msg.textContent = "❌ الرقم الجامعي غير صحيح";
     return;
   }
 
-  if (!lectureId) {
-    statusDiv.style.color = "red";
-    statusDiv.textContent = "❌ أدخل رمز المحاضرة";
+  if (!selectedLecture) {
+    msg.style.color = "red";
+    msg.textContent = "❌ اختر المحاضرة";
     return;
   }
 
-  btn.disabled = true;
-  spinner.style.display = "block";
-  statusDiv.style.color = "#1a472a";
-  statusDiv.textContent = "⏳ جارٍ تسجيل الحضور...";
+  msg.style.color = "#1a472a";
+  msg.textContent = "⏳ جاري التسجيل...";
 
   fetch(SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify({
-      studentId: studentId,
-      lectureId: lectureId
+      studentId: id,
+      lectureId: selectedLecture
     })
   })
-  .then(res => res.json())
-  .then(data => {
-    statusDiv.style.color = "green";
-    statusDiv.textContent = "✅ " + data.result;
-    studentInput.value = "";
+  .then(r => r.json())
+  .then(d => {
+    msg.style.color = "green";
+    msg.textContent = "✅ " + d.result;
   })
   .catch(() => {
-    statusDiv.style.color = "red";
-    statusDiv.textContent = "❌ حدث خطأ أثناء التسجيل";
-  })
-  .finally(() => {
-    spinner.style.display = "none";
-    btn.disabled = false;
+    msg.style.color = "red";
+    msg.textContent = "❌ فشل الاتصال";
   });
-});
+}
 </script>
 
 </body>
