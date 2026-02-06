@@ -1,162 +1,199 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تقارير الحضور - Hather</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hather - Reports</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Segoe UI', Arial, sans-serif;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{
+  min-height:100vh;background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
 }
-
-.app {
-  background: rgba(255,255,255,.96);
-  width: 100%;
-  max-width: 420px;
-  padding: 25px;
-  border-radius: 18px;
-  box-shadow: 0 15px 35px rgba(0,0,0,.35);
+.card{
+  width:100%;max-width:520px;border-radius:18px;padding:22px;
+  background:rgba(13,44,26,.62);
+  box-shadow:0 18px 45px rgba(0,0,0,.30);
+  border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(10px);
 }
-
-h1 {
-  text-align: center;
-  color: #1a472a;
-  margin-bottom: 5px;
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.icon-btn{
+  border:none;cursor:pointer;width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.14);color:#fff;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
 }
-
-h2 {
-  text-align: center;
-  color: #2d7d46;
-  margin-bottom: 25px;
+.icon-btn .sub{font-size:12px;opacity:.92;margin-left:6px}
+.back{
+  color:#e7fff3;text-decoration:none;font-weight:900;opacity:.95;
+  background:rgba(255,255,255,.10);
+  padding:10px 12px;border-radius:12px;display:inline-block;
 }
-
-input {
-  width: 100%;
-  padding: 14px;
-  font-size: 17px;
-  border-radius: 10px;
-  border: 2px solid #d1e7dd;
-  direction: ltr;
+.header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
+.header::after{
+  content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
+  background:linear-gradient(to right,transparent,rgba(76,201,135,.95),transparent);
 }
-
-button {
-  width: 100%;
-  margin-top: 15px;
-  padding: 14px;
-  background: linear-gradient(135deg,#1a472a,#2d7d46);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 17px;
-  cursor: pointer;
+.title{
+  font-size:40px;font-weight:900;background:linear-gradient(135deg,#b9ffd9,#4cc987);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
 }
+.subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#e7fff3;opacity:.98}
 
-.stats {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
+label{display:block;margin:14px 0 6px;font-weight:900;color:rgba(255,255,255,.94)}
+input{
+  width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.94);font-size:17px;color:#0d2c1a;direction:ltr;
 }
-
-.card {
-  width: 48%;
-  background: #f4faf6;
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-  font-weight: bold;
+button.primary{
+  width:100%;margin-top:12px;padding:14px;border:none;border-radius:14px;cursor:pointer;
+  color:#fff;font-weight:900;font-size:18px;
+  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
+  box-shadow:0 10px 22px rgba(0,0,0,.18);
 }
-
-.card.present { color: #1a472a; }
-.card.late { color: #c57c00; }
-
-canvas {
-  margin-top: 20px;
+.stats{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.stat{
+  flex:1;min-width:150px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);
+  border-radius:14px;padding:12px;text-align:center;
 }
+.stat .n{font-size:24px;font-weight:900;margin-top:6px}
+#msg{margin-top:10px;text-align:center;font-weight:900;min-height:22px}
+.canvasWrap{margin-top:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px}
 </style>
 </head>
 
 <body>
+<div class="card">
+  <div class="topbar">
+    <a class="back" href="index.html" id="backHome">↩ الرئيسية</a>
+    <button class="icon-btn" id="langBtn" aria-label="Toggle language">🌐 <span id="langBadge" class="sub">EN</span></button>
+  </div>
 
-<div class="app">
-  <h1>Hather</h1>
-  <h2>تقارير الحضور</h2>
+  <div class="header">
+    <div class="title">Hather</div>
+    <div class="subtitle" id="subTitle">تقارير الطالب</div>
+  </div>
 
-  <input id="studentId" placeholder="الرقم الجامعي" maxlength="9" inputmode="numeric">
-  <button onclick="loadReport()">عرض التقرير</button>
+  <label id="lblId">الرقم الجامعي</label>
+  <input id="studentId" maxlength="9" inputmode="numeric" placeholder="441234567" />
+  <button class="primary" id="btn">عرض التقرير</button>
+
+  <div id="msg"></div>
 
   <div class="stats">
-    <div class="card present">
-      حضور<br><span id="presentCount">0</span>
+    <div class="stat">
+      <div id="presentLbl">حضور</div>
+      <div class="n" id="presentN">0</div>
     </div>
-    <div class="card late">
-      تأخير<br><span id="lateCount">0</span>
+    <div class="stat">
+      <div id="lateLbl">تأخير</div>
+      <div class="n" id="lateN">0</div>
+    </div>
+    <div class="stat">
+      <div id="totalLbl">الإجمالي</div>
+      <div class="n" id="totalN">0</div>
     </div>
   </div>
 
-  <canvas id="pieChart"></canvas>
-  <canvas id="barChart"></canvas>
+  <div class="canvasWrap"><canvas id="pie"></canvas></div>
+  <div class="canvasWrap"><canvas id="bar"></canvas></div>
 </div>
 
 <script>
-const SCRIPT_URL = "ضع_رابط_السكربت_هنا";
+const SCRIPT_URL = "PUT_SCRIPT_URL_HERE";
+
+const STR = {
+  ar:{dir:"rtl",lang:"ar",badge:"EN",
+    backHome:"↩ الرئيسية",
+    subTitle:"تقارير الطالب",
+    lblId:"الرقم الجامعي",
+    btn:"عرض التقرير",
+    presentLbl:"حضور", lateLbl:"تأخير", totalLbl:"الإجمالي",
+    invalidId:"❌ الرقم الجامعي لازم 9 أرقام",
+    wait:"⏳ جاري تحميل التقرير...",
+    fail:"❌ فشل الاتصال"
+  },
+  en:{dir:"ltr",lang:"en",badge:"AR",
+    backHome:"↩ Back",
+    subTitle:"Student Reports",
+    lblId:"University ID",
+    btn:"Show report",
+    presentLbl:"Present", lateLbl:"Late", totalLbl:"Total",
+    invalidId:"❌ University ID must be 9 digits",
+    wait:"⏳ Loading report...",
+    fail:"❌ Connection failed"
+  }
+};
+function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
+function setLang(l){ localStorage.setItem("hather_lang", l); }
+function applyLang(){
+  const l=getLang(), t=STR[l];
+  document.documentElement.lang=t.lang;
+  document.documentElement.dir=t.dir;
+  document.getElementById("langBadge").textContent=t.badge;
+  document.getElementById("backHome").textContent=t.backHome;
+  document.getElementById("subTitle").textContent=t.subTitle;
+  document.getElementById("lblId").textContent=t.lblId;
+  document.getElementById("btn").textContent=t.btn;
+  document.getElementById("presentLbl").textContent=t.presentLbl;
+  document.getElementById("lateLbl").textContent=t.lateLbl;
+  document.getElementById("totalLbl").textContent=t.totalLbl;
+}
+document.getElementById("langBtn").addEventListener("click",()=>{
+  setLang(getLang()==="ar"?"en":"ar"); applyLang();
+});
+applyLang();
+
 let pieChart, barChart;
+function drawCharts(present, late){
+  if(pieChart) pieChart.destroy();
+  if(barChart) barChart.destroy();
 
-function loadReport() {
-  const id = document.getElementById("studentId").value.trim();
+  pieChart = new Chart(document.getElementById("pie"),{
+    type:"doughnut",
+    data:{ labels:["Present","Late"], datasets:[{ data:[present,late] }] },
+    options:{ plugins:{ legend:{ display:true } } }
+  });
 
-  if (!/^[0-9]{9}$/.test(id)) {
-    alert("الرقم الجامعي غير صحيح");
-    return;
+  barChart = new Chart(document.getElementById("bar"),{
+    type:"bar",
+    data:{ labels:["Present","Late"], datasets:[{ data:[present,late] }] },
+    options:{ plugins:{ legend:{ display:false } } }
+  });
+}
+
+document.getElementById("btn").addEventListener("click",()=>{
+  const l=getLang(), t=STR[l];
+  const id=document.getElementById("studentId").value.trim();
+  const msg=document.getElementById("msg");
+
+  if(!/^[0-9]{9}$/.test(id)){
+    msg.style.color="salmon"; msg.textContent=t.invalidId; return;
   }
 
-  fetch(`${SCRIPT_URL}?studentId=${id}`)
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById("presentCount").textContent = data.present;
-      document.getElementById("lateCount").textContent = data.late;
-      drawCharts(data.present, data.late);
+  msg.style.color="#e7fff3";
+  msg.textContent=t.wait;
+
+  fetch(`${SCRIPT_URL}?studentId=${encodeURIComponent(id)}`)
+    .then(r=>r.json())
+    .then(d=>{
+      document.getElementById("presentN").textContent = d.present ?? 0;
+      document.getElementById("lateN").textContent = d.late ?? 0;
+      document.getElementById("totalN").textContent = d.total ?? ((d.present||0)+(d.late||0));
+
+      msg.style.color="#7CFFB2";
+      msg.textContent="✅ OK";
+
+      // الرسم يستخدم أرقام فقط
+      drawCharts(Number(d.present||0), Number(d.late||0));
+    })
+    .catch(()=>{
+      msg.style.color="salmon"; msg.textContent=t.fail;
     });
-}
-
-function drawCharts(present, late) {
-  if (pieChart) pieChart.destroy();
-  if (barChart) barChart.destroy();
-
-  pieChart = new Chart(document.getElementById("pieChart"), {
-    type: "doughnut",
-    data: {
-      labels: ["حضور", "تأخير"],
-      datasets: [{
-        data: [present, late],
-        backgroundColor: ["#2d7d46", "#f4b400"]
-      }]
-    }
-  });
-
-  barChart = new Chart(document.getElementById("barChart"), {
-    type: "bar",
-    data: {
-      labels: ["حضور", "تأخير"],
-      datasets: [{
-        data: [present, late],
-        backgroundColor: ["#2d7d46", "#f4b400"]
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } }
-    }
-  });
-}
+});
 </script>
-
 </body>
 </html>
