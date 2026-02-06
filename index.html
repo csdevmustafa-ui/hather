@@ -1,121 +1,165 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hather - حاضر</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  font-family:'Segoe UI',Arial,sans-serif
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{
-  margin:0;
   min-height:100vh;
-  background:linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background:linear-gradient(135deg,#0d2c1a 0%, #1a472a 45%, #2d7d46 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
 }
-
-.container{
-  width:100%;
-  max-width:420px;
-  background:rgba(255,255,255,.95);
-  padding:26px;
-  border-radius:18px;
-  box-shadow:0 15px 35px rgba(0,0,0,.35);
+.card{
+  width:100%;max-width:440px;border-radius:18px;padding:22px;
+  background:rgba(13,44,26,.78);
+  box-shadow:0 18px 45px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(8px);
 }
-
-.header{
-  text-align:center;
-  margin-bottom:25px;
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{font-weight:900;opacity:.9}
+.icon-btn{
+  border:none;cursor:pointer;
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.12);
+  color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;
 }
-
-.header h1{
-  font-size:42px;
-  font-weight:900;
-  color:#1a472a;
-  margin:0;
+.icon-btn:active{transform:scale(.98)}
+.icon-btn .sub{font-size:12px;opacity:.9;margin-left:6px}
+.header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
+.header::after{
+  content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
+  background:linear-gradient(to right,transparent,rgba(76,201,135,.95),transparent);
 }
-
-.header h2{
-  font-size:26px;
-  color:#2d7d46;
-  margin:5px 0 0;
+.title{
+  font-size:46px;font-weight:900;letter-spacing:-.5px;
+  background:linear-gradient(135deg,#b9ffd9,#4cc987);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-
-.menu{
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-}
-
+.subtitle{margin-top:6px;font-size:20px;font-weight:900;color:#d6ffe9;opacity:.95}
+.hint{margin-top:10px;font-size:14px;color:rgba(255,255,255,.78)}
+.menu{display:flex;flex-direction:column;gap:12px;margin-top:16px}
 .btn{
-  padding:18px;
-  font-size:18px;
-  font-weight:800;
-  border:none;
-  border-radius:14px;
-  cursor:pointer;
-  color:#fff;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  width:100%;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;color:#fff;
+  font-weight:900;font-size:18px;
+  box-shadow:0 10px 22px rgba(0,0,0,.22);
+  transition:transform .15s ease;
 }
-
-.student{
-  background:linear-gradient(135deg,#1a472a,#2d7d46);
-}
-
-.reports{
-  background:linear-gradient(135deg,#0e3b24,#1f6b43);
-}
-
-.doctor{
-  background:linear-gradient(135deg,#244b3a,#0d2c1a);
-}
-
-.footer{
-  margin-top:20px;
-  text-align:center;
-  font-size:12px;
-  color:#555;
-}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn.student{background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987)}
+.btn.reports{background:linear-gradient(135deg,#0e3b24,#1f6b43)}
+.btn.doctor{background:linear-gradient(135deg,#244b3a,#0d2c1a)}
+.btn .meta{font-size:13px;font-weight:800;opacity:.9;margin-top:3px}
+.footer{margin-top:14px;text-align:center;font-size:12px;color:rgba(255,255,255,.72)}
 </style>
 </head>
 
 <body>
+<div class="card">
+  <div class="topbar">
+    <div class="brand">Hather</div>
+    <button class="icon-btn" id="langBtn" aria-label="Toggle language">
+      🌐 <span id="langBadge" class="sub">EN</span>
+    </button>
+  </div>
 
-<div class="container">
   <div class="header">
-    <h1>Hather</h1>
-    <h2>حاضر</h2>
+    <div class="title">Hather</div>
+    <div class="subtitle" id="subTitle">حاضر</div>
+    <div class="hint" id="hint">اختر القسم المناسب للمتابعة</div>
   </div>
 
   <div class="menu">
     <button class="btn student" onclick="location.href='student.html'">
-      <span>قسم الطالب</span>
-      <span>➜</span>
+      <div>
+        <div id="b1">قسم الطالب</div>
+        <div class="meta" id="b1m">تسجيل الحضور</div>
+      </div>
+      <div>➜</div>
     </button>
 
     <button class="btn reports" onclick="location.href='reports.html'">
-      <span>تقارير الطالب</span>
-      <span>➜</span>
+      <div>
+        <div id="b2">تقارير الطالب</div>
+        <div class="meta" id="b2m">نسبة الحضور والتأخير</div>
+      </div>
+      <div>➜</div>
     </button>
 
     <button class="btn doctor" onclick="location.href='doctor.html'">
-      <span>قسم الدكتور</span>
-      <span>➜</span>
+      <div>
+        <div id="b3">قسم الدكتور</div>
+        <div class="meta" id="b3m">إدارة المحاضرات والتقارير</div>
+      </div>
+      <div>➜</div>
     </button>
   </div>
 
-  <div class="footer">
-    نظام حضور بسيط وعملي
-  </div>
+  <div class="footer" id="footer">نظام حضور بسيط وعملي</div>
 </div>
 
+<script>
+  // الافتراضي عربي (ما يتغير إلا إذا المستخدم ضغط الأيقونة)
+  const STR = {
+    ar: {
+      dir:"rtl", lang:"ar",
+      badge:"EN",
+      subTitle:"حاضر",
+      hint:"اختر القسم المناسب للمتابعة",
+      b1:"قسم الطالب", b1m:"تسجيل الحضور",
+      b2:"تقارير الطالب", b2m:"نسبة الحضور والتأخير",
+      b3:"قسم الدكتور", b3m:"إدارة المحاضرات والتقارير",
+      footer:"نظام حضور بسيط وعملي"
+    },
+    en: {
+      dir:"ltr", lang:"en",
+      badge:"AR",
+      subTitle:"Attendance",
+      hint:"Choose the section to continue",
+      b1:"Student", b1m:"Check-in",
+      b2:"Student Reports", b2m:"Attendance & lateness",
+      b3:"Doctor", b3m:"Manage lectures & reports",
+      footer:"Simple & practical attendance system"
+    }
+  };
+
+  function getLang(){
+    return localStorage.getItem("hather_lang") || "ar";
+  }
+  function setLang(l){ localStorage.setItem("hather_lang", l); }
+
+  function applyLang(){
+    const l = getLang();
+    const t = STR[l];
+    document.documentElement.lang = t.lang;
+    document.documentElement.dir = t.dir;
+
+    document.getElementById("langBadge").textContent = t.badge;
+    document.getElementById("subTitle").textContent = t.subTitle;
+    document.getElementById("hint").textContent = t.hint;
+
+    document.getElementById("b1").textContent = t.b1;
+    document.getElementById("b1m").textContent = t.b1m;
+    document.getElementById("b2").textContent = t.b2;
+    document.getElementById("b2m").textContent = t.b2m;
+    document.getElementById("b3").textContent = t.b3;
+    document.getElementById("b3m").textContent = t.b3m;
+
+    document.getElementById("footer").textContent = t.footer;
+  }
+
+  document.getElementById("langBtn").addEventListener("click", ()=>{
+    const next = getLang()==="ar" ? "en" : "ar";
+    setLang(next);
+    applyLang();
+  });
+
+  applyLang();
+</script>
 </body>
 </html>
