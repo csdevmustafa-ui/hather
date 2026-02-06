@@ -3,218 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الحضور - Hather</title>
+<title>قسم الطالب - تسجيل الحضور</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  font-family:'Segoe UI',Arial,sans-serif
-}
-
+*{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{
-  margin:0;
-  min-height:100vh;
+  margin:0; min-height:100vh;
   background:linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex; justify-content:center; align-items:center;
+  padding:20px;
 }
-
 .app{
-  width:100%;
-  max-width:380px;
+  width:100%; max-width:380px;
   background:rgba(255,255,255,.95);
   padding:25px;
   border-radius:18px;
   box-shadow:0 15px 35px rgba(0,0,0,.35);
 }
+.header{ text-align:center; margin-bottom:20px; }
+.header .t1{ font-size:40px; font-weight:900; color:#1a472a; margin:0; }
+.header .t2{ font-size:22px; font-weight:800; color:#2d7d46; margin-top:6px; }
 
-h1{
-  text-align:center;
-  color:#1a472a;
-  margin:0;
-}
-
-h2{
-  text-align:center;
-  color:#2d7d46;
-  margin:5px 0 25px;
-}
-
+label{display:block;margin:12px 0 6px;color:#0e3b24;font-weight:800}
 input{
-  width:100%;
-  padding:15px;
-  font-size:18px;
-  border-radius:10px;
-  border:2px solid #d1e7dd;
-  margin-bottom:15px;
-  direction:ltr;
+  width:100%; padding:14px;
+  border-radius:12px; border:2px solid #d1e7dd;
+  font-size:17px; direction:ltr;
+  background:#f8fffb;
 }
-
+input:focus{outline:none;border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,70,.18)}
 button{
-  width:100%;
-  padding:16px;
-  font-size:18px;
-  font-weight:800;
+  width:100%; margin-top:16px;
+  padding:16px; border:none; border-radius:14px;
   background:linear-gradient(135deg,#1a472a,#2d7d46);
-  color:#fff;
-  border:none;
-  border-radius:12px;
+  color:#fff; font-size:18px; font-weight:900;
   cursor:pointer;
 }
-
-button:disabled{
-  opacity:.6;
-}
-
-#msg{
-  margin-top:15px;
-  text-align:center;
-  font-weight:bold;
-}
-
+button:disabled{opacity:.6;cursor:not-allowed}
 #spinner{
-  width:26px;
-  height:26px;
-  border:4px solid #d1e7dd;
-  border-top:4px solid #2d7d46;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:15px auto;
-  display:none;
+  width:26px;height:26px;border:4px solid #d1e7dd;border-top:4px solid #2d7d46;border-radius:50%;
+  animation:spin 1s linear infinite;margin:14px auto;display:none;
 }
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+#msg{min-height:22px;text-align:center;font-weight:900;margin-top:10px}
+.back{
+  margin-top:14px;text-align:center;
+}
+.back a{
+  color:#1a472a;font-weight:800;text-decoration:none;
 }
 </style>
 </head>
 
 <body>
-
 <div class="app">
-  <h1>Hather</h1>
-  <h2>تسجيل الحضور</h2>
+  <div class="header">
+    <div class="t1">Hather</div>
+    <div class="t2">قسم الطالب - تسجيل الحضور</div>
+  </div>
 
-  <input id="studentId" placeholder="الرقم الجامعي" maxlength="9" inputmode="numeric">
-  <input id="lectureCode" placeholder="كود المحاضرة" maxlength="6" inputmode="numeric">
+  <label>الرقم الجامعي (9 أرقام)</label>
+  <input id="studentId" maxlength="9" inputmode="numeric" placeholder="مثال: 441234567">
+
+  <label>كود المحاضرة (6 أرقام)</label>
+  <input id="lectureCode" maxlength="6" inputmode="numeric" placeholder="مثال: 123456">
 
   <button id="btn">تسجيل</button>
 
   <div id="spinner"></div>
   <div id="msg"></div>
+
+  <div class="back">
+    <a href="index.html">↩ الرجوع للرئيسية</a>
+  </div>
 </div>
 
 <script>
-const SCRIPT_URL = "<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الحضور - Hather</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  font-family:'Segoe UI',Arial,sans-serif
-}
-
-body{
-  margin:0;
-  min-height:100vh;
-  background:linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.app{
-  width:100%;
-  max-width:380px;
-  background:rgba(255,255,255,.95);
-  padding:25px;
-  border-radius:18px;
-  box-shadow:0 15px 35px rgba(0,0,0,.35);
-}
-
-h1{
-  text-align:center;
-  color:#1a472a;
-  margin:0;
-}
-
-h2{
-  text-align:center;
-  color:#2d7d46;
-  margin:5px 0 25px;
-}
-
-input{
-  width:100%;
-  padding:15px;
-  font-size:18px;
-  border-radius:10px;
-  border:2px solid #d1e7dd;
-  margin-bottom:15px;
-  direction:ltr;
-}
-
-button{
-  width:100%;
-  padding:16px;
-  font-size:18px;
-  font-weight:800;
-  background:linear-gradient(135deg,#1a472a,#2d7d46);
-  color:#fff;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-}
-
-button:disabled{
-  opacity:.6;
-}
-
-#msg{
-  margin-top:15px;
-  text-align:center;
-  font-weight:bold;
-}
-
-#spinner{
-  width:26px;
-  height:26px;
-  border:4px solid #d1e7dd;
-  border-top:4px solid #2d7d46;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:15px auto;
-  display:none;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-  <h1>Hather</h1>
-  <h2>تسجيل الحضور</h2>
-
-  <input id="studentId" placeholder="الرقم الجامعي" maxlength="9" inputmode="numeric">
-  <input id="lectureCode" placeholder="كود المحاضرة" maxlength="6" inputmode="numeric">
-
-  <button id="btn">تسجيل</button>
-
-  <div id="spinner"></div>
-  <div id="msg"></div>
-</div>
-
-<script>
-const SCRIPT_URL = "PUT_SCRIPT_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFv-Z9gebAEAEM-yoVzXVM-TJXDC0Ie4gJqnmkPqxwPUDuHncMMbyuHkqHENTe2XDe/exec";
 
 const btn = document.getElementById("btn");
 const msg = document.getElementById("msg");
@@ -225,97 +90,40 @@ btn.onclick = () => {
   const lectureCode = document.getElementById("lectureCode").value.trim();
 
   if (!/^[0-9]{9}$/.test(studentId)) {
-    msg.style.color="red";
-    msg.textContent="❌ الرقم الجامعي غير صحيح";
+    msg.style.color = "red";
+    msg.textContent = "❌ الرقم الجامعي لازم 9 أرقام";
     return;
   }
-
   if (!/^[0-9]{6}$/.test(lectureCode)) {
-    msg.style.color="red";
-    msg.textContent="❌ كود المحاضرة غير صحيح";
+    msg.style.color = "red";
+    msg.textContent = "❌ كود المحاضرة لازم 6 أرقام";
     return;
   }
 
   btn.disabled = true;
-  spinner.style.display="block";
-  msg.style.color="#1a472a";
-  msg.textContent="⏳ جاري تسجيل الحضور...";
+  spinner.style.display = "block";
+  msg.style.color = "#0e3b24";
+  msg.textContent = "⏳ جاري تسجيل الحضور...";
 
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      studentId:studentId,
-      lectureCode:lectureCode
-    })
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ studentId, lectureCode })
   })
-  .then(r=>r.json())
-  .then(d=>{
+  .then(r => r.json())
+  .then(d => {
     msg.style.color = d.ok ? "green" : "red";
     msg.textContent = d.result || "تم";
   })
-  .catch(()=>{
-    msg.style.color="red";
-    msg.textContent="❌ فشل الاتصال";
+  .catch(() => {
+    msg.style.color = "red";
+    msg.textContent = "❌ فشل الاتصال";
   })
-  .finally(()=>{
-    spinner.style.display="none";
-    btn.disabled=false;
+  .finally(() => {
+    spinner.style.display = "none";
+    btn.disabled = false;
   });
 };
 </script>
-
-</body>
-</html>";
-
-const btn = document.getElementById("btn");
-const msg = document.getElementById("msg");
-const spinner = document.getElementById("spinner");
-
-btn.onclick = () => {
-  const studentId = document.getElementById("studentId").value.trim();
-  const lectureCode = document.getElementById("lectureCode").value.trim();
-
-  if (!/^[0-9]{9}$/.test(studentId)) {
-    msg.style.color="red";
-    msg.textContent="❌ الرقم الجامعي غير صحيح";
-    return;
-  }
-
-  if (!/^[0-9]{6}$/.test(lectureCode)) {
-    msg.style.color="red";
-    msg.textContent="❌ كود المحاضرة غير صحيح";
-    return;
-  }
-
-  btn.disabled = true;
-  spinner.style.display="block";
-  msg.style.color="#1a472a";
-  msg.textContent="⏳ جاري تسجيل الحضور...";
-
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      studentId:studentId,
-      lectureCode:lectureCode
-    })
-  })
-  .then(r=>r.json())
-  .then(d=>{
-    msg.style.color = d.ok ? "green" : "red";
-    msg.textContent = d.result || "تم";
-  })
-  .catch(()=>{
-    msg.style.color="red";
-    msg.textContent="❌ فشل الاتصال";
-  })
-  .finally(()=>{
-    spinner.style.display="none";
-    btn.disabled=false;
-  });
-};
-</script>
-
 </body>
 </html>
