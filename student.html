@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hather - Student</title>
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{
@@ -12,26 +11,24 @@ body{
   display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
 }
 .card{
-  width:100%;max-width:440px;border-radius:18px;padding:22px;
-  background:rgba(13,44,26,.62);
-  box-shadow:0 18px 45px rgba(0,0,0,.30);
-  border:1px solid rgba(255,255,255,.16);
-  backdrop-filter:blur(10px);
+  width:100%;max-width:460px;border-radius:18px;padding:22px;
+  background:rgba(13,44,26,.52);
+  box-shadow:0 18px 45px rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(12px);
 }
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-.icon-btn{
-  border:none;cursor:pointer;width:44px;height:44px;border-radius:12px;
-  background:rgba(255,255,255,.14);color:#fff;font-weight:900;
-  display:flex;align-items:center;justify-content:center;
-}
-.icon-btn:active{transform:scale(.98)}
-.icon-btn .sub{font-size:12px;opacity:.92;margin-left:6px}
 .back{
-  color:#e7fff3;text-decoration:none;font-weight:900;opacity:.95;
-  background:rgba(255,255,255,.10);
+  color:#effff6;text-decoration:none;font-weight:900;opacity:.95;
+  background:rgba(255,255,255,.12);
   padding:10px 12px;border-radius:12px;display:inline-block;
 }
-.back:active{transform:scale(.98)}
+.icon-btn{
+  border:none;cursor:pointer;width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.16);color:#fff;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+}
+.icon-btn .sub{font-size:12px;opacity:.92;margin-left:6px}
 .header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
 .header::after{
   content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
@@ -41,19 +38,18 @@ body{
   font-size:42px;font-weight:900;background:linear-gradient(135deg,#b9ffd9,#4cc987);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#e7fff3;opacity:.98}
+.subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#effff6;opacity:.98}
 label{display:block;margin:14px 0 6px;font-weight:900;color:rgba(255,255,255,.94)}
 .hint{font-size:13px;font-weight:700;color:rgba(255,255,255,.78);margin-top:2px}
 input{
-  width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.94);font-size:17px;color:#0d2c1a;direction:ltr;
+  width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.95);font-size:17px;color:#0d2c1a;direction:ltr;
 }
 input:focus{outline:none;border-color:#4cc987;box-shadow:0 0 0 3px rgba(76,201,135,.20)}
 button.primary{
   width:100%;margin-top:16px;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
-  color:#fff;font-weight:900;font-size:18px;
-  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  box-shadow:0 10px 22px rgba(0,0,0,.18);
+  color:#fff;font-weight:900;font-size:18px;background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
+  box-shadow:0 10px 22px rgba(0,0,0,.16);
 }
 button.primary:disabled{opacity:.65;cursor:not-allowed}
 #spinner{
@@ -64,11 +60,9 @@ button.primary:disabled{opacity:.65;cursor:not-allowed}
 @keyframes spin{to{transform:rotate(360deg)}}
 #msg{min-height:22px;margin-top:12px;text-align:center;font-weight:900}
 .links{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.links a{color:#e7fff3;text-decoration:none;font-weight:900;opacity:.95}
-.links a:hover{opacity:1}
+.links a{color:#effff6;text-decoration:none;font-weight:900;opacity:.95}
 </style>
 </head>
-
 <body>
 <div class="card">
   <div class="topbar">
@@ -86,86 +80,66 @@ button.primary:disabled{opacity:.65;cursor:not-allowed}
   <input id="studentId" maxlength="9" inputmode="numeric" placeholder="441234567" />
 
   <label id="lblCode">كود المحاضرة</label>
-  <div class="hint" id="hintCode">يجب أن يكون 6 أرقام (يعطيه الدكتور)</div>
+  <div class="hint" id="hintCode">6 أرقام (يعطيه الدكتور)</div>
   <input id="lectureCode" maxlength="6" inputmode="numeric" placeholder="123456" />
 
   <button class="primary" id="btn">تسجيل</button>
-
   <div id="spinner"></div>
   <div id="msg"></div>
 
   <div class="links">
     <a href="reports.html" id="goReports">تقارير الطالب</a>
-    <a href="doctor.html" id="goDoctor">قسم الدكتور</a>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFv-Z9gebAEAEM-yoVzXVM-TJXDC0Ie4gJqnmkPqxwPUDuHncMMbyuHkqHENTe2XDe/exec";
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwcIhcB82hZBypaB-C24MvAzqPaERF1ZIWYVXT5HaAxHiqe3H33UijVMYpxyXPsqmoG/exec";
 
-const STR = {
-  ar:{dir:"rtl",lang:"ar",badge:"EN",
-    backHome:"↩ الرئيسية",
-    subTitle:"قسم الطالب - تسجيل الحضور",
-    lblId:"الرقم الجامعي",hintId:"يجب أن يكون 9 أرقام",
-    lblCode:"كود المحاضرة",hintCode:"يجب أن يكون 6 أرقام (يعطيه الدكتور)",
-    btn:"تسجيل",
-    goReports:"تقارير الطالب",goDoctor:"قسم الدكتور",
-    invalidId:"❌ الرقم الجامعي لازم 9 أرقام",
-    invalidCode:"❌ كود المحاضرة لازم 6 أرقام",
-    wait:"⏳ جاري تسجيل الحضور...",
-    fail:"❌ فشل الاتصال"
-  },
-  en:{dir:"ltr",lang:"en",badge:"AR",
-    backHome:"↩ Back",
-    subTitle:"Student - Check-in",
-    lblId:"University ID",hintId:"Must be 9 digits",
-    lblCode:"Lecture code",hintCode:"Must be 6 digits (from doctor)",
-    btn:"Check in",
-    goReports:"Student Reports",goDoctor:"Doctor",
-    invalidId:"❌ University ID must be 9 digits",
-    invalidCode:"❌ Lecture code must be 6 digits",
-    wait:"⏳ Checking in...",
-    fail:"❌ Connection failed"
-  }
+const STR={
+  ar:{dir:"rtl",lang:"ar",badge:"EN",back:"↩ الرئيسية",sub:"قسم الطالب - تسجيل الحضور",
+      lblId:"الرقم الجامعي",hintId:"يجب أن يكون 9 أرقام",lblCode:"كود المحاضرة",hintCode:"6 أرقام (يعطيه الدكتور)",
+      btn:"تسجيل",goReports:"تقارير الطالب",
+      invalidId:"❌ الرقم الجامعي لازم 9 أرقام",invalidCode:"❌ كود المحاضرة لازم 6 أرقام",
+      wait:"⏳ جاري تسجيل الحضور...",fail:"❌ فشل الاتصال"},
+  en:{dir:"ltr",lang:"en",badge:"AR",back:"↩ Back",sub:"Student - Check-in",
+      lblId:"University ID",hintId:"Must be 9 digits",lblCode:"Lecture code",hintCode:"6 digits (from doctor)",
+      btn:"Check in",goReports:"Student Reports",
+      invalidId:"❌ University ID must be 9 digits",invalidCode:"❌ Lecture code must be 6 digits",
+      wait:"⏳ Checking in...",fail:"❌ Connection failed"}
 };
-
-function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
-function setLang(l){ localStorage.setItem("hather_lang", l); }
+function getLang(){return localStorage.getItem("hather_lang")||"ar";}
+function setLang(l){localStorage.setItem("hather_lang",l);}
 function applyLang(){
-  const l=getLang(), t=STR[l];
-  document.documentElement.lang=t.lang;
-  document.documentElement.dir=t.dir;
-  document.getElementById("langBadge").textContent=t.badge;
-  document.getElementById("backHome").textContent=t.backHome;
-  document.getElementById("subTitle").textContent=t.subTitle;
-  document.getElementById("lblId").textContent=t.lblId;
-  document.getElementById("hintId").textContent=t.hintId;
-  document.getElementById("lblCode").textContent=t.lblCode;
-  document.getElementById("hintCode").textContent=t.hintCode;
-  document.getElementById("btn").textContent=t.btn;
-  document.getElementById("goReports").textContent=t.goReports;
-  document.getElementById("goDoctor").textContent=t.goDoctor;
+  const l=getLang(),t=STR[l];
+  document.documentElement.lang=t.lang;document.documentElement.dir=t.dir;
+  langBadge.textContent=t.badge; backHome.textContent=t.back; subTitle.textContent=t.sub;
+  lblId.textContent=t.lblId; hintId.textContent=t.hintId; lblCode.textContent=t.lblCode; hintCode.textContent=t.hintCode;
+  btn.textContent=t.btn; goReports.textContent=t.goReports;
 }
-document.getElementById("langBtn").addEventListener("click",()=>{
-  setLang(getLang()==="ar"?"en":"ar"); applyLang();
-});
+langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
 applyLang();
 
-const btn=document.getElementById("btn");
-const spinner=document.getElementById("spinner");
+btn.onclick=()=>{
+  const l=getLang(),t=STR[l];
+  const studentId=studentIdEl.value.trim();
+  const lectureCode=lectureCodeEl.value.trim();
+};
+const studentIdEl=document.getElementById("studentId");
+const lectureCodeEl=document.getElementById("lectureCode");
 const msg=document.getElementById("msg");
+const spinner=document.getElementById("spinner");
+const btn=document.getElementById("btn");
 
 btn.addEventListener("click",()=>{
-  const l=getLang(), t=STR[l];
-  const studentId=document.getElementById("studentId").value.trim();
-  const lectureCode=document.getElementById("lectureCode").value.trim();
+  const l=getLang(),t=STR[l];
+  const studentId=studentIdEl.value.trim();
+  const lectureCode=lectureCodeEl.value.trim();
 
-  if(!/^[0-9]{9}$/.test(studentId)){ msg.style.color="salmon"; msg.textContent=t.invalidId; return; }
-  if(!/^[0-9]{6}$/.test(lectureCode)){ msg.style.color="salmon"; msg.textContent=t.invalidCode; return; }
+  if(!/^\d{9}$/.test(studentId)){msg.style.color="salmon";msg.textContent=t.invalidId;return;}
+  if(!/^\d{6}$/.test(lectureCode)){msg.style.color="salmon";msg.textContent=t.invalidCode;return;}
 
   btn.disabled=true; spinner.style.display="block";
-  msg.style.color="#e7fff3"; msg.textContent=t.wait;
+  msg.style.color="#effff6"; msg.textContent=t.wait;
 
   fetch(SCRIPT_URL,{
     method:"POST",
@@ -174,11 +148,11 @@ btn.addEventListener("click",()=>{
   })
   .then(r=>r.json())
   .then(d=>{
-    msg.style.color = d.ok ? "#7CFFB2" : "salmon";
-    msg.textContent = d.result || (d.ok ? "OK" : "Error");
+    msg.style.color=d.ok?"#7CFFB2":"salmon";
+    msg.textContent=d.result || (d.ok?"OK":"Error");
   })
-  .catch(()=>{ msg.style.color="salmon"; msg.textContent=t.fail; })
-  .finally(()=>{ spinner.style.display="none"; btn.disabled=false; });
+  .catch(()=>{msg.style.color="salmon";msg.textContent=t.fail;})
+  .finally(()=>{spinner.style.display="none";btn.disabled=false;});
 });
 </script>
 </body>
