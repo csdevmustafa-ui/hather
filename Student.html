@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hather - حاضر</title>
+
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.app {
+  background: rgba(255,255,255,.95);
+  width: 100%;
+  max-width: 380px;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 15px 35px rgba(0,0,0,.35);
+}
+
+h1 { text-align:center; color:#1a472a; margin-bottom:0 }
+h2 { text-align:center; color:#2d7d46; margin-top:5px }
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  font-size: 17px;
+  border-radius: 10px;
+  border: 2px solid #d1e7dd;
+  margin-top: 15px;
+  direction: ltr;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg,#1a472a,#2d7d46);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#msg {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <h1>Hather</h1>
+  <h2>حاضر</h2>
+
+  <input id="studentId" maxlength="9" inputmode="numeric" placeholder="الرقم الجامعي">
+
+  <select id="lectureSelect" style="display:none"></select>
+
+  <button onclick="submitAttendance()">تسجيل الحضور</button>
+
+  <div id="msg"></div>
+</div>
+
+<script>
+const SCRIPT_URL = "ضع_رابط_السكربت_هنا";
+let selectedLecture = null;
+
+fetch(SCRIPT_URL)
+  .then(r => r.json())
+  .then(list => {
+    if (list.length === 1) {
+      selectedLecture = list[0].id;
+    } else if (list.length > 1) {
+      const sel = document.getElementById("lectureSelect");
+      sel.style.display = "block";
+      list.forEach(l => {
+        const o = document.createElement("option");
+        o.value = l.id;
+        o.textContent = `${l.course} - شعبة ${l.section}`;
+        sel.appendChild(o);
+      });
+      selectedLecture = sel.value;
+      sel.onchange = () => selectedLecture = sel.value;
+    } else {
+      document.getElementById("msg").textContent = "لا توجد محاضرة حالياً";
+    }
+  });
+
+function submitAttendance() {
+  const id = document.getElementById("studentId").value.trim();
+  const msg = document.getElementById("msg");
+
+  if (!/^[0-9]{9}$/.test(id)) {
+    msg.style.color = "red";
+    msg.textContent = "❌ الرقم الجامعي غير صحيح";
+    return;
+  }
+
+  if (!selectedLecture) {
+    msg.style.color = "red";
+    msg.textContent = "❌ اختر المحاضرة";
+    return;
+  }
+
+  msg.style.color = "#1a472a";
+  msg.textContent = "⏳ جاري التسجيل...";
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      studentId: id,
+      lectureId: selectedLecture
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    msg.style.color = "green";
+    msg.textContent = "✅ " + d.result;
+  })
+  .catch(() => {
+    msg.style.color = "red";
+    msg.textContent = "❌ فشل الاتصال";
+  });
+}
+</script>
+
+</body>
+</html>
