@@ -1,140 +1,154 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hather - حاضر</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hather - حاضر</title>
 
-<style>
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+    body{
+      min-height:100vh;
+      background: linear-gradient(135deg, #0b2416 0%, #174c30 50%, #2f8f55 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
 
-.app {
-  background: rgba(255,255,255,.95);
-  width: 100%;
-  max-width: 380px;
-  padding: 25px;
-  border-radius: 18px;
-  box-shadow: 0 15px 35px rgba(0,0,0,.35);
-}
+    .container{
+      width:100%;
+      max-width:420px;
+      background: rgba(244, 251, 247, 0.96);
+      border-radius:18px;
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+      padding:26px;
+      position:relative;
+      border:1px solid rgba(255,255,255,.35);
+      backdrop-filter: blur(6px);
+    }
 
-h1 { text-align:center; color:#1a472a; margin-bottom:0 }
-h2 { text-align:center; color:#2d7d46; margin-top:5px }
+    .container::before{
+      content:'';
+      position:absolute;
+      top:-2px;left:-2px;right:-2px;bottom:-2px;
+      background: linear-gradient(135deg, #0e3b24, #1f6b43, #3aa76a);
+      border-radius:20px;
+      z-index:-1;
+      opacity:.35;
+    }
 
-input, select {
-  width: 100%;
-  padding: 14px;
-  font-size: 17px;
-  border-radius: 10px;
-  border: 2px solid #d1e7dd;
-  margin-top: 15px;
-  direction: ltr;
-}
+    .header{
+      text-align:center;
+      padding-bottom:16px;
+      margin-bottom:18px;
+      position:relative;
+    }
+    .header::after{
+      content:'';
+      position:absolute;
+      bottom:0;
+      left:15%;
+      right:15%;
+      height:2px;
+      background: linear-gradient(to right, transparent, #2f8f55, transparent);
+    }
 
-button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 16px;
-  background: linear-gradient(135deg,#1a472a,#2d7d46);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  cursor: pointer;
-}
+    .title{
+      font-size:42px;
+      font-weight:900;
+      background: linear-gradient(135deg, #0e3b24, #2f8f55);
+      -webkit-background-clip:text;
+      color:transparent;
+      line-height:1;
+    }
+    .subtitle{
+      margin-top:8px;
+      font-size:18px;
+      font-weight:800;
+      color:#1f6b43;
+    }
+    .hint{
+      margin-top:10px;
+      font-size:14px;
+      color:#2b5e42;
+      opacity:.9;
+    }
 
-#msg {
-  margin-top: 15px;
-  text-align: center;
-  font-weight: bold;
-}
-</style>
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .btn{
+      width:100%;
+      padding:16px 14px;
+      border:none;
+      border-radius:14px;
+      cursor:pointer;
+      color:#fff;
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:.3px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:0 10px 20px rgba(27,94,59,.22);
+    }
+    .btn small{
+      font-size:13px;
+      font-weight:700;
+      opacity:.9;
+    }
+
+    .btn.student{
+      background: linear-gradient(135deg, #1b5e3b, #2f8f55, #4cc987);
+    }
+    .btn.report{
+      background: linear-gradient(135deg, #0e3b24, #1f6b43);
+    }
+    .btn.doctor{
+      background: linear-gradient(135deg, #244b3a, #0e3b24);
+    }
+
+    .footer{
+      margin-top:16px;
+      text-align:center;
+      font-size:12px;
+      color:#2b5e42;
+      opacity:.85;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <div class="header">
+      <div class="title">Hather</div>
+      <div class="subtitle">حاضر</div>
+      <div class="hint">اختر القسم المناسب للمتابعة</div>
+    </div>
 
-<div class="app">
-  <h1>Hather</h1>
-  <h2>حاضر</h2>
+    <div class="menu">
+      <button class="btn student" onclick="location.href='student.html'">
+        <span>قسم الطالب <small>تسجيل الحضور</small></span>
+        <span>➜</span>
+      </button>
 
-  <input id="studentId" maxlength="9" inputmode="numeric" placeholder="الرقم الجامعي">
+      <button class="btn report" onclick="location.href='reports.html'">
+        <span>تقارير الطالب <small>نسبة الحضور والتأخير</small></span>
+        <span>➜</span>
+      </button>
 
-  <select id="lectureSelect" style="display:none"></select>
+      <button class="btn doctor" onclick="location.href='doctor.html'">
+        <span>قسم الدكتور <small>إدارة المحاضرات والتقارير</small></span>
+        <span>➜</span>
+      </button>
+    </div>
 
-  <button onclick="submitAttendance()">تسجيل الحضور</button>
-
-  <div id="msg"></div>
-</div>
-
-<script>
-const SCRIPT_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLib1m8H3ug0g1J9Zz_AO6fmsALklvN-JkOSw9mHRxQnBLwP-wTgVaGd9lFtqQiMXGwrTvrjRTkDLwRlX4xzY1dIEPue-INVbMLFDzvkVXQDZ9VXDgAS-z450MLLBRacOQm9Z2XYcG3zngj4Sey5CimTioUDCYXwT1Umi06LJnvCDFP7xjknyqjzav_wEZp-Za99Bu98kZbv7jZ8iCykpJYfl0uIiBFjGlZUKnFwYLoAEDdiGTeMeYugX8G-J3Kx3KjcZgxzSAwXNn4Q0m6ciA8LJnwDZQ&lib=MhsQQyz0LWRzEvVBZwS_EoQ9yXvOO6Xh-";
-let selectedLecture = null;
-
-fetch(SCRIPT_URL)
-  .then(r => r.json())
-  .then(list => {
-    if (list.length === 1) {
-      selectedLecture = list[0].id;
-    } else if (list.length > 1) {
-      const sel = document.getElementById("lectureSelect");
-      sel.style.display = "block";
-      list.forEach(l => {
-        const o = document.createElement("option");
-        o.value = l.id;
-        o.textContent = `${l.course} - شعبة ${l.section}`;
-        sel.appendChild(o);
-      });
-      selectedLecture = sel.value;
-      sel.onchange = () => selectedLecture = sel.value;
-    } else {
-      document.getElementById("msg").textContent = "لا توجد محاضرة حالياً";
-    }
-  });
-
-function submitAttendance() {
-  const id = document.getElementById("studentId").value.trim();
-  const msg = document.getElementById("msg");
-
-  if (!/^[0-9]{9}$/.test(id)) {
-    msg.style.color = "red";
-    msg.textContent = "❌ الرقم الجامعي غير صحيح";
-    return;
-  }
-
-  if (!selectedLecture) {
-    msg.style.color = "red";
-    msg.textContent = "❌ اختر المحاضرة";
-    return;
-  }
-
-  msg.style.color = "#1a472a";
-  msg.textContent = "⏳ جاري التسجيل...";
-
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      studentId: id,
-      lectureId: selectedLecture
-    })
-  })
-  .then(r => r.json())
-  .then(d => {
-    msg.style.color = "green";
-    msg.textContent = "✅ " + d.result;
-  })
-  .catch(() => {
-    msg.style.color = "red";
-    msg.textContent = "❌ فشل الاتصال";
-  });
-}
-</script>
-
+    <div class="footer">Hather • نظام حضور بسيط وعملي</div>
+  </div>
 </body>
 </html>
