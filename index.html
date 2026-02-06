@@ -14,7 +14,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #0d2c1a 0%, #1a472a 50%, #2d7d46 100%);
+    background: linear-gradient(135deg, #0b2416 0%, #174c30 50%, #2f8f55 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,17 +22,17 @@ body {
     padding: 20px;
 }
 
-/* ===== مربع التحضير (نفس الكود الأول حرفيًا) ===== */
+/* مربع التحضير */
 .app-container {
     position: relative;
     width: 100%;
     max-width: 380px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(244, 251, 247, 0.96);
     padding: 25px;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .app-container::before {
@@ -42,13 +42,13 @@ body {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(135deg, #0d2c1a, #1a472a, #2d7d46, #3a9e5f);
+    background: linear-gradient(135deg, #0e3b24, #1f6b43, #3aa76a);
     border-radius: 18px;
     z-index: -1;
-    opacity: 0.5;
+    opacity: 0.35;
 }
 
-/* ===== العنوان ===== */
+/* العنوان */
 .header {
     margin-bottom: 35px;
     text-align: center;
@@ -63,13 +63,13 @@ body {
     left: 15%;
     right: 15%;
     height: 2px;
-    background: linear-gradient(to right, transparent, #2d7d46, transparent);
+    background: linear-gradient(to right, transparent, #2f8f55, transparent);
 }
 
 .app-title {
     font-size: 42px;
     font-weight: 800;
-    background: linear-gradient(135deg, #0d2c1a, #2d7d46);
+    background: linear-gradient(135deg, #0e3b24, #2f8f55);
     -webkit-background-clip: text;
     color: transparent;
 }
@@ -77,19 +77,19 @@ body {
 .app-title-ar {
     font-size: 34px;
     font-weight: 700;
-    background: linear-gradient(135deg, #1a472a, #3a9e5f);
+    background: linear-gradient(135deg, #1f6b43, #4cc987);
     -webkit-background-clip: text;
     color: transparent;
 }
 
-/* ===== الإدخال ===== */
+/* الإدخال */
 .form-group {
     margin-bottom: 28px;
 }
 
 .label-en {
     font-size: 15px;
-    color: #1a472a;
+    color: #1f6b43;
     margin-bottom: 6px;
     display: block;
     text-align: left;
@@ -98,7 +98,7 @@ body {
 .label-ar {
     font-size: 18px;
     font-weight: 700;
-    color: #0d2c1a;
+    color: #0e3b24;
     margin-bottom: 10px;
     display: block;
 }
@@ -106,29 +106,32 @@ body {
 .input-field {
     width: 100%;
     padding: 14px 16px;
-    border: 2px solid #d1e7dd;
+    border: 2px solid #cfe8da;
     border-radius: 10px;
     font-size: 18px;
     direction: ltr;
+    background: #f8fffb;
 }
 
 .input-field:focus {
     outline: none;
-    border-color: #2d7d46;
-    box-shadow: 0 0 0 3px rgba(45, 125, 70, 0.2);
+    border-color: #2f8f55;
+    box-shadow: 0 0 0 3px rgba(47, 143, 85, 0.2);
 }
 
-/* ===== زر التحضير ===== */
+/* زر التحضير */
 .checkin-btn {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg, #1a472a, #2d7d46, #3a9e5f);
+    background: linear-gradient(135deg, #1b5e3b, #2f8f55, #4cc987);
     color: white;
     border: none;
     border-radius: 10px;
     font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(26, 71, 42, 0.3);
+    box-shadow: 0 5px 15px rgba(27, 94, 59, 0.35);
 }
 
 .checkin-btn:disabled {
@@ -136,18 +139,22 @@ body {
     cursor: not-allowed;
 }
 
-/* ===== الحالة ===== */
+/* حالة الرسائل */
 #status-container {
     margin-top: 15px;
     text-align: center;
-    min-height: 32px;
+    min-height: 34px;
+}
+
+#status-msg {
+    font-weight: bold;
 }
 
 #spinner {
     width: 26px;
     height: 26px;
-    border: 3px solid #d1e7dd;
-    border-top: 3px solid #2d7d46;
+    border: 3px solid #cfe8da;
+    border-top: 3px solid #2f8f55;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 6px;
@@ -206,7 +213,7 @@ btn.addEventListener("click", () => {
     const id = input.value.trim();
 
     if (!/^[0-9]{9}$/.test(id)) {
-        msg.style.color = "red";
+        msg.style.color = "#c0392b";
         msg.textContent = "❌ الرقم الجامعي يجب أن يكون 9 أرقام";
         input.classList.add("shake");
         setTimeout(() => input.classList.remove("shake"), 300);
@@ -215,7 +222,7 @@ btn.addEventListener("click", () => {
 
     btn.disabled = true;
     spinner.style.display = "block";
-    msg.style.color = "#1a472a";
+    msg.style.color = "#1f6b43";
     msg.textContent = "⏳ جارٍ تسجيل الحضور...";
 
     fetch(scriptURL, {
@@ -223,12 +230,12 @@ btn.addEventListener("click", () => {
         body: JSON.stringify({ studentId: id })
     })
     .then(() => {
-        msg.style.color = "green";
+        msg.style.color = "#1e7f4f";
         msg.textContent = "✅ تم تسجيل الحضور بنجاح";
         input.value = "";
     })
     .catch(() => {
-        msg.style.color = "red";
+        msg.style.color = "#c0392b";
         msg.textContent = "❌ حدث خطأ أثناء التسجيل";
     })
     .finally(() => {
