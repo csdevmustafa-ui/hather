@@ -5,72 +5,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hather - Reports</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{
-  min-height:100vh;background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
-  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
-}
-.card{
-  width:100%;max-width:680px;border-radius:18px;padding:22px;
-  background:rgba(13,44,26,.52);
-  box-shadow:0 18px 45px rgba(0,0,0,.28);
-  border:1px solid rgba(255,255,255,.18);
-  backdrop-filter:blur(12px);
-}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.back{
-  color:#effff6;text-decoration:none;font-weight:900;opacity:.95;
-  background:rgba(255,255,255,.12);
-  padding:10px 12px;border-radius:12px;display:inline-block;
-}
-.icon-btn{
-  border:none;cursor:pointer;width:44px;height:44px;border-radius:12px;
-  background:rgba(255,255,255,.16);color:#fff;font-weight:900;
-  display:flex;align-items:center;justify-content:center;
-}
-.icon-btn .sub{font-size:12px;opacity:.92;margin-left:6px}
-.header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
-.header::after{
-  content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
-  background:linear-gradient(to right,transparent,rgba(76,201,135,.95),transparent);
-}
-.title{
-  font-size:40px;font-weight:900;background:linear-gradient(135deg,#b9ffd9,#4cc987);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#effff6;opacity:.98}
-label{display:block;margin:14px 0 6px;font-weight:900;color:rgba(255,255,255,.94)}
-input{
-  width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.95);font-size:17px;color:#0d2c1a;direction:ltr;
-}
-button.primary{
-  width:100%;margin-top:12px;padding:14px;border:none;border-radius:14px;cursor:pointer;
-  color:#fff;font-weight:900;font-size:18px;background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  box-shadow:0 10px 22px rgba(0,0,0,.16);
-}
-#msg{margin-top:10px;text-align:center;font-weight:900;min-height:22px}
-.stats{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-.stat{
-  flex:1;min-width:160px;background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:14px;padding:12px;text-align:center;
-}
-.stat .n{font-size:26px;font-weight:900;margin-top:6px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-@media(max-width:900px){.grid2{grid-template-columns:1fr}}
-.box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px}
-table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.12);text-align:right}
-th{background:rgba(255,255,255,.10);font-weight:900}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+  body{
+    min-height:100vh;
+    background: linear-gradient(135deg,#0d2c1a 0%, #1a472a 45%, #2d7d46 100%);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;color:#fff;
+  }
+  .wrap{
+    width:100%;max-width:560px;border-radius:18px;padding:22px;
+    background: rgba(13, 44, 26, 0.78);
+    box-shadow: 0 18px 45px rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+  }
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .icon-btn{
+    width:42px;height:42px;border-radius:12px;border:none;cursor:pointer;
+    background: rgba(255,255,255,.12);color:#fff;font-size:18px;font-weight:900;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .back{color:#d6ffe9;text-decoration:none;font-weight:900;opacity:.9}
+  .header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
+  .header::after{
+    content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
+    background: linear-gradient(to right, transparent, rgba(76,201,135,.95), transparent);
+  }
+  .title{
+    font-size:42px;font-weight:900;
+    background: linear-gradient(135deg, #b9ffd9, #4cc987);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#d6ffe9;opacity:.95}
+  label{display:block;margin:14px 0 6px;font-weight:900;color: rgba(255,255,255,.92)}
+  input{
+    width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.92);font-size:17px;color:#0d2c1a;direction:ltr;
+  }
+  button.primary{
+    width:100%;margin-top:14px;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
+    color:#fff;font-weight:900;font-size:18px;
+    background: linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
+  }
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+  .stat{
+    border-radius:14px;padding:12px;
+    background: rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.10);
+    text-align:center
+  }
+  .stat .n{font-size:26px;font-weight:900;margin-top:6px}
+  .msg{min-height:22px;margin-top:12px;text-align:center;font-weight:900}
+  canvas{background: rgba(255,255,255,.08);border-radius:14px;padding:10px;margin-top:14px}
 </style>
 </head>
+
 <body>
-<div class="card">
+<div class="wrap">
   <div class="topbar">
     <a class="back" href="index.html" id="backHome">↩ الرئيسية</a>
-    <button class="icon-btn" id="langBtn" aria-label="Toggle language">🌐 <span id="langBadge" class="sub">EN</span></button>
+    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
   </div>
 
   <div class="header">
@@ -81,111 +77,77 @@ th{background:rgba(255,255,255,.10);font-weight:900}
   <label id="lblId">الرقم الجامعي</label>
   <input id="studentId" maxlength="9" inputmode="numeric" placeholder="441234567" />
   <button class="primary" id="btn">عرض التقرير</button>
-  <div id="msg"></div>
 
   <div class="stats">
-    <div class="stat"><div id="presentLbl">حضور</div><div class="n" id="presentN">0</div></div>
-    <div class="stat"><div id="lateLbl">تأخير</div><div class="n" id="lateN">0</div></div>
-    <div class="stat"><div id="totalLbl">الإجمالي</div><div class="n" id="totalN">0</div></div>
+    <div class="stat"><div id="pLbl">حضور</div><div class="n" id="pN">0</div></div>
+    <div class="stat"><div id="lLbl">تأخير</div><div class="n" id="lN">0</div></div>
+    <div class="stat"><div id="aLbl">غياب</div><div class="n" id="aN">0</div></div>
+    <div class="stat"><div id="eLbl">معذور</div><div class="n" id="eN">0</div></div>
   </div>
 
-  <div class="grid2">
-    <div class="box"><canvas id="pie"></canvas></div>
-    <div class="box"><canvas id="bar"></canvas></div>
-  </div>
-
-  <div class="box" style="margin-top:10px">
-    <div style="font-weight:900;margin-bottom:8px" id="coursesTitle">تفصيل حسب المقرر</div>
-    <div style="overflow:auto">
-      <table>
-        <thead>
-          <tr>
-            <th id="thCourse">المقرر</th>
-            <th id="thPresent">حضور</th>
-            <th id="thLate">تأخير</th>
-            <th id="thTotal">الإجمالي</th>
-          </tr>
-        </thead>
-        <tbody id="coursesBody"></tbody>
-      </table>
-    </div>
-  </div>
+  <div class="msg" id="msg"></div>
+  <canvas id="pie"></canvas>
 </div>
 
 <script>
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwcIhcB82hZBypaB-C24MvAzqPaERF1ZIWYVXT5HaAxHiqe3H33UijVMYpxyXPsqmoG/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
-const STR={
-  ar:{dir:"rtl",lang:"ar",badge:"EN",back:"↩ الرئيسية",sub:"تقارير الطالب",
-      lblId:"الرقم الجامعي",btn:"عرض التقرير",
-      presentLbl:"حضور",lateLbl:"تأخير",totalLbl:"الإجمالي",
-      coursesTitle:"تفصيل حسب المقرر",
-      thCourse:"المقرر",thPresent:"حضور",thLate:"تأخير",thTotal:"الإجمالي",
-      invalidId:"❌ الرقم الجامعي لازم 9 أرقام",wait:"⏳ جاري تحميل التقرير...",fail:"❌ فشل الاتصال"},
-  en:{dir:"ltr",lang:"en",badge:"AR",back:"↩ Back",sub:"Student Reports",
-      lblId:"University ID",btn:"Show report",
-      presentLbl:"Present",lateLbl:"Late",totalLbl:"Total",
-      coursesTitle:"By course breakdown",
-      thCourse:"Course",thPresent:"Present",thLate:"Late",thTotal:"Total",
-      invalidId:"❌ University ID must be 9 digits",wait:"⏳ Loading report...",fail:"❌ Connection failed"}
-};
-function getLang(){return localStorage.getItem("hather_lang")||"ar";}
-function setLang(l){localStorage.setItem("hather_lang",l);}
-function applyLang(){
-  const l=getLang(),t=STR[l];
-  document.documentElement.lang=t.lang;document.documentElement.dir=t.dir;
-  langBadge.textContent=t.badge; backHome.textContent=t.back; subTitle.textContent=t.sub;
-  lblId.textContent=t.lblId; btn.textContent=t.btn;
-  presentLbl.textContent=t.presentLbl; lateLbl.textContent=t.lateLbl; totalLbl.textContent=t.totalLbl;
-  coursesTitle.textContent=t.coursesTitle;
-  thCourse.textContent=t.thCourse; thPresent.textContent=t.thPresent; thLate.textContent=t.thLate; thTotal.textContent=t.thTotal;
-}
-langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
-applyLang();
+  const STR = {
+    ar:{dir:"rtl",lang:"ar",back:"↩ الرئيسية",sub:"تقارير الطالب",lbl:"الرقم الجامعي",btn:"عرض التقرير",
+        p:"حضور",l:"تأخير",a:"غياب",e:"معذور",inv:"❌ الرقم الجامعي لازم 9 أرقام",load:"⏳ جاري التحميل...",fail:"❌ فشل الاتصال"},
+    en:{dir:"ltr",lang:"en",back:"↩ Home",sub:"Student Reports",lbl:"University ID",btn:"View report",
+        p:"Present",l:"Late",a:"Absent",e:"Excused",inv:"❌ University ID must be 9 digits",load:"⏳ Loading...",fail:"❌ Connection failed"}
+  };
 
-let pieChart, barChart;
-function drawCharts(present, late){
-  if(pieChart) pieChart.destroy();
-  if(barChart) barChart.destroy();
+  function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
+  function setLang(l){ localStorage.setItem("hather_lang", l); }
+  function applyLang(){
+    const t = STR[getLang()];
+    document.documentElement.lang = t.lang;
+    document.documentElement.dir = t.dir;
+    backHome.textContent = t.back;
+    subTitle.textContent = t.sub;
+    lblId.textContent = t.lbl;
+    btn.textContent = t.btn;
+    pLbl.textContent = t.p; lLbl.textContent = t.l; aLbl.textContent = t.a; eLbl.textContent = t.e;
+  }
+  langBtn.onclick = ()=>{ setLang(getLang()==="ar"?"en":"ar"); applyLang(); };
+  applyLang();
 
-  pieChart=new Chart(document.getElementById("pie"),{
-    type:"doughnut",
-    data:{labels:["Present","Late"],datasets:[{data:[present,late]}]},
-    options:{plugins:{legend:{display:true}}}
+  let pieChart=null;
+
+  function draw(p,l,a,e){
+    if(pieChart) pieChart.destroy();
+    pieChart = new Chart(document.getElementById("pie"),{
+      type:"doughnut",
+      data:{
+        labels:[STR[getLang()].p, STR[getLang()].l, STR[getLang()].a, STR[getLang()].e],
+        datasets:[{ data:[p,l,a,e] }]
+      },
+      options:{ plugins:{ legend:{ labels:{ color:"#eafff3" } } } }
+    });
+  }
+
+  btn.addEventListener("click", ()=>{
+    const t = STR[getLang()];
+    const id = studentId.value.trim();
+    if(!/^\d{9}$/.test(id)){ msg.style.color="salmon"; msg.textContent=t.inv; return; }
+
+    msg.style.color="#d6ffe9"; msg.textContent=t.load;
+
+    fetch(`${SCRIPT_URL}?studentId=${id}`)
+      .then(r=>r.json())
+      .then(d=>{
+        if(!d.ok) throw new Error();
+        pN.textContent=d.present||0;
+        lN.textContent=d.late||0;
+        aN.textContent=d.absent||0;
+        eN.textContent=d.excused||0;
+        msg.style.color="#7CFFB2"; msg.textContent="✅";
+        draw(d.present||0,d.late||0,d.absent||0,d.excused||0);
+      })
+      .catch(()=>{ msg.style.color="salmon"; msg.textContent=t.fail; });
   });
-
-  barChart=new Chart(document.getElementById("bar"),{
-    type:"bar",
-    data:{labels:["Present","Late"],datasets:[{data:[present,late]}]},
-    options:{plugins:{legend:{display:false}}}
-  });
-}
-
-btn.addEventListener("click",()=>{
-  const l=getLang(),t=STR[l];
-  const id=studentId.value.trim();
-  if(!/^\d{9}$/.test(id)){msg.style.color="salmon";msg.textContent=t.invalidId;return;}
-  msg.style.color="#effff6";msg.textContent=t.wait;
-
-  fetch(`${SCRIPT_URL}?studentId=${encodeURIComponent(id)}`)
-    .then(r=>r.json())
-    .then(d=>{
-      if(!d.ok) throw new Error();
-      presentN.textContent=d.present||0;
-      lateN.textContent=d.late||0;
-      totalN.textContent=d.total||0;
-
-      drawCharts(Number(d.present||0), Number(d.late||0));
-
-      coursesBody.innerHTML="";
-      (d.courses||[]).forEach(x=>{
-        coursesBody.innerHTML+=`<tr><td>${x.course}</td><td>${x.present}</td><td>${x.late}</td><td>${x.total}</td></tr>`;
-      });
-
-      msg.style.color="#7CFFB2";msg.textContent="✅ OK";
-    })
-    .catch(()=>{msg.style.color="salmon";msg.textContent=t.fail;});
-});
 </script>
 </body>
 </html>
