@@ -4,134 +4,128 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hather - Doctor</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{
-  min-height:100vh;background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
-  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
-}
-.wrap{
-  width:100%;max-width:980px;border-radius:18px;padding:22px;
-  background:rgba(13,44,26,.52);
-  box-shadow:0 18px 45px rgba(0,0,0,.28);
-  border:1px solid rgba(255,255,255,.18);
-  backdrop-filter:blur(12px);
-}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.left{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.back{
-  color:#effff6;text-decoration:none;font-weight:900;opacity:.95;
-  background:rgba(255,255,255,.12);
-  padding:10px 12px;border-radius:12px;display:inline-block;
-}
-.icon-btn{
-  border:none;cursor:pointer;width:44px;height:44px;border-radius:12px;
-  background:rgba(255,255,255,.16);color:#fff;font-weight:900;
-  display:flex;align-items:center;justify-content:center;
-}
-.icon-btn .sub{font-size:12px;opacity:.92;margin-left:6px}
-.brand h1{margin:0;font-size:26px;font-weight:900;color:#effff6}
-.brand p{margin-top:6px;color:rgba(255,255,255,.82);font-weight:800}
-.card{
-  margin-top:14px;background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:16px;padding:14px;
-}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.grid{grid-template-columns:1fr}}
-label{display:block;margin:12px 0 6px;font-weight:900;color:rgba(255,255,255,.92)}
-input{
-  width:100%;padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.95);font-size:15px;color:#0d2c1a;
-}
-button.primary{
-  padding:12px 14px;border:none;border-radius:12px;cursor:pointer;
-  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  color:#fff;font-weight:900;
-}
-button.secondary{
-  padding:12px 14px;border:none;border-radius:12px;cursor:pointer;
-  background:rgba(255,255,255,.16);
-  color:#fff;font-weight:900;
-}
-.msg{margin-top:10px;font-weight:900;min-height:20px}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.12);text-align:right}
-th{background:rgba(255,255,255,.10);font-weight:900}
-.date-cell{direction:ltr;unicode-bidi:isolate;text-align:left;font-family:monospace}
-.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:900;font-size:12px}
-.p-active{background:rgba(124,255,178,.18);color:#7CFFB2}
-.p-up{background:rgba(244,180,0,.18);color:#ffd27a}
-.p-end{background:rgba(255,120,120,.18);color:#ffb3b3}
-.charts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-@media(max-width:900px){.charts{grid-template-columns:1fr}}
-/* LOCK */
-.lock{position:fixed;inset:0;background:linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
-display:flex;align-items:center;justify-content:center;padding:20px;z-index:9999;}
-.lock-card{width:100%;max-width:420px;border-radius:18px;padding:22px;background:rgba(13,44,26,.62);
-border:1px solid rgba(255,255,255,.18);box-shadow:0 18px 45px rgba(0,0,0,.28);backdrop-filter:blur(12px);}
-.lock-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,#b9ffd9,#4cc987);
--webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;}
-.lock-sub{margin-top:10px;text-align:center;color:rgba(255,255,255,.82);font-weight:800}
-.lock-input{width:100%;margin-top:14px;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.16);
-background:rgba(255,255,255,.95);font-size:16px;color:#0d2c1a;direction:ltr;}
-.lock-btn{width:100%;margin-top:12px;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-color:#fff;font-weight:900;font-size:18px;cursor:pointer;}
-.lock-msg{min-height:18px;margin-top:10px;text-align:center;font-weight:900;color:salmon}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+  body{
+    min-height:100vh;
+    background: linear-gradient(135deg,#0d2c1a 0%, #1a472a 45%, #2d7d46 100%);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;color:#fff;
+  }
+  .wrap{
+    width:100%;max-width:1100px;border-radius:18px;padding:22px;
+    background: rgba(13, 44, 26, 0.78);
+    box-shadow: 0 18px 45px rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+  }
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .icon-btn{
+    width:42px;height:42px;border-radius:12px;border:none;cursor:pointer;
+    background: rgba(255,255,255,.12);color:#fff;font-size:18px;font-weight:900;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .back{color:#d6ffe9;text-decoration:none;font-weight:900;opacity:.9}
+  .header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
+  .header::after{
+    content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
+    background: linear-gradient(to right, transparent, rgba(76,201,135,.95), transparent);
+  }
+  .title{
+    font-size:42px;font-weight:900;
+    background: linear-gradient(135deg, #b9ffd9, #4cc987);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#d6ffe9;opacity:.95}
+  .card{
+    background: rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:16px;padding:14px;margin-top:12px
+  }
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  label{display:block;margin:10px 0 6px;font-weight:900;color: rgba(255,255,255,.92)}
+  input{
+    width:100%;padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.92);font-size:15px;color:#0d2c1a;direction:ltr;
+  }
+  button.primary{
+    padding:12px 14px;border:none;border-radius:12px;cursor:pointer;
+    color:#fff;font-weight:900;background: linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
+  }
+  button.dark{
+    padding:12px 14px;border:none;border-radius:12px;cursor:pointer;
+    color:#fff;font-weight:900;background: linear-gradient(135deg,#244b3a,#0d2c1a);
+  }
+  .msg{min-height:22px;margin-top:10px;text-align:center;font-weight:900}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.10);text-align:right}
+  th{color:#eafff3;background: rgba(255,255,255,.06)}
+  .date{direction:ltr;unicode-bidi:isolate;text-align:left;font-family:monospace}
+  select.statusSel{
+    width:100%;padding:10px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.92);color:#0d2c1a
+  }
+  .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:900;font-size:12px}
+  .pA{background:rgba(76,201,135,.18);color:#7CFFB2}
+  .pU{background:rgba(244,180,0,.16);color:#ffd27a}
+  .pE{background:rgba(255,120,120,.16);color:#ffb2b2}
 </style>
 </head>
+
 <body>
-
-<div class="lock" id="lock">
-  <div class="lock-card">
-    <div class="lock-title">Hather</div>
-    <div class="lock-sub" id="lockText">قسم الدكتور • أدخل الرمز</div>
-    <input class="lock-input" id="lockPin" type="password" placeholder="Doctor PIN" />
-    <button class="lock-btn" id="unlockBtn">دخول</button>
-    <div class="lock-msg" id="lockMsg"></div>
-  </div>
-</div>
-
 <div class="wrap">
   <div class="topbar">
-    <div class="left">
-      <a class="back" href="index.html" id="backHome" onclick="localStorage.removeItem('hather_doctor_unlocked')">↩ الرئيسية</a>
-      <button class="icon-btn" id="langBtn" aria-label="Toggle language">🌐 <span id="langBadge" class="sub">EN</span></button>
-    </div>
-    <div class="brand">
-      <h1 id="title">لوحة الدكتور</h1>
-      <p id="desc">إدارة المحاضرات + توليد كود + تقارير</p>
-    </div>
-    <div>
-      <button class="secondary" id="refreshBtn">تحديث</button>
-    </div>
+    <a class="back" href="index.html" id="backHome">↩ الرئيسية</a>
+    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
+  </div>
+
+  <div class="header">
+    <div class="title">Hather</div>
+    <div class="subtitle" id="subTitle">قسم الدكتور</div>
   </div>
 
   <div class="card">
-    <h3 id="createTitle">إنشاء محاضرة</h3>
-
-    <div class="grid">
-      <div><label id="lblCourse">المقرر</label><input id="course" placeholder="CS101" /></div>
-      <div><label id="lblSection">الشعبة</label><input id="section" placeholder="1" /></div>
-      <div><label id="lblStart">بداية</label><input id="start" type="datetime-local" /></div>
-      <div><label id="lblEnd">نهاية</label><input id="end" type="datetime-local" /></div>
-    </div>
-
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:10px">
+    <div class="row">
       <div style="flex:1;min-width:220px">
-        <label id="lblKey">Doctor Key</label>
-        <input id="doctorKey" placeholder="******" />
+        <label id="lblKey">رمز الدكتور</label>
+        <input id="doctorKey" value="1111" placeholder="اكتب الرمز هنا">
       </div>
-      <button class="primary" id="createBtn">حفظ</button>
+      <div style="display:flex;align-items:end;gap:10px">
+        <button class="dark" id="btnRefresh">تحديث القائمة</button>
+      </div>
     </div>
+    <div class="msg" id="topMsg"></div>
+  </div>
 
+  <div class="card">
+    <h3 id="createTitle" style="margin-bottom:10px">إنشاء محاضرة</h3>
+    <div class="row">
+      <div style="flex:1;min-width:160px">
+        <label id="lblCourse">المقرر</label>
+        <input id="course" placeholder="CS101">
+      </div>
+      <div style="flex:1;min-width:120px">
+        <label id="lblSection">الشعبة</label>
+        <input id="section" placeholder="1">
+      </div>
+      <div style="flex:1;min-width:220px">
+        <label id="lblStart">البداية</label>
+        <input id="start" type="datetime-local">
+      </div>
+      <div style="flex:1;min-width:220px">
+        <label id="lblEnd">النهاية</label>
+        <input id="end" type="datetime-local">
+      </div>
+      <div style="display:flex;align-items:end">
+        <button class="primary" id="btnCreate">حفظ</button>
+      </div>
+    </div>
     <div class="msg" id="createMsg"></div>
   </div>
 
   <div class="card">
-    <h3 id="listTitle">المحاضرات</h3>
+    <h3 id="listTitle" style="margin-bottom:10px">المحاضرات</h3>
     <div style="overflow:auto">
       <table>
         <thead>
@@ -141,7 +135,6 @@ color:#fff;font-weight:900;font-size:18px;cursor:pointer;}
             <th id="thSection">الشعبة</th>
             <th id="thStart">البداية</th>
             <th id="thEnd">النهاية</th>
-            <th>Code</th>
             <th id="thStatus">الحالة</th>
             <th id="thActions">إجراءات</th>
           </tr>
@@ -153,232 +146,231 @@ color:#fff;font-weight:900;font-size:18px;cursor:pointer;}
   </div>
 
   <div class="card">
-    <h3 id="reportTitle">تقرير محاضرة</h3>
-
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
-      <div style="flex:1;min-width:260px">
-        <label id="lblLectureId">LectureID</label>
-        <input id="reportLectureId" placeholder="L-20260206-123000" />
+    <h3 id="studentsTitle" style="margin-bottom:10px">طلاب المحاضرة</h3>
+    <div class="row">
+      <div style="flex:1;min-width:240px">
+        <label id="lblStudentsLecture">LectureID</label>
+        <input id="studentsLectureId" placeholder="الصق LectureID هنا">
       </div>
-      <button class="primary" id="reportBtn">عرض التقرير</button>
+      <div style="display:flex;align-items:end;gap:10px">
+        <button class="primary" id="btnLoadStudents">عرض الطلاب</button>
+      </div>
     </div>
 
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-      <div class="card" style="margin:0;flex:1;min-width:160px;text-align:center"><div id="totalLbl">الإجمالي</div><div style="font-size:22px;font-weight:900" id="totalN">0</div></div>
-      <div class="card" style="margin:0;flex:1;min-width:160px;text-align:center"><div id="presentLbl">حضور</div><div style="font-size:22px;font-weight:900;color:#7CFFB2" id="presentN">0</div></div>
-      <div class="card" style="margin:0;flex:1;min-width:160px;text-align:center"><div id="lateLbl">تأخير</div><div style="font-size:22px;font-weight:900;color:#ffd27a" id="lateN">0</div></div>
-    </div>
+    <div class="msg" id="studentsMsg"></div>
 
-    <div class="charts">
-      <div class="card" style="margin:0"><canvas id="pie"></canvas></div>
-      <div class="card" style="margin:0"><canvas id="bar"></canvas></div>
+    <div style="overflow:auto;margin-top:10px">
+      <table>
+        <thead>
+          <tr>
+            <th id="thSid">StudentID</th>
+            <th id="thName">الاسم</th>
+            <th id="thCur">الحالة الحالية</th>
+            <th id="thSet">تغيير الحالة</th>
+            <th id="thSave">حفظ</th>
+          </tr>
+        </thead>
+        <tbody id="studentsBody"></tbody>
+      </table>
     </div>
-
-    <div class="msg" id="reportMsg"></div>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwcIhcB82hZBypaB-C24MvAzqPaERF1ZIWYVXT5HaAxHiqe3H33UijVMYpxyXPsqmoG/exec";
-const DOCTOR_PIN="1111"; // غيّره
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
-// LOCK
-const lockEl=document.getElementById("lock");
-const lockPin=document.getElementById("lockPin");
-const lockMsg=document.getElementById("lockMsg");
-const unlockBtn=document.getElementById("unlockBtn");
-if(localStorage.getItem("hather_doctor_unlocked")==="1"){lockEl.style.display="none";}
-function unlock(){
-  if(lockPin.value.trim()===DOCTOR_PIN){
-    localStorage.setItem("hather_doctor_unlocked","1");
-    lockEl.style.display="none";
-  }else{
-    lockMsg.textContent="❌ رمز غير صحيح";
-    lockPin.value=""; lockPin.focus();
+  const STR={
+    ar:{dir:"rtl",lang:"ar",back:"↩ الرئيسية",sub:"قسم الدكتور",
+        key:"رمز الدكتور",refresh:"تحديث القائمة",
+        create:"إنشاء محاضرة",course:"المقرر",section:"الشعبة",start:"البداية",end:"النهاية",save:"حفظ",
+        lectures:"المحاضرات",c:"المقرر",s:"الشعبة",st:"البداية",en:"النهاية",status:"الحالة",actions:"إجراءات",
+        students:"طلاب المحاضرة",loadStudents:"عرض الطلاب",name:"الاسم",cur:"الحالة الحالية",set:"تغيير الحالة",saveOne:"حفظ",
+        needKey:"❌ اكتب رمز الدكتور أولًا",loading:"⏳ جاري التحميل...",done:"✅ تم",fail:"❌ فشل",
+        active:"نشطة",up:"قادمة",ended:"منتهية",
+        gen:"كود",del:"حذف"},
+    en:{dir:"ltr",lang:"en",back:"↩ Home",sub:"Doctor",
+        key:"Doctor key",refresh:"Refresh",
+        create:"Create lecture",course:"Course",section:"Section",start:"Start",end:"End",save:"Save",
+        lectures:"Lectures",c:"Course",s:"Section",st:"Start",en:"End",status:"Status",actions:"Actions",
+        students:"Lecture students",loadStudents:"Load students",name:"Name",cur:"Current status",set:"Set status",saveOne:"Save",
+        needKey:"❌ Enter doctor key first",loading:"⏳ Loading...",done:"✅ Done",fail:"❌ Failed",
+        active:"Active",up:"Upcoming",ended:"Ended",
+        gen:"Code",del:"Delete"}
+  };
+
+  function getLang(){return localStorage.getItem("hather_lang")||"ar";}
+  function setLang(l){localStorage.setItem("hather_lang",l);}
+  function applyLang(){
+    const t=STR[getLang()];
+    document.documentElement.lang=t.lang; document.documentElement.dir=t.dir;
+    backHome.textContent=t.back; subTitle.textContent=t.sub;
+    lblKey.textContent=t.key; btnRefresh.textContent=t.refresh;
+    createTitle.textContent=t.create; lblCourse.textContent=t.course; lblSection.textContent=t.section;
+    lblStart.textContent=t.start; lblEnd.textContent=t.end; btnCreate.textContent=t.save;
+    listTitle.textContent=t.lectures; thCourse.textContent=t.c; thSection.textContent=t.s; thStart.textContent=t.st; thEnd.textContent=t.en;
+    thStatus.textContent=t.status; thActions.textContent=t.actions;
+    studentsTitle.textContent=t.students; btnLoadStudents.textContent=t.loadStudents;
+    thName.textContent=t.name; thCur.textContent=t.cur; thSet.textContent=t.set; thSave.textContent=t.saveOne;
   }
-}
-unlockBtn.addEventListener("click",unlock);
-lockPin.addEventListener("keydown",(e)=>{if(e.key==="Enter")unlock();});
+  langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
+  applyLang();
 
-// LANG
-const STR={
-  ar:{dir:"rtl",lang:"ar",badge:"EN",
-    lockText:"قسم الدكتور • أدخل الرمز",unlockBtn:"دخول",
-    back:"↩ الرئيسية",title:"لوحة الدكتور",desc:"إدارة المحاضرات + توليد كود + تقارير",refresh:"تحديث",
-    createTitle:"إنشاء محاضرة",lblCourse:"المقرر",lblSection:"الشعبة",lblStart:"بداية",lblEnd:"نهاية",lblKey:"Doctor Key",createBtn:"حفظ",
-    listTitle:"المحاضرات",thCourse:"المقرر",thSection:"الشعبة",thStart:"البداية",thEnd:"النهاية",thStatus:"الحالة",thActions:"إجراءات",
-    reportTitle:"تقرير محاضرة",lblLectureId:"LectureID",reportBtn:"عرض التقرير",totalLbl:"الإجمالي",presentLbl:"حضور",lateLbl:"تأخير",
-    needKey:"❌ اكتب Doctor Key",createFail:"❌ فشل الإنشاء",deleteFail:"فشل الحذف",rotateFail:"فشل توليد الكود",reportFail:"❌ فشل التقرير"
-  },
-  en:{dir:"ltr",lang:"en",badge:"AR",
-    lockText:"Doctor section • Enter PIN",unlockBtn:"Enter",
-    back:"↩ Back",title:"Doctor Panel",desc:"Manage lectures + rotate code + reports",refresh:"Refresh",
-    createTitle:"Create lecture",lblCourse:"Course",lblSection:"Section",lblStart:"Start",lblEnd:"End",lblKey:"Doctor Key",createBtn:"Save",
-    listTitle:"Lectures",thCourse:"Course",thSection:"Section",thStart:"Start",thEnd:"End",thStatus:"Status",thActions:"Actions",
-    reportTitle:"Lecture report",lblLectureId:"LectureID",reportBtn:"Show report",totalLbl:"Total",presentLbl:"Present",lateLbl:"Late",
-    needKey:"❌ Enter Doctor Key",createFail:"❌ Create failed",deleteFail:"Delete failed",rotateFail:"Rotate failed",reportFail:"❌ Report failed"
+  function msg(el, text, ok=true){
+    el.style.color = ok ? "#7CFFB2" : "salmon";
+    el.textContent = text;
   }
-};
-function getLang(){return localStorage.getItem("hather_lang")||"ar";}
-function setLang(l){localStorage.setItem("hather_lang",l);}
-function applyLang(){
-  const l=getLang(),t=STR[l];
-  document.documentElement.lang=t.lang;document.documentElement.dir=t.dir;
-  langBadge.textContent=t.badge;
-  lockText.textContent=t.lockText; unlockBtn.textContent=t.unlockBtn;
-  backHome.textContent=t.back; title.textContent=t.title; desc.textContent=t.desc; refreshBtn.textContent=t.refresh;
-  createTitle.textContent=t.createTitle; lblCourse.textContent=t.lblCourse; lblSection.textContent=t.lblSection; lblStart.textContent=t.lblStart; lblEnd.textContent=t.lblEnd;
-  lblKey.textContent=t.lblKey; createBtn.textContent=t.createBtn;
-  listTitle.textContent=t.listTitle; thCourse.textContent=t.thCourse; thSection.textContent=t.thSection; thStart.textContent=t.thStart; thEnd.textContent=t.thEnd; thStatus.textContent=t.thStatus; thActions.textContent=t.thActions;
-  reportTitle.textContent=t.reportTitle; lblLectureId.textContent=t.lblLectureId; reportBtn.textContent=t.reportBtn;
-  totalLbl.textContent=t.totalLbl; presentLbl.textContent=t.presentLbl; lateLbl.textContent=t.lateLbl;
-}
-langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
-applyLang();
-
-function pill(status){
-  if(status==="Active") return `<span class="pill p-active">Active</span>`;
-  if(status==="Upcoming") return `<span class="pill p-up">Upcoming</span>`;
-  return `<span class="pill p-end">Ended</span>`;
-}
-function setMsg(id, text, ok=true){
-  const el=document.getElementById(id);
-  el.style.color = ok ? "#7CFFB2" : "salmon";
-  el.textContent = text;
-}
-
-async function refreshLectures(){
-  lecturesBody.innerHTML="";
-  setMsg("listMsg","⏳ ...",true);
-  try{
-    const res=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"listLectures"})});
-    const data=await res.json();
-    if(!data.ok) throw new Error();
-
-    data.lectures.forEach(l=>{
-      lecturesBody.innerHTML += `
-        <tr>
-          <td class="date-cell" style="font-weight:900;color:#effff6">${l.lectureId}</td>
-          <td>${l.course}</td>
-          <td>${l.section}</td>
-          <td class="date-cell">${l.start}</td>
-          <td class="date-cell">${l.end}</td>
-          <td class="date-cell" style="font-weight:900">${l.code||""}</td>
-          <td>${pill(l.status)}</td>
-          <td>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="secondary" onclick="rotateCode('${l.lectureId}')">Code</button>
-              <button class="secondary" onclick="quickReport('${l.lectureId}')">Report</button>
-              <button class="secondary" onclick="deleteLecture('${l.lectureId}')">Delete</button>
-            </div>
-          </td>
-        </tr>`;
-    });
-
-    setMsg("listMsg","✅",true);
-  }catch(e){
-    setMsg("listMsg","❌",false);
+  function doctorKeyVal(){ return doctorKey.value.trim(); }
+  function requireKey(){
+    if(!doctorKeyVal()){ msg(topMsg, STR[getLang()].needKey, false); return false; }
+    return true;
   }
-}
-
-async function createLecture(){
-  const t=STR[getLang()];
-  const doctorKey=doctorKeyEl.value.trim();
-  if(!doctorKey){setMsg("createMsg",t.needKey,false);return;}
-
-  const course=courseEl.value.trim();
-  const section=sectionEl.value.trim();
-  const start=startEl.value;
-  const end=endEl.value;
-  if(!course||!section||!start||!end){setMsg("createMsg","❌ أكمل البيانات",false);return;}
-
-  setMsg("createMsg","⏳ ...",true);
-  try{
-    const res=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action:"createLecture",doctorKey,course,section,start,end})
-    });
-    const data=await res.json();
-    if(!data.ok) throw new Error();
-    setMsg("createMsg",`✅ ${data.lectureId}`,true);
-    refreshLectures();
-  }catch(e){
-    setMsg("createMsg",t.createFail,false);
+  function pill(status){
+    const t=STR[getLang()];
+    if(status==="Active") return `<span class="pill pA">${t.active}</span>`;
+    if(status==="Upcoming") return `<span class="pill pU">${t.up}</span>`;
+    return `<span class="pill pE">${t.ended}</span>`;
   }
-}
-
-async function deleteLecture(lectureId){
-  const t=STR[getLang()];
-  const doctorKey=doctorKeyEl.value.trim();
-  if(!doctorKey){alert(t.needKey);return;}
-  if(!confirm(`Delete ${lectureId}?`)) return;
-  try{
-    const res=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action:"deleteLecture",doctorKey,lectureId})
-    });
-    const data=await res.json();
-    if(!data.ok) throw new Error();
-    refreshLectures();
-  }catch(e){
-    alert(t.deleteFail);
+  async function post(payload){
+    const res = await fetch(SCRIPT_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+    return await res.json();
   }
-}
 
-async function rotateCode(lectureId){
-  const t=STR[getLang()];
-  const doctorKey=doctorKeyEl.value.trim();
-  if(!doctorKey){alert(t.needKey);return;}
-
-  try{
-    const res=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action:"rotateCode",doctorKey,lectureId})
-    });
-    const data=await res.json();
-    if(!data.ok) throw new Error();
-    alert(`Code: ${data.code}\nTTL: ${2} min`);
-    refreshLectures();
-  }catch(e){
-    alert(t.rotateFail);
+  btnRefresh.onclick = refreshLectures;
+  async function refreshLectures(){
+    if(!requireKey()) return;
+    msg(listMsg, STR[getLang()].loading, true);
+    lecturesBody.innerHTML="";
+    try{
+      const data = await post({action:"listLectures", doctorKey: doctorKeyVal()});
+      if(!data.ok) throw new Error();
+      data.lectures.forEach(l=>{
+        const t=STR[getLang()];
+        lecturesBody.innerHTML += `
+          <tr>
+            <td class="date">${l.lectureId}</td>
+            <td>${l.course}</td>
+            <td>${l.section}</td>
+            <td class="date">${l.start}</td>
+            <td class="date">${l.end}</td>
+            <td>${pill(l.status)}</td>
+            <td>
+              <button class="primary" onclick="rotateCode('${l.lectureId}')">${t.gen}</button>
+              <button class="dark" onclick="fillStudents('${l.lectureId}')">${t.students}</button>
+              <button class="dark" onclick="deleteLecture('${l.lectureId}')">${t.del}</button>
+            </td>
+          </tr>
+        `;
+      });
+      msg(listMsg, STR[getLang()].done, true);
+    }catch(e){
+      msg(listMsg, STR[getLang()].fail, false);
+    }
   }
-}
 
-let pieChart,barChart;
-function drawCharts(present,late){
-  if(pieChart) pieChart.destroy();
-  if(barChart) barChart.destroy();
-  pieChart=new Chart(document.getElementById("pie"),{type:"doughnut",data:{labels:["Present","Late"],datasets:[{data:[present,late]}]}});
-  barChart=new Chart(document.getElementById("bar"),{type:"bar",data:{labels:["Present","Late"],datasets:[{data:[present,late]}]},options:{plugins:{legend:{display:false}}}});
-}
-
-async function loadReport(){
-  const t=STR[getLang()];
-  const lectureId=reportLectureId.value.trim();
-  if(!lectureId){setMsg("reportMsg","❌ LectureID",false);return;}
-  setMsg("reportMsg","⏳ ...",true);
-  try{
-    const res=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"lectureReport",lectureId})});
-    const data=await res.json();
-    if(!data.ok) throw new Error();
-    totalN.textContent=data.total||0; presentN.textContent=data.present||0; lateN.textContent=data.late||0;
-    drawCharts(Number(data.present||0),Number(data.late||0));
-    setMsg("reportMsg","✅",true);
-  }catch(e){
-    setMsg("reportMsg",t.reportFail,false);
+  btnCreate.onclick = createLecture;
+  async function createLecture(){
+    if(!requireKey()) return;
+    const courseV = course.value.trim();
+    const sectionV = section.value.trim();
+    const startTime = start.value;
+    const endTime = end.value;
+    if(!courseV || !sectionV || !startTime || !endTime){ msg(createMsg, "❌ أدخل كل البيانات", false); return; }
+    msg(createMsg, STR[getLang()].loading, true);
+    try{
+      const data = await post({action:"createLecture", doctorKey: doctorKeyVal(), course:courseV, section:sectionV, startTime, endTime});
+      if(!data.ok) throw new Error();
+      msg(createMsg, `✅ LectureID: ${data.lectureId}`, true);
+      refreshLectures();
+    }catch(e){
+      msg(createMsg, STR[getLang()].fail, false);
+    }
   }
-}
-function quickReport(id){reportLectureId.value=id;loadReport();}
 
-// refs
-const courseEl=document.getElementById("course");
-const sectionEl=document.getElementById("section");
-const startEl=document.getElementById("start");
-const endEl=document.getElementById("end");
-const doctorKeyEl=document.getElementById("doctorKey");
+  async function deleteLecture(lectureId){
+    if(!requireKey()) return;
+    if(!confirm(getLang()==="ar" ? "حذف المحاضرة؟" : "Delete lecture?")) return;
+    msg(listMsg, STR[getLang()].loading, true);
+    try{
+      const data = await post({action:"deleteLecture", doctorKey: doctorKeyVal(), lectureId});
+      if(!data.ok) throw new Error();
+      msg(listMsg, STR[getLang()].done, true);
+      refreshLectures();
+    }catch(e){
+      msg(listMsg, STR[getLang()].fail, false);
+    }
+  }
 
-refreshBtn.onclick=refreshLectures;
-createBtn.onclick=createLecture;
-reportBtn.onclick=loadReport;
+  async function rotateCode(lectureId){
+    if(!requireKey()) return;
+    try{
+      const data = await post({action:"rotateCode", doctorKey: doctorKeyVal(), lectureId});
+      if(!data.ok) throw new Error();
+      alert(`Lecture Code: ${data.code}\nValid for 2 minutes`);
+    }catch(e){
+      alert(getLang()==="ar" ? "فشل توليد الكود" : "Failed to generate code");
+    }
+  }
 
-refreshLectures();
+  function fillStudents(lectureId){
+    studentsLectureId.value = lectureId;
+    loadLectureStudents();
+  }
+
+  btnLoadStudents.onclick = loadLectureStudents;
+  async function loadLectureStudents(){
+    if(!requireKey()) return;
+    const lectureId = studentsLectureId.value.trim();
+    if(!lectureId){ msg(studentsMsg, "❌ أدخل LectureID", false); return; }
+
+    msg(studentsMsg, STR[getLang()].loading, true);
+    studentsBody.innerHTML = "";
+    try{
+      const data = await post({action:"getLectureStudents", doctorKey: doctorKeyVal(), lectureId});
+      if(!data.ok) throw new Error();
+
+      msg(studentsMsg, `✅ ${data.students.length} طالب (شعبة ${data.section})`, true);
+
+      data.students.forEach(st=>{
+        const current = st.status || "—";
+        const safeName = st.name || "—";
+        studentsBody.innerHTML += `
+          <tr>
+            <td class="date">${st.studentId}</td>
+            <td>${safeName}</td>
+            <td id="cur-${st.studentId}">${current}</td>
+            <td>
+              <select class="statusSel" id="sel-${st.studentId}">
+                <option value="حضور">حضور</option>
+                <option value="تأخير">تأخير</option>
+                <option value="غياب">غياب</option>
+                <option value="معذور">معذور</option>
+              </select>
+            </td>
+            <td><button class="dark" onclick="saveOne('${lectureId}','${st.studentId}')">${STR[getLang()].saveOne}</button></td>
+          </tr>
+        `;
+        const sel = document.getElementById(`sel-${st.studentId}`);
+        if(["حضور","تأخير","غياب","معذور"].includes(current)) sel.value = current;
+      });
+
+    }catch(e){
+      msg(studentsMsg, STR[getLang()].fail, false);
+    }
+  }
+
+  async function saveOne(lectureId, studentId){
+    if(!requireKey()) return;
+    const status = document.getElementById(`sel-${studentId}`).value;
+    msg(studentsMsg, STR[getLang()].loading, true);
+    try{
+      const data = await post({action:"setStudentStatus", doctorKey: doctorKeyVal(), lectureId, studentId, status});
+      if(!data.ok) throw new Error();
+      document.getElementById(`cur-${studentId}`).textContent = status;
+      msg(studentsMsg, `✅ تم تحديث ${studentId} إلى (${status})`, true);
+    }catch(e){
+      msg(studentsMsg, STR[getLang()].fail, false);
+    }
+  }
 </script>
 </body>
 </html>
