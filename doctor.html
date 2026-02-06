@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>لوحة الدكتور - Hather</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  *{box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+  body{
+    margin:0; min-height:100vh;
+    background: linear-gradient(135deg,#0b2416,#174c30,#2f8f55);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .wrap{
+    width:100%; max-width:920px;
+    background: rgba(244,251,247,.96);
+    border-radius:18px;
+    box-shadow:0 18px 40px rgba(0,0,0,.35);
+    padding:22px;
+  }
+  .top{
+    display:flex; gap:16px; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; margin-bottom:14px;
+  }
+  .brand h1{margin:0; color:#0e3b24; font-size:28px}
+  .brand p{margin:4px 0 0; color:#1f6b43; font-weight:600}
+  .card{
+    background:#ffffff;
+    border:1px solid #e2efe7;
+    border-radius:16px;
+    padding:16px;
+    margin-top:14px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+  @media (max-width:520px){ .grid{grid-template-columns:1fr} }
+
+  label{display:block; color:#0e3b24; font-weight:700; margin-bottom:6px}
+  input{
+    width:100%; padding:12px;
+    border-radius:12px;
+    border:2px solid #cfe8da;
+    background:#f8fffb;
+    font-size:15px;
+  }
+  input:focus{outline:none;border-color:#2f8f55;box-shadow:0 0 0 3px rgba(47,143,85,.18)}
+  button{
+    padding:12px 14px;
+    border:none; border-radius:12px;
+    cursor:pointer;
+    background: linear-gradient(135deg,#1b5e3b,#2f8f55,#4cc987);
+    color:#fff; font-weight:800;
+  }
+  button.secondary{
+    background:#0e3b24;
+  }
+  .row{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  }
+  .msg{margin-top:10px; font-weight:800}
+  .ok{color:#1e7f4f}
+  .bad{color:#c0392b}
+
+  table{width:100%; border-collapse:collapse; overflow:hidden}
+  th,td{padding:10px; border-bottom:1px solid #e7f3ec; text-align:right}
+  th{background:#eaf6ef; color:#0e3b24}
+  .pill{
+    display:inline-block; padding:4px 10px; border-radius:999px;
+    font-weight:800; font-size:13px;
+  }
+  .active{background:#e7fff1; color:#1e7f4f}
+  .upcoming{background:#fff7e6; color:#b36b00}
+  .ended{background:#ffecec; color:#c0392b}
+
+  .charts{
+    display:grid; grid-template-columns: 1fr 1fr; gap:14px;
+    margin-top:14px;
+  }
+  @media (max-width:900px){ .charts{grid-template-columns:1fr} }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <h1>لوحة الدكتور</h1>
+      <p>إدارة المحاضرات + تقارير سريعة</p>
+    </div>
+    <div class="row">
+      <button class="secondary" onclick="refreshLectures()">تحديث القائمة</button>
+    </div>
+  </div>
+
+  <!-- إنشاء محاضرة -->
+  <div class="card">
+    <h3 style="margin:0 0 12px;color:#0e3b24">إنشاء محاضرة</h3>
+
+    <div class="grid">
+      <div>
+        <label>المقرر (Course)</label>
+        <input id="course" placeholder="مثال: CS101" />
+      </div>
+      <div>
+        <label>الشعبة (Section)</label>
+        <input id="section" placeholder="مثال: 1" />
+      </div>
+      <div>
+        <label>بداية المحاضرة</label>
+        <input id="start" type="datetime-local" />
+      </div>
+      <div>
+        <label>نهاية المحاضرة</label>
+        <input id="end" type="datetime-local" />
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:12px; justify-content:space-between">
+      <div style="flex:1; min-width:220px">
+        <label>رمز الدكتور (اختياري للحماية)</label>
+        <input id="doctorKey" placeholder="ضع الرمز هنا" />
+      </div>
+      <div style="display:flex; gap:10px; align-items:end">
+        <button onclick="createLecture()">حفظ المحاضرة</button>
+      </div>
+    </div>
+
+    <div id="createMsg" class="msg"></div>
+  </div>
+
+  <!-- قائمة المحاضرات -->
+  <div class="card">
+    <h3 style="margin:0 0 12px;color:#0e3b24">المحاضرات</h3>
+    <div style="overflow:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>LectureID</th>
+            <th>المقرر</th>
+            <th>الشعبة</th>
+            <th>البداية</th>
+            <th>النهاية</th>
+            <th>الحالة</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="lecturesBody"></tbody>
+      </table>
+    </div>
+    <div id="listMsg" class="msg"></div>
+  </div>
+
+  <!-- تقرير محاضرة -->
+  <div class="card">
+    <h3 style="margin:0 0 12px;color:#0e3b24">تقرير محاضرة</h3>
+
+    <div class="row">
+      <div style="flex:1; min-width:240px">
+        <label>اختر LectureID</label>
+        <input id="reportLectureId" placeholder="الصق LectureID من الجدول أو اضغط زر تقرير" />
+      </div>
+      <button onclick="loadLectureReport()">عرض التقرير</button>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <div style="background:#fff;border:1px solid #e2efe7;border-radius:14px;padding:12px;min-width:140px;text-align:center">
+        <div style="font-weight:900;color:#0e3b24">الإجمالي</div>
+        <div id="totalN" style="font-size:22px;font-weight:900;color:#0e3b24">0</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2efe7;border-radius:14px;padding:12px;min-width:140px;text-align:center">
+        <div style="font-weight:900;color:#1e7f4f">حضور</div>
+        <div id="presentN" style="font-size:22px;font-weight:900;color:#1e7f4f">0</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2efe7;border-radius:14px;padding:12px;min-width:140px;text-align:center">
+        <div style="font-weight:900;color:#b36b00">تأخير</div>
+        <div id="lateN" style="font-size:22px;font-weight:900;color:#b36b00">0</div>
+      </div>
+    </div>
+
+    <div class="charts">
+      <div class="card" style="margin:0">
+        <canvas id="pie"></canvas>
+      </div>
+      <div class="card" style="margin:0">
+        <canvas id="bar"></canvas>
+      </div>
+    </div>
+
+    <div id="reportMsg" class="msg"></div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "PUT_YOUR_SCRIPT_URL_HERE";  // رابط /exec
+// نفس الرمز الموجود في Apps Script (اختياري)
+const DOCTOR_KEY_FALLBACK = "1234";
+
+let pieChart, barChart;
+
+function setMsg(el, text, ok=true){
+  el.className = "msg " + (ok ? "ok":"bad");
+  el.textContent = text;
+}
+
+function pill(status){
+  if(status==="نشطة") return `<span class="pill active">نشطة</span>`;
+  if(status==="قادمة") return `<span class="pill upcoming">قادمة</span>`;
+  return `<span class="pill ended">منتهية</span>`;
+}
+
+async function refreshLectures(){
+  const body = document.getElementById("lecturesBody");
+  const listMsg = document.getElementById("listMsg");
+  body.innerHTML = "";
+  setMsg(listMsg, "⏳ جاري تحميل المحاضرات...", true);
+
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:"POST",
+      body: JSON.stringify({ action:"listLectures" })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || "Failed");
+
+    data.lectures.forEach(l => {
+      body.innerHTML += `
+        <tr>
+          <td style="direction:ltr;font-weight:800;color:#0e3b24">${l.lectureId}</td>
+          <td>${l.course}</td>
+          <td>${l.section}</td>
+          <td style="direction:ltr">${l.start}</td>
+          <td style="direction:ltr">${l.end}</td>
+          <td>${pill(l.status)}</td>
+          <td>
+            <div class="row">
+              <button class="secondary" onclick="quickReport('${l.lectureId}')">تقرير</button>
+              <button onclick="deleteLecture('${l.lectureId}')">حذف</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    setMsg(listMsg, "✅ تم التحديث", true);
+  }catch(e){
+    setMsg(listMsg, "❌ فشل تحميل المحاضرات", false);
+  }
+}
+
+async function createLecture(){
+  const course = document.getElementById("course").value.trim();
+  const section = document.getElementById("section").value.trim();
+  const start = document.getElementById("start").value;
+  const end = document.getElementById("end").value;
+  const doctorKey = (document.getElementById("doctorKey").value.trim() || DOCTOR_KEY_FALLBACK);
+
+  const msg = document.getElementById("createMsg");
+  if(!course || !section || !start || !end){
+    setMsg(msg, "❌ أكمل جميع الحقول", false);
+    return;
+  }
+
+  setMsg(msg, "⏳ جاري إنشاء المحاضرة...", true);
+
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:"POST",
+      body: JSON.stringify({
+        action:"createLecture",
+        doctorKey,
+        course, section, start, end
+      })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || "Failed");
+    setMsg(msg, `✅ تم إنشاء المحاضرة: ${data.lectureId}`, true);
+    await refreshLectures();
+  }catch(e){
+    setMsg(msg, "❌ فشل إنشاء المحاضرة (تحقق من رمز الدكتور/الوقت)", false);
+  }
+}
+
+async function deleteLecture(lectureId){
+  const doctorKey = (document.getElementById("doctorKey").value.trim() || DOCTOR_KEY_FALLBACK);
+  if(!confirm(`حذف المحاضرة ${lectureId} ؟`)) return;
+
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:"POST",
+      body: JSON.stringify({ action:"deleteLecture", doctorKey, lectureId })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || "Failed");
+    await refreshLectures();
+  }catch(e){
+    alert("فشل الحذف (تحقق من رمز الدكتور)");
+  }
+}
+
+function quickReport(id){
+  document.getElementById("reportLectureId").value = id;
+  loadLectureReport();
+}
+
+async function loadLectureReport(){
+  const lectureId = document.getElementById("reportLectureId").value.trim();
+  const reportMsg = document.getElementById("reportMsg");
+  if(!lectureId){
+    setMsg(reportMsg, "❌ أدخل LectureID", false);
+    return;
+  }
+
+  setMsg(reportMsg, "⏳ جاري تحميل التقرير...", true);
+
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:"POST",
+      body: JSON.stringify({ action:"lectureReport", lectureId })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || "Failed");
+
+    document.getElementById("totalN").textContent = data.total;
+    document.getElementById("presentN").textContent = data.present;
+    document.getElementById("lateN").textContent = data.late;
+
+    drawCharts(data.present, data.late);
+    setMsg(reportMsg, "✅ تم عرض التقرير", true);
+  }catch(e){
+    setMsg(reportMsg, "❌ فشل تحميل التقرير", false);
+  }
+}
+
+function drawCharts(present, late){
+  const pieCtx = document.getElementById("pie");
+  const barCtx = document.getElementById("bar");
+
+  if(pieChart) pieChart.destroy();
+  if(barChart) barChart.destroy();
+
+  pieChart = new Chart(pieCtx, {
+    type: "doughnut",
+    data: {
+      labels: ["حضور","تأخير"],
+      datasets: [{
+        data: [present, late],
+        backgroundColor: ["#2f8f55","#f4b400"]
+      }]
+    }
+  });
+
+  barChart = new Chart(barCtx, {
+    type: "bar",
+    data: {
+      labels: ["حضور","تأخير"],
+      datasets: [{
+        data: [present, late],
+        backgroundColor: ["#2f8f55","#f4b400"]
+      }]
+    },
+    options: { plugins:{ legend:{ display:false } } }
+  });
+}
+
+// تحميل أولي
+refreshLectures();
+</script>
+</body>
+</html>
