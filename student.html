@@ -12,23 +12,26 @@ body{
   display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
 }
 .card{
-  width:100%;max-width:420px;border-radius:18px;padding:22px;
-  background:rgba(13,44,26,.65);
-  box-shadow:0 18px 45px rgba(0,0,0,.35);
-  border:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(8px);
+  width:100%;max-width:440px;border-radius:18px;padding:22px;
+  background:rgba(13,44,26,.62);
+  box-shadow:0 18px 45px rgba(0,0,0,.30);
+  border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(10px);
 }
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
 .icon-btn{
   border:none;cursor:pointer;width:44px;height:44px;border-radius:12px;
-  background:rgba(255,255,255,.12);color:#fff;font-weight:900;
+  background:rgba(255,255,255,.14);color:#fff;font-weight:900;
   display:flex;align-items:center;justify-content:center;
 }
 .icon-btn:active{transform:scale(.98)}
-.icon-btn .sub{font-size:12px;opacity:.9;margin-left:6px}
+.icon-btn .sub{font-size:12px;opacity:.92;margin-left:6px}
 .back{
-  color:#d6ffe9;text-decoration:none;font-weight:900;opacity:.9;
+  color:#e7fff3;text-decoration:none;font-weight:900;opacity:.95;
+  background:rgba(255,255,255,.10);
+  padding:10px 12px;border-radius:12px;display:inline-block;
 }
+.back:active{transform:scale(.98)}
 .header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
 .header::after{
   content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
@@ -38,19 +41,19 @@ body{
   font-size:42px;font-weight:900;background:linear-gradient(135deg,#b9ffd9,#4cc987);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#d6ffe9;opacity:.95}
-label{display:block;margin:14px 0 6px;font-weight:900;color:rgba(255,255,255,.92)}
-.hint{font-size:13px;font-weight:700;color:rgba(255,255,255,.72);margin-top:2px}
+.subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#e7fff3;opacity:.98}
+label{display:block;margin:14px 0 6px;font-weight:900;color:rgba(255,255,255,.94)}
+.hint{font-size:13px;font-weight:700;color:rgba(255,255,255,.78);margin-top:2px}
 input{
   width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.92);font-size:17px;color:#0d2c1a;direction:ltr;
+  background:rgba(255,255,255,.94);font-size:17px;color:#0d2c1a;direction:ltr;
 }
 input:focus{outline:none;border-color:#4cc987;box-shadow:0 0 0 3px rgba(76,201,135,.20)}
 button.primary{
   width:100%;margin-top:16px;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
   color:#fff;font-weight:900;font-size:18px;
   background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  box-shadow:0 10px 22px rgba(0,0,0,.22);
+  box-shadow:0 10px 22px rgba(0,0,0,.18);
 }
 button.primary:disabled{opacity:.65;cursor:not-allowed}
 #spinner{
@@ -61,7 +64,7 @@ button.primary:disabled{opacity:.65;cursor:not-allowed}
 @keyframes spin{to{transform:rotate(360deg)}}
 #msg{min-height:22px;margin-top:12px;text-align:center;font-weight:900}
 .links{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.links a{color:#d6ffe9;text-decoration:none;font-weight:800;opacity:.92}
+.links a{color:#e7fff3;text-decoration:none;font-weight:900;opacity:.95}
 .links a:hover{opacity:1}
 </style>
 </head>
@@ -101,27 +104,25 @@ button.primary:disabled{opacity:.65;cursor:not-allowed}
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFv-Z9gebAEAEM-yoVzXVM-TJXDC0Ie4gJqnmkPqxwPUDuHncMMbyuHkqHENTe2XDe/exec";
 
 const STR = {
-  ar:{
-    dir:"rtl", lang:"ar", badge:"EN",
+  ar:{dir:"rtl",lang:"ar",badge:"EN",
     backHome:"↩ الرئيسية",
     subTitle:"قسم الطالب - تسجيل الحضور",
-    lblId:"الرقم الجامعي", hintId:"يجب أن يكون 9 أرقام",
-    lblCode:"كود المحاضرة", hintCode:"يجب أن يكون 6 أرقام (يعطيه الدكتور)",
+    lblId:"الرقم الجامعي",hintId:"يجب أن يكون 9 أرقام",
+    lblCode:"كود المحاضرة",hintCode:"يجب أن يكون 6 أرقام (يعطيه الدكتور)",
     btn:"تسجيل",
-    goReports:"تقارير الطالب", goDoctor:"قسم الدكتور",
+    goReports:"تقارير الطالب",goDoctor:"قسم الدكتور",
     invalidId:"❌ الرقم الجامعي لازم 9 أرقام",
     invalidCode:"❌ كود المحاضرة لازم 6 أرقام",
     wait:"⏳ جاري تسجيل الحضور...",
     fail:"❌ فشل الاتصال"
   },
-  en:{
-    dir:"ltr", lang:"en", badge:"AR",
-    backHome:"↩ Home",
+  en:{dir:"ltr",lang:"en",badge:"AR",
+    backHome:"↩ Back",
     subTitle:"Student - Check-in",
-    lblId:"University ID", hintId:"Must be 9 digits",
-    lblCode:"Lecture code", hintCode:"Must be 6 digits (from doctor)",
+    lblId:"University ID",hintId:"Must be 9 digits",
+    lblCode:"Lecture code",hintCode:"Must be 6 digits (from doctor)",
     btn:"Check in",
-    goReports:"Student Reports", goDoctor:"Doctor",
+    goReports:"Student Reports",goDoctor:"Doctor",
     invalidId:"❌ University ID must be 9 digits",
     invalidCode:"❌ Lecture code must be 6 digits",
     wait:"⏳ Checking in...",
@@ -131,56 +132,40 @@ const STR = {
 
 function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
 function setLang(l){ localStorage.setItem("hather_lang", l); }
-
 function applyLang(){
-  const l = getLang();
-  const t = STR[l];
-  document.documentElement.lang = t.lang;
-  document.documentElement.dir = t.dir;
-
-  document.getElementById("langBadge").textContent = t.badge;
-  document.getElementById("backHome").textContent = t.backHome;
-  document.getElementById("subTitle").textContent = t.subTitle;
-
-  document.getElementById("lblId").textContent = t.lblId;
-  document.getElementById("hintId").textContent = t.hintId;
-  document.getElementById("lblCode").textContent = t.lblCode;
-  document.getElementById("hintCode").textContent = t.hintCode;
-
-  document.getElementById("btn").textContent = t.btn;
-  document.getElementById("goReports").textContent = t.goReports;
-  document.getElementById("goDoctor").textContent = t.goDoctor;
+  const l=getLang(), t=STR[l];
+  document.documentElement.lang=t.lang;
+  document.documentElement.dir=t.dir;
+  document.getElementById("langBadge").textContent=t.badge;
+  document.getElementById("backHome").textContent=t.backHome;
+  document.getElementById("subTitle").textContent=t.subTitle;
+  document.getElementById("lblId").textContent=t.lblId;
+  document.getElementById("hintId").textContent=t.hintId;
+  document.getElementById("lblCode").textContent=t.lblCode;
+  document.getElementById("hintCode").textContent=t.hintCode;
+  document.getElementById("btn").textContent=t.btn;
+  document.getElementById("goReports").textContent=t.goReports;
+  document.getElementById("goDoctor").textContent=t.goDoctor;
 }
-
-document.getElementById("langBtn").addEventListener("click", ()=>{
-  setLang(getLang()==="ar" ? "en" : "ar");
-  applyLang();
+document.getElementById("langBtn").addEventListener("click",()=>{
+  setLang(getLang()==="ar"?"en":"ar"); applyLang();
 });
-
 applyLang();
 
-const btn = document.getElementById("btn");
-const spinner = document.getElementById("spinner");
-const msg = document.getElementById("msg");
+const btn=document.getElementById("btn");
+const spinner=document.getElementById("spinner");
+const msg=document.getElementById("msg");
 
-btn.addEventListener("click", () => {
-  const l = getLang();
-  const t = STR[l];
+btn.addEventListener("click",()=>{
+  const l=getLang(), t=STR[l];
+  const studentId=document.getElementById("studentId").value.trim();
+  const lectureCode=document.getElementById("lectureCode").value.trim();
 
-  const studentId = document.getElementById("studentId").value.trim();
-  const lectureCode = document.getElementById("lectureCode").value.trim();
+  if(!/^[0-9]{9}$/.test(studentId)){ msg.style.color="salmon"; msg.textContent=t.invalidId; return; }
+  if(!/^[0-9]{6}$/.test(lectureCode)){ msg.style.color="salmon"; msg.textContent=t.invalidCode; return; }
 
-  if(!/^[0-9]{9}$/.test(studentId)){
-    msg.style.color="salmon"; msg.textContent=t.invalidId; return;
-  }
-  if(!/^[0-9]{6}$/.test(lectureCode)){
-    msg.style.color="salmon"; msg.textContent=t.invalidCode; return;
-  }
-
-  btn.disabled=true;
-  spinner.style.display="block";
-  msg.style.color="#d6ffe9";
-  msg.textContent=t.wait;
+  btn.disabled=true; spinner.style.display="block";
+  msg.style.color="#e7fff3"; msg.textContent=t.wait;
 
   fetch(SCRIPT_URL,{
     method:"POST",
@@ -192,14 +177,8 @@ btn.addEventListener("click", () => {
     msg.style.color = d.ok ? "#7CFFB2" : "salmon";
     msg.textContent = d.result || (d.ok ? "OK" : "Error");
   })
-  .catch(()=>{
-    msg.style.color="salmon";
-    msg.textContent=t.fail;
-  })
-  .finally(()=>{
-    spinner.style.display="none";
-    btn.disabled=false;
-  });
+  .catch(()=>{ msg.style.color="salmon"; msg.textContent=t.fail; })
+  .finally(()=>{ spinner.style.display="none"; btn.disabled=false; });
 });
 </script>
 </body>
