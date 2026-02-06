@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hather - حاضر</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Segoe UI',Arial,sans-serif
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#0d2c1a,#1a472a,#2d7d46);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.container{
+  width:100%;
+  max-width:420px;
+  background:rgba(255,255,255,.95);
+  padding:26px;
+  border-radius:18px;
+  box-shadow:0 15px 35px rgba(0,0,0,.35);
+}
+
+.header{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.header h1{
+  font-size:42px;
+  font-weight:900;
+  color:#1a472a;
+  margin:0;
+}
+
+.header h2{
+  font-size:26px;
+  color:#2d7d46;
+  margin:5px 0 0;
+}
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.btn{
+  padding:18px;
+  font-size:18px;
+  font-weight:800;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.student{
+  background:linear-gradient(135deg,#1a472a,#2d7d46);
+}
+
+.reports{
+  background:linear-gradient(135deg,#0e3b24,#1f6b43);
+}
+
+.doctor{
+  background:linear-gradient(135deg,#244b3a,#0d2c1a);
+}
+
+.footer{
+  margin-top:20px;
+  text-align:center;
+  font-size:12px;
+  color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Hather</h1>
+    <h2>حاضر</h2>
+  </div>
+
+  <div class="menu">
+    <button class="btn student" onclick="location.href='student.html'">
+      <span>قسم الطالب</span>
+      <span>➜</span>
+    </button>
+
+    <button class="btn reports" onclick="location.href='reports.html'">
+      <span>تقارير الطالب</span>
+      <span>➜</span>
+    </button>
+
+    <button class="btn doctor" onclick="location.href='doctor.html'">
+      <span>قسم الدكتور</span>
+      <span>➜</span>
+    </button>
+  </div>
+
+  <div class="footer">
+    نظام حضور بسيط وعملي
+  </div>
+</div>
+
+</body>
+</html>
