@@ -71,7 +71,7 @@
       <button class="btn student" onclick="location.href='student.html'">
         <div>
           <div id="b1">قسم الطالب</div>
-          <div class="meta" id="b1m">تسجيل الحضور</div>
+          <div class="meta" id="b1m">تسجيل الحضور (QR/Code)</div>
         </div>
         <div>➜</div>
       </button>
@@ -87,7 +87,7 @@
       <button class="btn doctor" onclick="location.href='doctor.html'">
         <div>
           <div id="b3">قسم الدكتور</div>
-          <div class="meta" id="b3m">محاضرات + كود + تعديل الحالات</div>
+          <div class="meta" id="b3m">محاضرات + QR + تعديل حالات</div>
         </div>
         <div>➜</div>
       </button>
@@ -102,18 +102,18 @@
       dir:"rtl", lang:"ar",
       subTitle:"حاضر",
       hint:"اختر القسم المناسب للمتابعة",
-      b1:"قسم الطالب", b1m:"تسجيل الحضور",
+      b1:"قسم الطالب", b1m:"تسجيل الحضور (QR/Code)",
       b2:"تقارير الطالب", b2m:"حضور/تأخير/غياب/معذور",
-      b3:"قسم الدكتور", b3m:"محاضرات + كود + تعديل الحالات",
+      b3:"قسم الدكتور", b3m:"محاضرات + QR + تعديل حالات",
       footer:"نظام حضور بسيط وعملي"
     },
     en: {
       dir:"ltr", lang:"en",
       subTitle:"Attendance",
       hint:"Choose the section to continue",
-      b1:"Student", b1m:"Check-in",
+      b1:"Student", b1m:"Check-in (QR/Code)",
       b2:"Reports", b2m:"Present/Late/Absent/Excused",
-      b3:"Doctor", b3m:"Lectures + code + status control",
+      b3:"Doctor", b3m:"Lectures + QR + Status control",
       footer:"Simple & practical attendance system"
     }
   };
@@ -121,8 +121,7 @@
   function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
   function setLang(l){ localStorage.setItem("hather_lang", l); }
   function applyLang(){
-    const l = getLang();
-    const t = STR[l];
+    const t = STR[getLang()];
     document.documentElement.lang = t.lang;
     document.documentElement.dir = t.dir;
     subTitle.textContent = t.subTitle;
