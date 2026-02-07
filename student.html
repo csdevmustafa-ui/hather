@@ -1,267 +1,112 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hather - تسجيل الحضور</title>
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{
-  min-height:100vh;
-  background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
-  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
-}
-.card{
-  width:100%;max-width:520px;border-radius:20px;padding:22px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(10px);
-  box-shadow:0 20px 50px rgba(0,0,0,0.35);
-  border:1px solid rgba(255,255,255,0.12);
-}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.topbar a{color:#eafff3;text-decoration:none;font-weight:900}
-.icon-btn{
-  width:40px;height:40px;border-radius:12px;border:none;
-  background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px
-}
-.h1{font-size:20px;font-weight:900;color:#eafff3;margin-top:6px}
-.h2{font-size:13px;color:#d2f5e3;margin-top:6px}
-
-.panel{
-  margin-top:16px;border-radius:16px;padding:16px;
-  background:linear-gradient(135deg,#e9fff4,#c9f5de);
-  color:#0d2c1a;
-  box-shadow:0 10px 25px rgba(0,0,0,0.20);
-}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:520px){.grid{grid-template-columns:1fr}}
-label{display:block;font-weight:900;margin-bottom:6px;color:#0d2c1a}
-input{
-  width:100%;padding:14px 12px;border-radius:12px;border:2px solid #bfead4;
-  font-size:16px;outline:none;background:#fff;color:#0d2c1a;
-}
-input:focus{border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,70,.18)}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.btn{
-  flex:1;min-width:160px;border:none;border-radius:14px;padding:14px 12px;
-  font-weight:900;font-size:16px;cursor:pointer;
-  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);
-  transition:transform .15s ease;
-}
-.btn:hover{transform:translateY(-2px)}
-.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.btn.ghost{
-  background:rgba(13,44,26,.12);
-  color:#0d2c1a;border:2px solid rgba(13,44,26,.22);
-  box-shadow:none;
-}
-.msg{
-  margin-top:12px;font-weight:900;
-  min-height:22px
-}
-.small{font-size:12px;color:rgba(13,44,26,.7);margin-top:8px;font-weight:700}
-.spinner{
-  width:22px;height:22px;border-radius:50%;
-  border:3px solid rgba(255,255,255,.55);
-  border-top:3px solid #fff;
-  animation:spin 1s linear infinite;
-  display:none;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-#scanWrap{
-  display:none;margin-top:14px;
-  border-radius:14px;overflow:hidden;
-  border:2px solid rgba(255,255,255,.25);
-}
-video{width:100%;background:#000;display:block}
-.scanNote{margin-top:8px;color:#0d2c1a;font-weight:800}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student - Hather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
-
 <body>
-<div class="card">
-  <div class="topbar">
-    <a href="./index.html">⟵ <span id="backTxt">رجوع</span></a>
-    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
-  </div>
-
-  <div class="h1" id="titleTxt">تسجيل الحضور</div>
-  <div class="h2" id="subTxt">ادخل الرقم الجامعي وكود المحاضرة أو امسح QR</div>
-
-  <div class="panel">
-    <div class="grid">
-      <div>
-        <label id="labSid">الرقم الجامعي</label>
-        <input id="studentId" inputmode="numeric" maxlength="9" placeholder="مثال: 123456789">
+  <div class="container">
+    <div class="brand">
+      <div class="brand-left">
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer" title="Home">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="rgba(255,255,255,.9)" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1 data-i18n="studentTitle">قسم الطالب</h1>
+          <p data-i18n="studentSub">ادخل بياناتك لتسجيل الحضور</p>
+        </div>
       </div>
-      <div>
-        <label id="labCode">كود المحاضرة</label>
-        <input id="lectureCode" inputmode="numeric" maxlength="6" placeholder="مثال: 123456">
+
+      <div class="top-actions">
+        <div class="lang-chip" onclick="toggleLang()"><span>AR/EN</span></div>
       </div>
     </div>
 
-    <div class="row">
-      <button class="btn" id="btnSubmit">
-        <span id="btnTxt">تسجيل</span>
-        <span class="spinner" id="spin"></span>
-      </button>
-      <button class="btn ghost" id="btnScan"><span id="scanTxt">مسح QR</span></button>
-    </div>
+    <div class="grid-center">
+      <div class="card">
+        <div class="form">
+          <div>
+            <label data-i18n="studentId">الرقم الجامعي (9 أرقام)</label>
+            <input id="studentId" class="input" inputmode="numeric" maxlength="9" data-i18n-placeholder="studentId" placeholder="الرقم الجامعي (9 أرقام)">
+          </div>
 
-    <div id="scanWrap">
-      <video id="video" playsinline></video>
-    </div>
+          <div>
+            <label data-i18n="lectureId">LectureID</label>
+            <input id="lectureId" class="input" placeholder="مثال: L1770...">
+            <div class="small">يمكن إدخال LectureID أو استخدام الكود</div>
+          </div>
 
-    <div class="msg" id="msg"></div>
-    <div class="small" id="noteTxt">ملاحظة: بعد 15 دقيقة من بداية المحاضرة يتم تسجيل الحالة كتأخير.</div>
+          <div>
+            <label data-i18n="code">كود المحاضرة (اختياري)</label>
+            <input id="lectureCode" class="input" inputmode="numeric" maxlength="6" placeholder="مثال: 123456">
+          </div>
+
+          <button id="btn" class="btn primary" onclick="submitAttendance()">
+            <div class="left">
+              <div class="spinner" id="sp"></div>
+            </div>
+            <div class="text" style="text-align:right">
+              <span data-i18n="submit">تسجيل الحضور</span>
+              <span class="sub" id="subText">—</span>
+            </div>
+          </button>
+
+          <div class="status" id="status"></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
+<script src="assets/app.js"></script>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
-
-// ===== لغة =====
-const STR={
-  ar:{
-    dir:"rtl",lang:"ar",
-    back:"رجوع",
-    title:"تسجيل الحضور",
-    sub:"ادخل الرقم الجامعي وكود المحاضرة أو امسح QR",
-    sid:"الرقم الجامعي",
-    code:"كود المحاضرة",
-    submit:"تسجيل",
-    scan:"مسح QR",
-    note:"ملاحظة: بعد 15 دقيقة من بداية المحاضرة يتم تسجيل الحالة كتأخير."
-  },
-  en:{
-    dir:"ltr",lang:"en",
-    back:"Back",
-    title:"Check-in",
-    sub:"Enter your ID & lecture code or scan QR",
-    sid:"Student ID",
-    code:"Lecture Code",
-    submit:"Submit",
-    scan:"Scan QR",
-    note:"Note: After 15 minutes from lecture start, status becomes Late."
-  }
-};
-function getLang(){return localStorage.getItem("hather_lang")||"ar";}
-function setLang(l){localStorage.setItem("hather_lang",l);}
-function applyLang(){
-  const t=STR[getLang()];
-  document.documentElement.lang=t.lang; document.documentElement.dir=t.dir;
-  backTxt.textContent=t.back;
-  titleTxt.textContent=t.title;
-  subTxt.textContent=t.sub;
-  labSid.textContent=t.sid;
-  labCode.textContent=t.code;
-  btnTxt.textContent=t.submit;
-  scanTxt.textContent=t.scan;
-  noteTxt.textContent=t.note;
-}
-langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
 applyLang();
 
-// ===== Helpers =====
-function setBusy(b){
-  btnSubmit.disabled=b;
-  spin.style.display=b?"inline-block":"none";
-}
-function okMsg(t){msg.style.color="#0d2c1a"; msg.textContent=t;}
-function badMsg(t){msg.style.color="#b00020"; msg.textContent=t;}
+async function submitAttendance(){
+  const status = document.getElementById("status");
+  const btn = document.getElementById("btn");
+  const sp = document.getElementById("sp");
+  const subText = document.getElementById("subText");
 
-async function post(payload){
-  const res = await fetch(SCRIPT_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" }, // مهم لحل CORS
-    body: JSON.stringify(payload)
-  });
-  return await res.json();
-}
+  const studentId = (document.getElementById("studentId").value || "").trim();
+  const lectureId  = (document.getElementById("lectureId").value || "").trim();
+  const code       = (document.getElementById("lectureCode").value || "").trim();
 
-// ===== Submit حضور =====
-btnSubmit.onclick = async ()=>{
-  const sid = studentId.value.trim();
-  const code = lectureCode.value.trim();
-
-  if(!/^\d{9}$/.test(sid)) return badMsg(getLang()==="ar"?"❌ الرقم الجامعي لازم 9 أرقام":"❌ Student ID must be 9 digits");
-  if(!/^\d{6}$/.test(code)) return badMsg(getLang()==="ar"?"❌ كود المحاضرة لازم 6 أرقام":"❌ Lecture code must be 6 digits");
-
-  setBusy(true);
-  okMsg(getLang()==="ar"?"⏳ جاري تسجيل الحضور...":"⏳ Submitting...");
-  try{
-    const data = await post({ studentId:sid, lectureCode:code });
-    if(!data.ok) return badMsg(data.result || (getLang()==="ar"?"❌ فشل":"❌ Failed"));
-    okMsg(data.result || (getLang()==="ar"?"✅ تم":"✅ Done"));
-    lectureCode.value="";
-  }catch(e){
-    badMsg(getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
-  }finally{
-    setBusy(false);
-  }
-};
-
-// ===== QR Scan (BarcodeDetector) =====
-let stream=null, scanning=false;
-btnScan.onclick = async ()=>{
-  if(scanning){
-    stopScan();
+  if(!/^[0-9]{9}$/.test(studentId)){
+    showStatus(status, "danger", t("badId"));
     return;
   }
-  if(!("mediaDevices" in navigator)){
-    return badMsg(getLang()==="ar"?"❌ جهازك لا يدعم الكاميرا":"❌ Camera not supported");
-  }
-  if(!("BarcodeDetector" in window)){
-    return badMsg(getLang()==="ar"
-      ?"❌ المتصفح لا يدعم مسح QR هنا. استخدم إدخال الكود."
-      :"❌ QR scan not supported here. Use code input.");
+  if(!lectureId && !code){
+    showStatus(status, "danger", t("needLectureOrCode"));
+    return;
   }
 
-  const detector = new BarcodeDetector({formats:["qr_code"]});
-  scanWrap.style.display="block";
-  btnScan.textContent = getLang()==="ar"?"إيقاف المسح":"Stop Scan";
-  try{
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
-    video.srcObject = stream;
-    await video.play();
-    scanning=true;
+  subText.textContent = t("loading");
+  setLoading(btn, sp, true);
+  showStatus(status, "warn", t("loading"));
 
-    const loop = async ()=>{
-      if(!scanning) return;
-      try{
-        const barcodes = await detector.detect(video);
-        if(barcodes && barcodes.length){
-          const raw = (barcodes[0].rawValue||"").trim();
-          // نتوقع النص يكون كود 6 أرقام أو رابط فيه code=
-          const m = raw.match(/(\d{6})/);
-          if(m){
-            lectureCode.value = m[1];
-            okMsg(getLang()==="ar"?"✅ تم التقاط الكود":"✅ Code captured");
-            stopScan();
-            return;
-          }
-        }
-      }catch(_){}
-      requestAnimationFrame(loop);
-    };
-    loop();
-  }catch(e){
-    badMsg(getLang()==="ar"?"❌ تعذر فتح الكاميرا":"❌ Camera access denied");
-    stopScan();
-  }
-};
+  const payload = {
+    action: "studentCheckin",
+    studentId,
+    lectureId,
+    code
+  };
 
-function stopScan(){
-  scanning=false;
-  btnScan.textContent = getLang()==="ar"?"مسح QR":"Scan QR";
-  scanWrap.style.display="none";
-  if(stream){
-    stream.getTracks().forEach(t=>t.stop());
-    stream=null;
+  const res = await apiCall(payload);
+  if(res && res.ok){
+    showStatus(status, "success", t("ok"));
+  } else {
+    showStatus(status, "danger", (res && res.error) ? res.error : t("failed"));
   }
+
+  setLoading(btn, sp, false);
+  subText.textContent = "—";
 }
 </script>
 </body>
