@@ -4,9 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student - Hather</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
@@ -16,6 +18,7 @@
         <div class="logo" onclick="location.href='index.html'" style="cursor:pointer" title="Home">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
             <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="rgba(255,255,255,.9)" stroke-width="1.8"/>
+            <path d="M8 12l2.2 2.2L16.5 8" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div class="brand-titles">
@@ -32,34 +35,75 @@
     <div class="grid-center">
       <div class="card">
         <div class="form">
+
           <div>
             <label data-i18n="studentId">الرقم الجامعي (9 أرقام)</label>
-            <input id="studentId" class="input" inputmode="numeric" maxlength="9" data-i18n-placeholder="studentId" placeholder="الرقم الجامعي (9 أرقام)">
+            <input id="studentId" class="input" inputmode="numeric" maxlength="9" placeholder="مثال: 202311644">
           </div>
 
           <div>
-            <label data-i18n="lectureId">LectureID</label>
-            <input id="lectureId" class="input" placeholder="مثال: L1770...">
-            <div class="small">يمكن إدخال LectureID أو استخدام الكود</div>
-          </div>
-
-          <div>
-            <label data-i18n="code">كود المحاضرة (اختياري)</label>
+            <label>كود المحاضرة</label>
             <input id="lectureCode" class="input" inputmode="numeric" maxlength="6" placeholder="مثال: 123456">
+            <div class="small">أدخل الكود يدويًا أو استخدم الباركود بالكاميرا.</div>
           </div>
 
-          <button id="btn" class="btn primary" onclick="submitAttendance()">
-            <div class="left">
-              <div class="spinner" id="sp"></div>
-            </div>
-            <div class="text" style="text-align:right">
-              <span data-i18n="submit">تسجيل الحضور</span>
-              <span class="sub" id="subText">—</span>
-            </div>
-          </button>
+          <div class="actions">
+            <button id="btnScan" class="btn" onclick="openScanner()">
+              <div class="left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 3H5a2 2 0 0 0-2 2v2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M17 3h2a2 2 0 0 1 2 2v2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M21 17v2a2 2 0 0 1-2 2h-2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M3 17v2a2 2 0 0 0 2 2h2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M7 12h10" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="text" style="text-align:right">
+                <span>تسجيل بالباركود</span>
+                <span class="sub">فتح الكاميرا ومسح QR</span>
+              </div>
+            </button>
+
+            <button id="btn" class="btn primary" onclick="submitAttendance()">
+              <div class="left"><div class="spinner" id="sp"></div></div>
+              <div class="text" style="text-align:right">
+                <span data-i18n="submit">تسجيل الحضور</span>
+                <span class="sub" id="subText">—</span>
+              </div>
+            </button>
+          </div>
 
           <div class="status" id="status"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scanner Modal -->
+  <div class="modal" id="scanModal" onclick="closeScanner()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px">
+        <b>مسح الباركود</b>
+        <button class="icon-btn" onclick="closeScanner()" title="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 6l12 12" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="qr-box" style="min-height:320px">
+        <video id="video" playsinline style="width:100%; border-radius:18px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.25)"></video>
+        <div class="small" id="scanHint">وجّه الكاميرا نحو QR…</div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn primary" onclick="closeScanner()">
+          <div class="left"><span style="font-weight:900">✕</span></div>
+          <div class="text"><span>إغلاق</span><span class="sub">—</span></div>
+        </button>
       </div>
     </div>
   </div>
@@ -68,6 +112,15 @@
 <script>
 applyLang();
 
+let mediaStream = null;
+let detector = null;
+let scanTimer = null;
+
+function showMsg(type, msg){
+  const status = document.getElementById("status");
+  showStatus(status, type, msg);
+}
+
 async function submitAttendance(){
   const status = document.getElementById("status");
   const btn = document.getElementById("btn");
@@ -75,38 +128,121 @@ async function submitAttendance(){
   const subText = document.getElementById("subText");
 
   const studentId = (document.getElementById("studentId").value || "").trim();
-  const lectureId  = (document.getElementById("lectureId").value || "").trim();
-  const code       = (document.getElementById("lectureCode").value || "").trim();
+  const code = (document.getElementById("lectureCode").value || "").trim();
 
   if(!/^[0-9]{9}$/.test(studentId)){
-    showStatus(status, "danger", t("badId"));
+    showMsg("danger", t("badId"));
     return;
   }
-  if(!lectureId && !code){
-    showStatus(status, "danger", t("needLectureOrCode"));
+  if(!code){
+    showMsg("danger", "أدخل كود المحاضرة أو امسح الباركود.");
     return;
   }
 
   subText.textContent = t("loading");
   setLoading(btn, sp, true);
-  showStatus(status, "warn", t("loading"));
+  showMsg("warn", t("loading"));
 
-  const payload = {
+  const res = await apiCall({
     action: "studentCheckin",
     studentId,
-    lectureId,
     code
-  };
+  });
 
-  const res = await apiCall(payload);
   if(res && res.ok){
-    showStatus(status, "success", t("ok"));
+    showMsg("success", t("ok"));
   } else {
-    showStatus(status, "danger", (res && res.error) ? res.error : t("failed"));
+    showMsg("danger", (res && res.error) ? res.error : t("failed"));
   }
 
   setLoading(btn, sp, false);
   subText.textContent = "—";
+}
+
+/* ===== QR Scanner =====
+  - أفضل حل: BarcodeDetector (يدعمه كروم/اندرويد غالباً)
+  - إذا ما انوجد: نعطي رسالة واضحة
+*/
+async function openScanner(){
+  const modal = document.getElementById("scanModal");
+  const hint = document.getElementById("scanHint");
+  const video = document.getElementById("video");
+
+  if(!("mediaDevices" in navigator) || !navigator.mediaDevices.getUserMedia){
+    showMsg("danger", "متصفحك لا يدعم الكاميرا.");
+    return;
+  }
+
+  modal.style.display = "flex";
+
+  try{
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" },
+      audio: false
+    });
+    video.srcObject = mediaStream;
+    await video.play();
+  }catch(e){
+    showMsg("danger", "تم رفض صلاحية الكاميرا أو حدث خطأ.");
+    closeScanner();
+    return;
+  }
+
+  if(!("BarcodeDetector" in window)){
+    hint.textContent = "متصفحك لا يدعم قراءة QR مباشرة. جرّب Chrome.";
+    return;
+  }
+
+  try{
+    detector = new BarcodeDetector({formats: ["qr_code"]});
+  }catch(e){
+    hint.textContent = "تعذر تشغيل قارئ QR على هذا الجهاز.";
+    return;
+  }
+
+  hint.textContent = "وجّه الكاميرا نحو QR…";
+
+  // Loop scan
+  scanTimer = setInterval(async ()=>{
+    try{
+      const barcodes = await detector.detect(video);
+      if(barcodes && barcodes.length){
+        const raw = (barcodes[0].rawValue || "").trim();
+
+        // أحياناً QR يكون رابط أو نص - هنا نخلي النظام ذكي:
+        // إذا هو أرقام 6: اعتبره كود
+        // إذا رابط فيه code=xxxxxx: اسحب الكود
+        let code = raw;
+
+        const m = raw.match(/code=([0-9]{4,8})/i);
+        if(m) code = m[1];
+
+        const digits = code.match(/([0-9]{6})/);
+        if(digits) code = digits[1];
+
+        document.getElementById("lectureCode").value = code;
+        showMsg("success", "تم قراءة الكود من الباركود ✅");
+        closeScanner();
+      }
+    }catch(_){}
+  }, 350);
+
+}
+
+function closeScanner(){
+  const modal = document.getElementById("scanModal");
+  modal.style.display = "none";
+
+  const video = document.getElementById("video");
+  video.pause();
+  video.srcObject = null;
+
+  if(scanTimer){ clearInterval(scanTimer); scanTimer = null; }
+  if(mediaStream){
+    mediaStream.getTracks().forEach(t=>t.stop());
+    mediaStream = null;
+  }
+  detector = null;
 }
 </script>
 </body>
