@@ -1,293 +1,420 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Doctor - Hather</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Doctor - Hather</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/style.css" />
+<style>
+:root{
+  --bg1:#072c1a;
+  --bg2:#0a4a2c;
+  --bg3:#0f7b48;
 
-  <style>
-    /* شاشة القفل */
-    .lock-screen{
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background: radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-                  linear-gradient(135deg, rgba(8,45,26,.94), rgba(12,78,45,.92));
-      z-index: 9999;
-    }
-    .lock-card{
-      width: min(560px, 96vw);
-      border-radius: 26px;
-      padding: 22px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      backdrop-filter: blur(12px);
-    }
-    .lock-head{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      margin-bottom: 12px;
-    }
-    .lock-title{
-      display:flex; flex-direction:column; gap:2px;
-    }
-    .lock-title h1{ margin:0; font-size:20px; color: rgba(255,255,255,.95); font-weight:800; }
-    .lock-title p{ margin:0; font-size:13px; color: rgba(255,255,255,.72); }
-    .lock-row{ display:flex; gap:12px; margin-top: 14px; }
-    .lock-row .input{ flex:1; }
-    .lock-footer{ margin-top: 12px; }
-    .lock-note{ font-size:12px; color: rgba(255,255,255,.65); margin-top:8px; }
-    .hidden{ display:none !important; }
-  </style>
+  --card: rgba(255,255,255,.07);
+  --stroke: rgba(255,255,255,.14);
+
+  --text: rgba(255,255,255,.95);
+  --muted: rgba(255,255,255,.72);
+
+  --ok:#23c37a;
+  --warn:#ffcc66;
+  --bad:#ff6b6b;
+
+  --input: rgba(255,255,255,.10);
+  --input2: rgba(255,255,255,.14);
+
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+  --r: 22px;
+}
+*{box-sizing:border-box;font-family:"Cairo",system-ui,Segoe UI,Arial}
+body{
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(900px 460px at 50% 0%, rgba(255,255,255,.08), transparent 65%),
+    linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
+  min-height:100vh;
+}
+
+.hidden{display:none!important}
+
+.container{
+  width:min(1080px, 92vw);
+  margin: 26px auto 60px;
+}
+
+.brand{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding: 16px 18px;
+  background: var(--card);
+  border:1px solid var(--stroke);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.brand h1{margin:0;font-size:20px;font-weight:800}
+.brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+.top-actions{display:flex;gap:10px;align-items:center}
+.btn{
+  display:flex;gap:10px;align-items:center;justify-content:center;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,.10);
+  color: var(--text);
+  cursor:pointer;
+  user-select:none;
+}
+.btn.primary{
+  background: linear-gradient(135deg, rgba(12,120,70,.9), rgba(24,180,110,.95));
+  border-color: rgba(255,255,255,.10);
+}
+.btn:active{transform:scale(.98)}
+.btn .sub{display:block;font-size:11px;color:rgba(255,255,255,.75);margin-top:-2px}
+
+.card{
+  margin-top:16px;
+  background: var(--card);
+  border:1px solid var(--stroke);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  padding: 18px;
+}
+.hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:820px){ .row{grid-template-columns:1fr} }
+
+label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+.input{
+  width:100%;
+  padding: 12px 12px;
+  border-radius: 16px;
+  border:1px solid rgba(255,255,255,.12);
+  background: var(--input);
+  color: var(--text);
+  outline:none;
+}
+.input:focus{border-color: rgba(120,255,200,.35); background: var(--input2)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+.status{
+  margin-top:10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border:1px solid rgba(255,255,255,.12);
+  font-size:13px;
+  color: var(--muted);
+  background: rgba(0,0,0,.10);
+}
+.status.ok{border-color: rgba(35,195,122,.35); color: rgba(220,255,240,.95); background: rgba(35,195,122,.10)}
+.status.bad{border-color: rgba(255,107,107,.35); color: rgba(255,230,230,.95); background: rgba(255,107,107,.10)}
+.status.warn{border-color: rgba(255,204,102,.35); color: rgba(255,245,220,.95); background: rgba(255,204,102,.10)}
+
+.table-wrap{overflow:auto;border-radius:16px;border:1px solid rgba(255,255,255,.10)}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{padding:12px 10px;text-align:center;font-size:13px}
+thead th{background:rgba(0,0,0,.18);color:rgba(255,255,255,.9);position:sticky;top:0}
+tbody tr{border-top:1px solid rgba(255,255,255,.08)}
+tbody tr:hover{background:rgba(255,255,255,.06);cursor:pointer}
+
+.qr-wrap{display:grid;grid-template-columns: 1.2fr .8fr; gap:14px}
+@media (max-width:820px){ .qr-wrap{grid-template-columns:1fr} }
+
+.qr-box{
+  padding:14px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.12);
+}
+.qr-box img{
+  width:100%;
+  max-width:320px;
+  display:block;
+  margin:0 auto 10px;
+  background:#fff;
+  border-radius:16px;
+  padding:8px;
+}
+.qr-code-text{
+  text-align:center;
+  font-size:18px;
+  font-weight:800;
+}
+.qr-hint{
+  text-align:center;
+  margin-top:4px;
+  font-size:12px;
+  color: rgba(255,255,255,.80);
+}
+
+.modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;justify-content:center;
+  padding:16px;
+  z-index:1000;
+}
+.modal-card{
+  width:min(520px, 96vw);
+  background: rgba(10,40,24,.92);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius: 22px;
+  padding:16px;
+  box-shadow: var(--shadow);
+}
+.modal-card img{width:100%;background:#fff;border-radius:16px;padding:10px}
+.modal-actions{display:flex;justify-content:center;margin-top:12px}
+
+.lock-screen{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:18px;
+  background:
+    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+    linear-gradient(135deg, rgba(8,45,26,.94), rgba(12,78,45,.92));
+  z-index:2000;
+}
+.lock-card{
+  width: min(560px, 96vw);
+  border-radius: 26px;
+  padding: 22px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.lock-title h2{margin:0;font-size:22px;font-weight:800}
+.lock-title p{margin:6px 0 0;font-size:13px;color:rgba(255,255,255,.82)} /* <-- واضح */
+.lock-row{
+  display:flex;gap:12px;margin-top:14px;align-items:stretch
+}
+.pin-wrap{
+  position:relative;
+  flex:1;
+}
+.pin-input{
+  width:100%;
+  height:52px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  color:#fff;
+  padding: 0 48px 0 14px;
+  font-size:18px;
+  outline:none;
+}
+.pin-input:focus{border-color: rgba(120,255,200,.35)}
+.pin-eye{
+  position:absolute;
+  top:50%;right:10px;
+  transform:translateY(-50%);
+  width:34px;height:34px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.10);
+  color:#fff;
+  cursor:pointer;
+}
+.small{font-size:12px;color:rgba(255,255,255,.78)}
+</style>
 </head>
 
 <body>
 
-<!-- ===== شاشة القفل (تظهر أول شيء) ===== -->
+<!-- LOCK -->
 <div class="lock-screen" id="lockScreen">
   <div class="lock-card">
-    <div class="lock-head">
-      <div class="lock-title">
-        <h1>لوحة عضو هيئة التدريس</h1>
-        <p>يرجى إدخال كلمة المرور للمتابعة</p>
-      </div>
-      <div class="lang-chip" onclick="toggleLang()" title="AR/EN"><span>AR/EN</span></div>
+    <div class="lock-title">
+      <h2>لوحة عضو هيئة التدريس</h2>
+      <p>يرجى إدخال كلمة المرور للمتابعة</p>
     </div>
 
     <div class="hr"></div>
 
     <div class="lock-row">
-      <input id="doctorKeyLock" class="input" type="password" placeholder="كلمة المرور" inputmode="numeric" maxlength="10" />
-      <button class="btn primary" onclick="unlockDoctor()">
-        <div class="left">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M12 15v2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-            <path d="M7 10V8a5 5 0 0 1 10 0v2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-            <path d="M6 22h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2Z" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
-          </svg>
-        </div>
-        <div class="text" style="text-align:right">
-          <span>دخول</span>
+      <div class="pin-wrap">
+        <input id="doctorKeyLock" class="pin-input" type="password" placeholder="كلمة المرور" inputmode="numeric" maxlength="10" />
+        <button class="pin-eye" onclick="togglePin()" title="إظهار/إخفاء">👁</button>
+      </div>
+      <button class="btn primary" style="min-width:140px" onclick="unlockDoctor()">
+        <div>
+          <div style="font-weight:900">دخول</div>
           <span class="sub">PIN</span>
         </div>
       </button>
     </div>
 
-    <div class="lock-footer">
-      <div class="status" id="lockStatus"></div>
-      <div class="lock-note">هذه الصفحة مخصصة للدكتور فقط.</div>
-    </div>
+    <div id="lockStatus" class="status" style="margin-top:12px;display:none"></div>
+    <div class="small" style="margin-top:10px">هذه الصفحة مخصصة للدكتور فقط.</div>
   </div>
 </div>
 
-<!-- ===== الصفحة الأصلية (مقفلة لحد ما يفتحها) ===== -->
-<div id="doctorApp" class="hidden">
+<!-- APP -->
+<div class="container hidden" id="doctorApp">
+  <div class="brand">
+    <div>
+      <h1>لوحة التحكم – عضو هيئة التدريس</h1>
+      <p>إدارة المحاضرات، الجدولة الأسبوعية، رموز الحضور</p>
+    </div>
+    <div class="top-actions">
+      <button class="btn" onclick="lockAgain()">🔒 <span class="sub">قفل</span></button>
+    </div>
+  </div>
 
-  <div class="container">
-    <div class="brand">
-      <div class="brand-left">
-        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="rgba(255,255,255,.9)" stroke-width="1.8"/>
-          </svg>
-        </div>
-        <div class="brand-titles">
-          <h1 data-i18n="doctorTitle">لوحة عضو هيئة التدريس</h1>
-          <p data-i18n="doctorSub">إدارة المحاضرات والرموز</p>
-        </div>
+  <div class="card">
+
+    <input id="doctorKey" type="hidden" value="" />
+
+    <h3 style="margin:0 0 10px">إنشاء محاضرة</h3>
+    <div class="row">
+      <div>
+        <label>المقرر</label>
+        <input id="course" class="input" placeholder="مثال: CS111" />
       </div>
-
-      <div class="top-actions">
-        <div class="lang-chip" onclick="toggleLang()"><span>AR/EN</span></div>
-        <button class="btn" onclick="lockAgain()" title="قفل">
-          <div class="left"><span style="font-weight:900">🔒</span></div>
-          <div class="text"><span>قفل</span><span class="sub">Logout</span></div>
-        </button>
+      <div>
+        <label>الشعبة</label>
+        <input id="section" class="input" placeholder="مثال: 1" />
       </div>
     </div>
 
-    <div class="grid-center">
-      <div class="card wide">
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label>وقت البداية</label>
+        <input id="start" class="input" type="datetime-local" />
+      </div>
+      <div>
+        <label>وقت النهاية</label>
+        <input id="end" class="input" type="datetime-local" />
+      </div>
+    </div>
 
-        <!-- نخزن كلمة المرور هنا بعد الفتح -->
-        <input id="doctorKey" type="hidden" value="" />
+    <div class="actions">
+      <button class="btn primary" onclick="createLecture()">إنشاء <span class="sub">محاضرة واحدة</span></button>
+      <button class="btn" onclick="loadLectures()">تحديث <span class="sub">قائمة المحاضرات</span></button>
+    </div>
 
-        <!-- Create Lecture -->
-        <h3 style="margin:0 0 10px">إنشاء محاضرة</h3>
-        <div class="row">
-          <div>
-            <label>المقرر</label>
-            <input id="course" class="input" placeholder="مثال: CS111" />
-          </div>
-          <div>
-            <label>الشعبة</label>
-            <input id="section" class="input" placeholder="مثال: 1" />
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label>وقت البداية</label>
-            <input id="start" class="input" type="datetime-local" />
-          </div>
-          <div>
-            <label>وقت النهاية</label>
-            <input id="end" class="input" type="datetime-local" />
-          </div>
-        </div>
+    <div id="createStatus" class="status" style="display:none"></div>
+
+    <div class="hr"></div>
+
+    <h3 style="margin:0 0 10px">إنشاء جدول أسبوعي</h3>
+    <div class="row">
+      <div>
+        <label>المقرر</label>
+        <input id="wCourse" class="input" placeholder="مثال: CS111" />
+      </div>
+      <div>
+        <label>الشعبة</label>
+        <input id="wSection" class="input" placeholder="مثال: 1" />
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label>من تاريخ</label>
+        <input id="fromDate" class="input" type="date" />
+      </div>
+      <div>
+        <label>إلى تاريخ</label>
+        <input id="toDate" class="input" type="date" />
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label>وقت البداية</label>
+        <input id="wStartTime" class="input" type="time" />
+      </div>
+      <div>
+        <label>وقت النهاية</label>
+        <input id="wEndTime" class="input" type="time" />
+      </div>
+    </div>
+
+    <div style="margin-top:10px" class="small">الأيام:</div>
+    <div class="row" style="grid-template-columns:repeat(5,1fr); margin-top:8px">
+      <label class="small"><input type="checkbox" class="day" value="0"> أحد</label>
+      <label class="small"><input type="checkbox" class="day" value="1"> اثنين</label>
+      <label class="small"><input type="checkbox" class="day" value="2"> ثلاثاء</label>
+      <label class="small"><input type="checkbox" class="day" value="3"> أربعاء</label>
+      <label class="small"><input type="checkbox" class="day" value="4"> خميس</label>
+    </div>
+
+    <div class="actions" style="margin-top:10px">
+      <button class="btn primary" onclick="createSchedule()">إنشاء الجدول <span class="sub">يولّد محاضرات تلقائيًا</span></button>
+    </div>
+    <div id="scheduleStatus" class="status" style="display:none"></div>
+
+    <div class="hr"></div>
+
+    <h3 style="margin:0 0 10px">المحاضرات</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>LectureID</th>
+            <th>المقرر</th>
+            <th>الشعبة</th>
+            <th>البداية</th>
+            <th>النهاية</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody id="lectureRows"></tbody>
+      </table>
+    </div>
+
+    <div class="hr"></div>
+
+    <h3 style="margin:0 0 10px">الكود و QR للمحاضرة</h3>
+    <div class="qr-wrap">
+      <div>
+        <label>LectureID المحدد</label>
+        <input id="selectedLectureId" class="input" placeholder="اختر من الجدول أو الصقه هنا" />
 
         <div class="actions">
-          <button id="btnCreate" class="btn primary" onclick="createLecture()">
-            <div class="left"><div class="spinner" id="spCreate"></div></div>
-            <div class="text"><span>إنشاء</span><span class="sub">محاضرة واحدة</span></div>
-          </button>
-          <button class="btn" onclick="loadLectures()">
-            <div class="left"><span style="font-weight:900">↻</span></div>
-            <div class="text"><span>تحديث</span><span class="sub">قائمة المحاضرات</span></div>
-          </button>
+          <button class="btn primary" onclick="generateNewCode()">توليد رمز حضور <span class="sub">Code + QR</span></button>
+          <button class="btn" onclick="showStudents()">عرض الطلاب <span class="sub">لهذه المحاضرة</span></button>
         </div>
 
-        <div class="status" id="createStatus"></div>
+        <div id="codeStatus" class="status" style="display:none"></div>
+      </div>
 
-        <div class="hr"></div>
+      <div class="qr-box">
+        <img id="qrImg" alt="QR">
+        <div class="qr-code-text" id="codeText">Code: —</div>
+        <div class="qr-hint">صلاحية قصيرة لتقليل المشاركة</div>
 
-        <!-- Weekly Schedule -->
-        <h3 style="margin:0 0 10px">إنشاء جدول أسبوعي</h3>
-        <div class="row">
-          <div>
-            <label>المقرر</label>
-            <input id="wCourse" class="input" placeholder="مثال: CS111" />
-          </div>
-          <div>
-            <label>الشعبة</label>
-            <input id="wSection" class="input" placeholder="مثال: 1" />
-          </div>
+        <div class="actions" style="justify-content:center">
+          <button class="btn" onclick="zoomQR()">⤢ <span class="sub">تكبير QR</span></button>
         </div>
-
-        <div class="row">
-          <div>
-            <label>من تاريخ</label>
-            <input id="fromDate" class="input" type="date" />
-          </div>
-          <div>
-            <label>إلى تاريخ</label>
-            <input id="toDate" class="input" type="date" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label>وقت البداية</label>
-            <input id="wStartTime" class="input" type="time" />
-          </div>
-          <div>
-            <label>وقت النهاية</label>
-            <input id="wEndTime" class="input" type="time" />
-          </div>
-        </div>
-
-        <div style="margin-top:8px" class="small">الأيام:</div>
-        <div class="row" style="grid-template-columns: repeat(5, 1fr); margin-top:8px">
-          <label class="day-chip"><input type="checkbox" class="day" value="0"> أحد</label>
-          <label class="day-chip"><input type="checkbox" class="day" value="1"> اثنين</label>
-          <label class="day-chip"><input type="checkbox" class="day" value="2"> ثلاثاء</label>
-          <label class="day-chip"><input type="checkbox" class="day" value="3"> أربعاء</label>
-          <label class="day-chip"><input type="checkbox" class="day" value="4"> خميس</label>
-        </div>
-
-        <div class="actions" style="margin-top:10px">
-          <button id="btnSchedule" class="btn primary" onclick="createSchedule()">
-            <div class="left"><div class="spinner" id="spSchedule"></div></div>
-            <div class="text"><span>إنشاء الجدول</span><span class="sub">يولّد محاضرات تلقائيًا</span></div>
-          </button>
-        </div>
-
-        <div class="status" id="scheduleStatus"></div>
-
-        <div class="hr"></div>
-
-        <!-- Lectures -->
-        <h3 style="margin:0 0 10px">المحاضرات</h3>
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>LectureID</th>
-                <th>المقرر</th>
-                <th>الشعبة</th>
-                <th>البداية</th>
-                <th>النهاية</th>
-                <th>الحالة</th>
-              </tr>
-            </thead>
-            <tbody id="lectureRows"></tbody>
-          </table>
-        </div>
-
-        <div class="hr"></div>
-
-        <!-- QR + Code -->
-        <h3 style="margin:0 0 10px">الكود و QR للمحاضرة</h3>
-
-        <div class="qr-wrap">
-          <div class="card inner-card">
-            <label>LectureID المحدد</label>
-            <input id="selectedLectureId" class="input" placeholder="اختر من الجدول أو الصقه هنا" />
-
-            <div style="height:10px"></div>
-            <div class="actions">
-              <button id="btnCode" class="btn primary" onclick="generateNewCode()">
-                <div class="left"><div class="spinner" id="spCode"></div></div>
-                <div class="text"><span>توليد رمز حضور جديد</span><span class="sub">Code + QR</span></div>
-              </button>
-              <button class="btn" onclick="showStudents()">
-                <div class="left"><span style="font-weight:900">👥</span></div>
-                <div class="text"><span>عرض الطلاب</span><span class="sub">لهذه المحاضرة</span></div>
-              </button>
-            </div>
-
-            <div class="status" id="codeStatus"></div>
-          </div>
-
-          <div class="qr-box">
-            <img id="qrImg" alt="QR">
-            <div class="qr-code-text" id="codeText">Code: —</div>
-            <div class="qr-hint">صلاحية قصيرة لتقليل المشاركة</div>
-            <div class="qr-actions">
-              <button class="btn" onclick="zoomQR()">
-                <div class="left"><span style="font-weight:900">⤢</span></div>
-                <div class="text"><span>تكبير QR</span><span class="sub">للعرض على الطلاب</span></div>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <h3 style="margin:0 0 10px">طلاب المحاضرة</h3>
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>StudentID</th>
-                <th>الاسم</th>
-                <th>الحالة</th>
-              </tr>
-            </thead>
-            <tbody id="studentRows"></tbody>
-          </table>
-        </div>
-
       </div>
     </div>
+
+    <div class="hr"></div>
+
+    <h3 style="margin:0 0 10px">طلاب المحاضرة</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>StudentID</th>
+            <th>الاسم</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody id="studentRows"></tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 
@@ -296,33 +423,42 @@
   <div class="modal-card" onclick="event.stopPropagation()">
     <img id="qrBig" alt="QR Big">
     <div class="modal-actions">
-      <button class="btn primary" onclick="closeQrModal()">
-        <div class="left"><span style="font-weight:900">✕</span></div>
-        <div class="text"><span>إغلاق</span><span class="sub">—</span></div>
-      </button>
+      <button class="btn primary" onclick="closeQrModal()">إغلاق</button>
     </div>
   </div>
 </div>
 
-<script src="assets/app.js"></script>
 <script>
-applyLang();
-
+/* ====== CONFIG ====== */
+const API_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 const DOCTOR_PIN = "1111";
+
+/* ====== UI helpers ====== */
+function showStatus(el, type, msg){
+  el.style.display="block";
+  el.className = "status " + (type||"");
+  el.textContent = msg;
+}
+function hideStatus(el){ el.style.display="none"; el.textContent=""; }
+
+/* ====== Lock ====== */
+function togglePin(){
+  const i = document.getElementById("doctorKeyLock");
+  i.type = (i.type === "password") ? "text" : "password";
+}
 
 function unlockDoctor(){
   const k = (document.getElementById("doctorKeyLock").value || "").trim();
   const st = document.getElementById("lockStatus");
 
   if(k !== DOCTOR_PIN){
-    showStatus(st, "danger", "كلمة المرور غير صحيحة");
+    showStatus(st, "bad", "كلمة المرور غير صحيحة");
     return;
   }
 
   document.getElementById("doctorKey").value = k;
   document.getElementById("lockScreen").style.display = "none";
   document.getElementById("doctorApp").classList.remove("hidden");
-
   loadLectures();
 }
 
@@ -331,42 +467,55 @@ function lockAgain(){
   document.getElementById("doctorKeyLock").value = "";
   document.getElementById("doctorApp").classList.add("hidden");
   document.getElementById("lockScreen").style.display = "flex";
+  hideStatus(document.getElementById("lockStatus"));
 }
 
 function getDoctorKey(){
   return (document.getElementById("doctorKey").value || "").trim();
 }
 
+/* ====== API ====== */
+async function apiCall(payload){
+  try{
+    const res = await fetch(API_URL, {
+      method:"POST",
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  }catch(e){
+    return { ok:false, error:"Network error", details:String(e) };
+  }
+}
+
+/* ====== Actions ====== */
 async function createLecture(){
   const doctorKey = getDoctorKey();
   const st = document.getElementById("createStatus");
-  if(doctorKey !== DOCTOR_PIN){ showStatus(st,"danger","غير مصرح"); lockAgain(); return; }
 
   const course = (document.getElementById("course").value||"").trim();
   const section= (document.getElementById("section").value||"").trim();
   const start  = (document.getElementById("start").value||"").trim();
   const end    = (document.getElementById("end").value||"").trim();
 
-  const btn = document.getElementById("btnCreate");
-  const sp  = document.getElementById("spCreate");
-  setLoading(btn, sp, true);
-  showStatus(st,"warn",t("loading"));
+  if(!course || !section || !start || !end){
+    showStatus(st, "bad", "فضلاً أكمل جميع الحقول");
+    return;
+  }
 
+  showStatus(st,"warn","جاري الإنشاء...");
   const res = await apiCall({action:"createLecture", doctorKey, course, section, start, end});
-  setLoading(btn, sp, false);
 
   if(res && res.ok){
-    showStatus(st,"success","تم إنشاء المحاضرة");
+    showStatus(st,"ok","تم إنشاء المحاضرة ✅");
     loadLectures();
   }else{
-    showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
+    showStatus(st,"bad", (res&&res.error)?res.error:"فشل");
   }
 }
 
 async function createSchedule(){
   const doctorKey = getDoctorKey();
   const st = document.getElementById("scheduleStatus");
-  if(doctorKey !== DOCTOR_PIN){ showStatus(st,"danger","غير مصرح"); lockAgain(); return; }
 
   const course = (document.getElementById("wCourse").value||"").trim();
   const section= (document.getElementById("wSection").value||"").trim();
@@ -376,11 +525,12 @@ async function createSchedule(){
   const endTime  = (document.getElementById("wEndTime").value||"").trim();
   const days = [...document.querySelectorAll(".day:checked")].map(x=>Number(x.value));
 
-  const btn = document.getElementById("btnSchedule");
-  const sp  = document.getElementById("spSchedule");
-  setLoading(btn, sp, true);
-  showStatus(st,"warn",t("loading"));
+  if(!course || !section || !fromDate || !toDate || !startTime || !endTime || !days.length){
+    showStatus(st,"bad","فضلاً أكمل الحقول واختر الأيام");
+    return;
+  }
 
+  showStatus(st,"warn","جاري إنشاء الجدول...");
   const res = await apiCall({
     action:"createWeeklySchedule",
     doctorKey, course, section,
@@ -389,13 +539,11 @@ async function createSchedule(){
     days
   });
 
-  setLoading(btn, sp, false);
-
   if(res && res.ok){
-    showStatus(st,"success","تم إنشاء الجدول الأسبوعي");
+    showStatus(st,"ok",`تم إنشاء الجدول ✅ (عدد المحاضرات: ${res.created})`);
     loadLectures();
   }else{
-    showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
+    showStatus(st,"bad",(res&&res.error)?res.error:"فشل");
   }
 }
 
@@ -405,6 +553,7 @@ async function loadLectures(){
   tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
 
   const res = await apiCall({action:"listLectures", doctorKey});
+
   if(!res || !res.ok){
     tbody.innerHTML = `<tr><td colspan="6">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
     return;
@@ -412,13 +561,13 @@ async function loadLectures(){
 
   const rows = res.rows || [];
   tbody.innerHTML = rows.map(r=>`
-    <tr onclick="pickLecture('${escapeAttr(r.lectureId||"")}')">
-      <td><b>${escapeHtml(r.lectureId||"")}</b></td>
-      <td>${escapeHtml(r.course||"")}</td>
-      <td>${escapeHtml(r.section||"")}</td>
-      <td>${escapeHtml(r.start||"")}</td>
-      <td>${escapeHtml(r.end||"")}</td>
-      <td>${escapeHtml(r.state||"")}</td>
+    <tr onclick="pickLecture('${r.lectureId||""}')">
+      <td><b>${r.lectureId||""}</b></td>
+      <td>${r.course||""}</td>
+      <td>${r.section||""}</td>
+      <td>${r.start||""}</td>
+      <td>${r.end||""}</td>
+      <td>${r.state||""}</td>
     </tr>
   `).join("") || `<tr><td colspan="6">لا توجد محاضرات</td></tr>`;
 }
@@ -432,35 +581,21 @@ async function generateNewCode(){
   const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
   const st = document.getElementById("codeStatus");
 
-  if(doctorKey !== DOCTOR_PIN){ showStatus(st,"danger","غير مصرح"); lockAgain(); return; }
-  if(!lectureId){ showStatus(st,"danger","اختر LectureID أولاً"); return; }
+  if(!lectureId){
+    showStatus(st,"bad","اختر LectureID أولاً");
+    return;
+  }
 
-  const btn = document.getElementById("btnCode");
-  const sp  = document.getElementById("spCode");
-  setLoading(btn, sp, true);
-  showStatus(st,"warn",t("loading"));
-
+  showStatus(st,"warn","جاري توليد الرمز...");
   const res = await apiCall({action:"generateCode", doctorKey, lectureId});
-  setLoading(btn, sp, false);
 
   if(res && res.ok){
-    showStatus(st,"success","تم توليد كود جديد ✅");
-    const code = res.code || "—";
-    const qrUrl = res.qrUrl || "";
-    document.getElementById("codeText").textContent = `Code: ${code}`;
-
-    // إذا السكربت ما يرجع qrUrl بنستخدم QR جاهز من الخدمة العامة
-    const qr = qrUrl || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(code)}`;
-    document.getElementById("qrImg").src = qr;
+    showStatus(st,"ok","تم توليد رمز جديد ✅");
+    document.getElementById("codeText").textContent = `Code: ${res.code || "—"}`;
+    document.getElementById("qrImg").src = res.qrUrl || "";
   }else{
-    showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
+    showStatus(st,"bad",(res&&res.error)?res.error:"فشل");
   }
-}
-
-function zoomQR(){
-  const src = document.getElementById("qrImg").src;
-  if(!src) return;
-  openQrModal(src);
 }
 
 async function showStudents(){
@@ -468,8 +603,10 @@ async function showStudents(){
   const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
   const tbody = document.getElementById("studentRows");
 
-  if(doctorKey !== DOCTOR_PIN){ tbody.innerHTML = `<tr><td colspan="3">غير مصرح</td></tr>`; lockAgain(); return; }
-  if(!lectureId){ tbody.innerHTML = `<tr><td colspan="3">اختر LectureID أولاً</td></tr>`; return; }
+  if(!lectureId){
+    tbody.innerHTML = `<tr><td colspan="3">اختر LectureID أولاً</td></tr>`;
+    return;
+  }
 
   tbody.innerHTML = `<tr><td colspan="3">جاري التحميل...</td></tr>`;
   const res = await apiCall({action:"listStudentsForLecture", doctorKey, lectureId});
@@ -482,13 +619,23 @@ async function showStudents(){
   const rows = res.rows || [];
   tbody.innerHTML = rows.map(r=>`
     <tr>
-      <td>${escapeHtml(r.studentId||"")}</td>
-      <td>${escapeHtml(r.name||"")}</td>
-      <td>${escapeHtml(r.status||"")}</td>
+      <td>${r.studentId||""}</td>
+      <td>${r.name||""}</td>
+      <td>${r.status||""}</td>
     </tr>
   `).join("") || `<tr><td colspan="3">لا يوجد طلاب</td></tr>`;
 }
-</script>
 
+/* ===== QR modal ===== */
+function zoomQR(){
+  const src = document.getElementById("qrImg").src;
+  if(!src) return;
+  document.getElementById("qrBig").src = src;
+  document.getElementById("qrModal").style.display="flex";
+}
+function closeQrModal(){
+  document.getElementById("qrModal").style.display="none";
+}
+</script>
 </body>
-  </html>
+</html>
