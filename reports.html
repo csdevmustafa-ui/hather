@@ -3,203 +3,195 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hather - تقارير الحضور</title>
+<title>Reports - Hather</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+:root{
+  --bg1:#083d25;
+  --bg2:#0f6b42;
+  --card:rgba(255,255,255,.08);
+  --line:rgba(255,255,255,.16);
+  --text:rgba(255,255,255,.95);
+  --muted:rgba(255,255,255,.90);
+  --shadow:0 18px 60px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;font-family:'Cairo',sans-serif}
 body{
-  min-height:100vh;
-  background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
-  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
+  margin:0; min-height:100vh;
+  background:
+    radial-gradient(1200px 700px at 40% -10%, rgba(255,255,255,.08), transparent 60%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:var(--text);
 }
+.container{width:min(1100px,92vw);margin:26px auto}
+.brand{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.brand h1{margin:0;font-size:22px;font-weight:900}
+.brand p{margin:6px 0 0;color:#fff;opacity:.95;font-size:13px}
 .card{
-  width:100%;max-width:760px;border-radius:20px;padding:22px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(10px);
-  box-shadow:0 20px 50px rgba(0,0,0,0.35);
-  border:1px solid rgba(255,255,255,0.12);
+  background:var(--card); border:1px solid var(--line);
+  border-radius:22px; box-shadow:var(--shadow);
+  backdrop-filter: blur(12px);
+  padding:18px;
 }
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.topbar a{color:#eafff3;text-decoration:none;font-weight:900}
-.icon-btn{
-  width:40px;height:40px;border-radius:12px;border:none;
-  background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px
-}
-.h1{font-size:20px;font-weight:900;color:#eafff3;margin-top:6px}
-.h2{font-size:13px;color:#d2f5e3;margin-top:6px}
-
-.panel{
-  margin-top:16px;border-radius:16px;padding:16px;
-  background:linear-gradient(135deg,#e9fff4,#c9f5de);
-  color:#0d2c1a;
-  box-shadow:0 10px 25px rgba(0,0,0,0.20);
-}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
-label{display:block;font-weight:900;margin-bottom:6px;color:#0d2c1a}
-input{
-  padding:14px 12px;border-radius:12px;border:2px solid #bfead4;
-  font-size:16px;outline:none;background:#fff;color:#0d2c1a;min-width:240px
-}
-input:focus{border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,70,.18)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.grid3{grid-template-columns:1fr}}
+.kpi{display:flex;flex-direction:column;gap:6px}
+.kpi .v{font-size:28px;font-weight:900}
+.kpi .t{opacity:.95}
+.table-wrap{overflow:auto;border-radius:18px;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;min-width:860px}
+th,td{padding:10px;text-align:center;white-space:nowrap}
+th{background:rgba(0,0,0,.24);color:#fff}
+tbody tr:hover{background:rgba(255,255,255,.06)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .btn{
-  border:none;border-radius:14px;padding:14px 16px;
-  font-weight:900;font-size:16px;cursor:pointer;
-  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:10px;border:none;border-radius:16px;
+  padding:12px 14px;cursor:pointer;color:#fff;font-weight:900;
+  background:rgba(255,255,255,.14);
 }
-.msg{margin-top:10px;font-weight:900;min-height:22px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}}
-.box{
-  background:rgba(13,44,26,.08);
-  border:1px solid rgba(13,44,26,.18);
-  border-radius:14px;padding:14px;
+.btn.primary{background:linear-gradient(135deg,#19c37d,#0f9d62)}
+.status{margin-top:10px;font-weight:900;color:#fff}
+.small{color:#fff;opacity:.95;font-size:12px}
+.input{
+  width:100%; padding:12px 14px; border-radius:16px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.12); color:#fff; outline:none;
 }
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
-@media(max-width:620px){.kpis{grid-template-columns:repeat(2,1fr)}}
-.kpi{
-  background:#fff;border-radius:14px;padding:12px;
-  border:2px solid #d9f7ea;
-}
-.kpi .v{font-size:22px;font-weight:900;color:#0d2c1a}
-.kpi .l{font-size:12px;font-weight:800;color:#2f6b4c;margin-top:3px}
-canvas{width:100% !important; height:280px !important;}
 </style>
 </head>
 
 <body>
-<div class="card">
-  <div class="topbar">
-    <a href="./index.html">⟵ <span id="backTxt">رجوع</span></a>
-    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
+<div class="container">
+  <div class="brand">
+    <div>
+      <h1>التقارير</h1>
+      <p>لوحة إحصائية للحضور والمحاضرات</p>
+    </div>
+    <div class="actions" style="margin:0">
+      <button class="btn" onclick="openApiSetup()">⚙️ إعداد الربط</button>
+      <button class="btn" onclick="location.href='doctor.html'">العودة للدكتور</button>
+    </div>
   </div>
 
-  <div class="h1" id="titleTxt">تقارير الحضور</div>
-  <div class="h2" id="subTxt">ادخل الرقم الجامعي لعرض الإحصائيات</div>
-
-  <div class="panel">
-    <div class="row">
-      <div>
-        <label id="labSid">الرقم الجامعي</label>
-        <input id="studentId" inputmode="numeric" maxlength="9" placeholder="123456789">
-      </div>
-      <button class="btn" id="btnLoad"><span id="btnTxt">عرض التقرير</span></button>
+  <div class="card" style="margin-bottom:12px;">
+    <div class="actions" style="margin:0">
+      <input id="doctorKey" class="input" type="password" placeholder="PIN الدكتور (1111)" inputmode="numeric" />
+      <button class="btn primary" onclick="loadSummary()">تحديث التقارير</button>
     </div>
+    <div class="small" style="margin-top:8px;">(الـ PIN هنا فقط لقراءة التقارير من الشيت)</div>
+    <div class="status" id="repStatus"></div>
+  </div>
 
-    <div class="msg" id="msg"></div>
-
-    <div class="kpis" id="kpis" style="display:none">
-      <div class="kpi"><div class="v" id="vPresent">0</div><div class="l" id="lPresent">حضور</div></div>
-      <div class="kpi"><div class="v" id="vLate">0</div><div class="l" id="lLate">تأخير</div></div>
-      <div class="kpi"><div class="v" id="vAbsent">0</div><div class="l" id="lAbsent">غياب</div></div>
-      <div class="kpi"><div class="v" id="vExcused">0</div><div class="l" id="lExcused">معذور</div></div>
+  <div class="grid3">
+    <div class="card kpi">
+      <div class="t">عدد المحاضرات</div>
+      <div class="v" id="kLectures">—</div>
+      <div class="small">إجمالي المحاضرات المسجلة</div>
     </div>
-
-    <div class="grid" id="charts" style="display:none">
-      <div class="box">
-        <div style="font-weight:900;margin-bottom:10px" id="chartTitle1">توزيع الحالات</div>
-        <canvas id="pie"></canvas>
-      </div>
-      <div class="box">
-        <div style="font-weight:900;margin-bottom:10px" id="chartTitle2">نسبة الحضور</div>
-        <canvas id="bar"></canvas>
-      </div>
+    <div class="card kpi">
+      <div class="t">عدد الطلاب</div>
+      <div class="v" id="kStudents">—</div>
+      <div class="small">طلاب مسجلون في النظام</div>
     </div>
+    <div class="card kpi">
+      <div class="t">متوسط الحضور</div>
+      <div class="v" id="kRate">—</div>
+      <div class="small">متوسط تقريبي عام</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <h3 style="margin:0 0 10px;">أعلى المحاضرات حضورًا</h3>
+    <canvas id="chartLectures" height="120"></canvas>
+    <div class="small" style="margin-top:8px;">يعرض آخر 12 محاضرة حسب الحضور.</div>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <h3 style="margin:0 0 10px;">آخر المحاضرات</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>LectureID</th>
+            <th>المقرر</th>
+            <th>الشعبة</th>
+            <th>البداية</th>
+            <th>النهاية</th>
+            <th>الحضور</th>
+          </tr>
+        </thead>
+        <tbody id="lecRows">
+          <tr><td colspan="6">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="small" style="margin-top:8px;">(اضغط LectureID لاحضار تفاصيل الطلاب لاحقًا إذا حبيت)</div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="assets/app.js"></script>
+
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
+let chart = null;
 
-// لغة
-const STR={
-  ar:{dir:"rtl",lang:"ar",back:"رجوع",title:"تقارير الحضور",sub:"ادخل الرقم الجامعي لعرض الإحصائيات",
-      sid:"الرقم الجامعي",btn:"عرض التقرير",
-      p:"حضور",l:"تأخير",a:"غياب",e:"معذور",
-      c1:"توزيع الحالات",c2:"نسبة الحضور"},
-  en:{dir:"ltr",lang:"en",back:"Back",title:"Attendance Reports",sub:"Enter student ID to view stats",
-      sid:"Student ID",btn:"View Report",
-      p:"Present",l:"Late",a:"Absent",e:"Excused",
-      c1:"Status Distribution",c2:"Attendance Rate"}
-};
-function getLang(){return localStorage.getItem("hather_lang")||"ar";}
-function setLang(l){localStorage.setItem("hather_lang",l);}
-function applyLang(){
-  const t=STR[getLang()];
-  document.documentElement.lang=t.lang; document.documentElement.dir=t.dir;
-  backTxt.textContent=t.back; titleTxt.textContent=t.title; subTxt.textContent=t.sub;
-  labSid.textContent=t.sid; btnTxt.textContent=t.btn;
-  lPresent.textContent=t.p; lLate.textContent=t.l; lAbsent.textContent=t.a; lExcused.textContent=t.e;
-  chartTitle1.textContent=t.c1; chartTitle2.textContent=t.c2;
-}
-langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
-applyLang();
+function setStatus(msg){ document.getElementById("repStatus").textContent = msg || ""; }
 
-let pieChart=null, barChart=null;
+async function loadSummary(){
+  const doctorKey = (document.getElementById("doctorKey").value||"").trim();
+  if(!doctorKey){ setStatus("❌ أدخل PIN"); return; }
 
-function okMsg(t){msg.style.color="#0d2c1a"; msg.textContent=t;}
-function badMsg(t){msg.style.color="#b00020"; msg.textContent=t;}
+  setStatus("⏳ تحميل البيانات...");
+  const res = await apiCall({ action:"getReportsSummary", doctorKey });
 
-btnLoad.onclick = async ()=>{
-  const sid = studentId.value.trim();
-  if(!/^\d{9}$/.test(sid)) return badMsg(getLang()==="ar"?"❌ الرقم الجامعي لازم 9 أرقام":"❌ Student ID must be 9 digits");
-
-  okMsg(getLang()==="ar"?"⏳ جاري تحميل التقرير...":"⏳ Loading...");
-  try{
-    const url = SCRIPT_URL + "?studentId=" + encodeURIComponent(sid);
-    const res = await fetch(url);
-    const data = await res.json();
-    if(!data.ok) return badMsg(data.result || "❌ Failed");
-
-    const present = Number(data.present||0);
-    const late = Number(data.late||0);
-    const absent = Number(data.absent||0);
-    const excused = Number(data.excused||0);
-    const total = present + late + absent + excused;
-
-    vPresent.textContent=present;
-    vLate.textContent=late;
-    vAbsent.textContent=absent;
-    vExcused.textContent=excused;
-
-    kpis.style.display="grid";
-    charts.style.display="grid";
-
-    // Pie
-    const pieCtx = document.getElementById("pie");
-    if(pieChart) pieChart.destroy();
-    pieChart = new Chart(pieCtx,{
-      type:"doughnut",
-      data:{
-        labels:[STR[getLang()].p, STR[getLang()].l, STR[getLang()].a, STR[getLang()].e],
-        datasets:[{ data:[present,late,absent,excused] }]
-      },
-      options:{responsive:true, plugins:{legend:{position:"bottom"}}}
-    });
-
-    // Bar: attendance rate
-    const attRate = total ? Math.round(((present+late+excused)/total)*100) : 0;
-    const barCtx = document.getElementById("bar");
-    if(barChart) barChart.destroy();
-    barChart = new Chart(barCtx,{
-      type:"bar",
-      data:{
-        labels:[getLang()==="ar"?"الحضور الإجمالي":"Overall Attendance"],
-        datasets:[{ data:[attRate] }]
-      },
-      options:{
-        responsive:true,
-        scales:{y:{beginAtZero:true,max:100}},
-        plugins:{legend:{display:false}}
-      }
-    });
-
-    okMsg(getLang()==="ar"?"✅ تم عرض التقرير":"✅ Report loaded");
-  }catch(e){
-    badMsg(getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+  if(!res || !res.ok){
+    setStatus("❌ " + ((res&&res.error)||"Failed"));
+    return;
   }
-};
+
+  setStatus("✅ تم التحديث");
+  document.getElementById("kLectures").textContent = res.totalLectures ?? "0";
+  document.getElementById("kStudents").textContent = res.totalStudents ?? "0";
+  document.getElementById("kRate").textContent = (res.avgRate ?? 0) + "%";
+
+  const list = res.lectures || [];
+  const tbody = document.getElementById("lecRows");
+  tbody.innerHTML = list.map(x=>`
+    <tr>
+      <td><b>${x.lectureId||""}</b></td>
+      <td>${x.course||""}</td>
+      <td>${x.section||""}</td>
+      <td>${x.start||""}</td>
+      <td>${x.end||""}</td>
+      <td>${x.attended||0}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="6">لا توجد بيانات</td></tr>`;
+
+  // Chart: top 12 by attended (from latest list)
+  const top = [...list].sort((a,b)=>(b.attended||0)-(a.attended||0)).slice(0,12);
+  const labels = top.map(x => (x.course||"") + " / " + (x.section||"") );
+  const data = top.map(x => x.attended||0);
+
+  const ctx = document.getElementById("chartLectures").getContext("2d");
+  if(chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: { labels, datasets: [{ label: "الحضور", data }] },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: "#fff" } } },
+      scales: {
+        x: { ticks: { color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } },
+        y: { ticks: { color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } }
+      }
+    }
+  });
+}
 </script>
 </body>
 </html>
