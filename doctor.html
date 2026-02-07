@@ -1,641 +1,261 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Doctor - Hather</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة عضو هيئة التدريس</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 
 <style>
-:root{
-  --bg1:#072c1a;
-  --bg2:#0a4a2c;
-  --bg3:#0f7b48;
+*{font-family:'Cairo',sans-serif;box-sizing:border-box}
 
-  --card: rgba(255,255,255,.07);
-  --stroke: rgba(255,255,255,.14);
-
-  --text: rgba(255,255,255,.95);
-  --muted: rgba(255,255,255,.72);
-
-  --ok:#23c37a;
-  --warn:#ffcc66;
-  --bad:#ff6b6b;
-
-  --input: rgba(255,255,255,.10);
-  --input2: rgba(255,255,255,.14);
-
-  --shadow: 0 18px 60px rgba(0,0,0,.35);
-  --r: 22px;
-}
-*{box-sizing:border-box;font-family:"Cairo",system-ui,Segoe UI,Arial}
 body{
   margin:0;
-  color:var(--text);
-  background:
-    radial-gradient(900px 460px at 50% 0%, rgba(255,255,255,.08), transparent 65%),
-    linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
-  min-height:100vh;
+  background:linear-gradient(135deg,#083d25,#0f6b42);
+  color:#fff;
 }
 
-.hidden{display:none!important}
-
-.container{
-  width:min(1080px, 92vw);
-  margin: 26px auto 60px;
-}
-
-.brand{
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding: 16px 18px;
-  background: var(--card);
-  border:1px solid var(--stroke);
-  border-radius: var(--r);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-}
-.brand h1{margin:0;font-size:20px;font-weight:800}
-.brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
-
-.top-actions{display:flex;gap:10px;align-items:center}
-.btn{
-  display:flex;gap:10px;align-items:center;justify-content:center;
-  padding: 12px 14px;
-  border-radius: 16px;
-  border: 1px solid var(--stroke);
-  background: rgba(0,0,0,.10);
-  color: var(--text);
-  cursor:pointer;
-  user-select:none;
-}
-.btn.primary{
-  background: linear-gradient(135deg, rgba(12,120,70,.9), rgba(24,180,110,.95));
-  border-color: rgba(255,255,255,.10);
-}
-.btn:active{transform:scale(.98)}
-.btn .sub{display:block;font-size:11px;color:rgba(255,255,255,.75);margin-top:-2px}
-
-.card{
-  margin-top:16px;
-  background: var(--card);
-  border:1px solid var(--stroke);
-  border-radius: var(--r);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-  padding: 18px;
-}
-.hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:820px){ .row{grid-template-columns:1fr} }
-
-label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
-.input{
-  width:100%;
-  padding: 12px 12px;
-  border-radius: 16px;
-  border:1px solid rgba(255,255,255,.12);
-  background: var(--input);
-  color: var(--text);
-  outline:none;
-}
-.input:focus{border-color: rgba(120,255,200,.35); background: var(--input2)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-
-.status{
-  margin-top:10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border:1px solid rgba(255,255,255,.12);
-  font-size:13px;
-  color: var(--muted);
-  background: rgba(0,0,0,.10);
-}
-.status.ok{border-color: rgba(35,195,122,.35); color: rgba(220,255,240,.95); background: rgba(35,195,122,.10)}
-.status.bad{border-color: rgba(255,107,107,.35); color: rgba(255,230,230,.95); background: rgba(255,107,107,.10)}
-.status.warn{border-color: rgba(255,204,102,.35); color: rgba(255,245,220,.95); background: rgba(255,204,102,.10)}
-
-.table-wrap{overflow:auto;border-radius:16px;border:1px solid rgba(255,255,255,.10)}
-table{width:100%;border-collapse:collapse;min-width:720px}
-th,td{padding:12px 10px;text-align:center;font-size:13px}
-thead th{background:rgba(0,0,0,.18);color:rgba(255,255,255,.9);position:sticky;top:0}
-tbody tr{border-top:1px solid rgba(255,255,255,.08)}
-tbody tr:hover{background:rgba(255,255,255,.06);cursor:pointer}
-
-.qr-wrap{display:grid;grid-template-columns: 1.2fr .8fr; gap:14px}
-@media (max-width:820px){ .qr-wrap{grid-template-columns:1fr} }
-
-.qr-box{
-  padding:14px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.12);
-}
-.qr-box img{
-  width:100%;
-  max-width:320px;
-  display:block;
-  margin:0 auto 10px;
-  background:#fff;
-  border-radius:16px;
-  padding:8px;
-}
-.qr-code-text{
-  text-align:center;
-  font-size:18px;
-  font-weight:800;
-}
-.qr-hint{
-  text-align:center;
-  margin-top:4px;
-  font-size:12px;
-  color: rgba(255,255,255,.80);
-}
-
-.modal{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.55);
-  display:none;
-  align-items:center;justify-content:center;
-  padding:16px;
-  z-index:1000;
-}
-.modal-card{
-  width:min(520px, 96vw);
-  background: rgba(10,40,24,.92);
-  border:1px solid rgba(255,255,255,.18);
-  border-radius: 22px;
-  padding:16px;
-  box-shadow: var(--shadow);
-}
-.modal-card img{width:100%;background:#fff;border-radius:16px;padding:10px}
-.modal-actions{display:flex;justify-content:center;margin-top:12px}
-
+/* ===== Lock Screen ===== */
 .lock-screen{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  padding:18px;
-  background:
-    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-    linear-gradient(135deg, rgba(8,45,26,.94), rgba(12,78,45,.92));
-  z-index:2000;
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#083d25,#0f6b42);
+  z-index:9999;
 }
 .lock-card{
-  width: min(560px, 96vw);
-  border-radius: 26px;
-  padding: 22px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.14);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
+  width:440px; max-width:95%;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(14px);
+  border-radius:26px;
+  padding:26px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
 }
-.lock-title h2{margin:0;font-size:22px;font-weight:800}
-.lock-title p{margin:6px 0 0;font-size:13px;color:rgba(255,255,255,.82)} /* <-- واضح */
-.lock-row{
-  display:flex;gap:12px;margin-top:14px;align-items:stretch
+.lock-card h1{margin:0;font-size:22px}
+.lock-card p{
+  margin:6px 0 18px;
+  color:rgba(255,255,255,.9);
 }
-.pin-wrap{
-  position:relative;
-  flex:1;
-}
+
+/* ===== PIN ===== */
+.pin-wrap{position:relative}
 .pin-input{
   width:100%;
-  height:52px;
+  padding:14px 52px 14px 14px;
   border-radius:16px;
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.12);
   color:#fff;
-  padding: 0 48px 0 14px;
-  font-size:18px;
-  outline:none;
+  font-size:16px;
 }
-.pin-input:focus{border-color: rgba(120,255,200,.35)}
-.pin-eye{
+.pin-input::placeholder{
+  color:rgba(255,255,255,.8);
+}
+.toggle-pin{
   position:absolute;
-  top:50%;right:10px;
+  top:50%; left:14px;
   transform:translateY(-50%);
-  width:34px;height:34px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.16);
-  background: rgba(255,255,255,.10);
+  background:none;border:none;
   color:#fff;
   cursor:pointer;
+  font-size:18px;
 }
-.small{font-size:12px;color:rgba(255,255,255,.78)}
+
+/* ===== Buttons ===== */
+.btn{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px;
+  padding:14px;
+  border-radius:16px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
+.btn.primary{
+  background:linear-gradient(135deg,#19c37d,#0f9d62);
+  color:#fff;
+}
+.btn.secondary{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+}
+
+/* ===== Layout ===== */
+.container{max-width:1200px;margin:auto;padding:24px}
+.hidden{display:none}
+
+/* ===== Cards ===== */
+.card{
+  background:rgba(255,255,255,.08);
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:18px;
+}
+
+/* ===== Inputs ===== */
+.input{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+}
+label,.small,.status,.qr-hint{color:rgba(255,255,255,.95)}
+::placeholder{color:rgba(255,255,255,.8)}
+
+/* ===== Table ===== */
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;text-align:center}
+th{background:rgba(0,0,0,.25)}
+tr{cursor:pointer}
+tr:hover{background:rgba(255,255,255,.08)}
 </style>
 </head>
 
 <body>
 
-<!-- LOCK -->
+<!-- ================= LOCK ================= -->
 <div class="lock-screen" id="lockScreen">
   <div class="lock-card">
-    <div class="lock-title">
-      <h2>لوحة عضو هيئة التدريس</h2>
-      <p>يرجى إدخال كلمة المرور للمتابعة</p>
+    <h1>لوحة عضو هيئة التدريس</h1>
+    <p>يرجى إدخال كلمة المرور للمتابعة</p>
+
+    <div class="pin-wrap">
+      <input id="doctorPin" class="pin-input" type="password" placeholder="كلمة المرور" maxlength="10">
+      <button class="toggle-pin" onclick="togglePin()">👁</button>
     </div>
 
-    <div class="hr"></div>
-
-    <div class="lock-row">
-      <div class="pin-wrap">
-        <input id="doctorKeyLock" class="pin-input" type="password" placeholder="كلمة المرور" inputmode="numeric" maxlength="10" />
-        <button class="pin-eye" onclick="togglePin()" title="إظهار/إخفاء">👁</button>
-      </div>
-      <button class="btn primary" style="min-width:140px" onclick="unlockDoctor()">
-        <div>
-          <div style="font-weight:900">دخول</div>
-          <span class="sub">PIN</span>
-        </div>
-      </button>
-    </div>
-
-    <div id="lockStatus" class="status" style="margin-top:12px;display:none"></div>
-    <div class="small" style="margin-top:10px">هذه الصفحة مخصصة للدكتور فقط.</div>
+    <button class="btn primary" style="margin-top:18px" onclick="unlock()">دخول</button>
+    <div id="lockStatus" class="small"></div>
   </div>
 </div>
 
-<!-- APP -->
-<div class="container hidden" id="doctorApp">
-  <div class="brand">
-    <div>
-      <h1>لوحة التحكم – عضو هيئة التدريس</h1>
-      <p>إدارة المحاضرات، الجدولة الأسبوعية، رموز الحضور</p>
-    </div>
-    <div class="top-actions">
-      <button class="btn" onclick="lockAgain()">🔒 <span class="sub">قفل</span></button>
-    </div>
-  </div>
+<!-- ================= APP ================= -->
+<div id="doctorApp" class="hidden">
+  <div class="container">
 
-  <div class="card">
-
-    <input id="doctorKey" type="hidden" value="" />
-
-    <h3 style="margin:0 0 10px">إنشاء محاضرة</h3>
-    <div class="row">
-      <div>
-        <label>المقرر</label>
-        <input id="course" class="input" placeholder="مثال: CS111" />
-      </div>
-      <div>
-        <label>الشعبة</label>
-        <input id="section" class="input" placeholder="مثال: 1" />
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>لوحة التحكم</h2>
+      <button class="btn secondary" onclick="lock()">تسجيل الخروج</button>
     </div>
 
-    <div class="row" style="margin-top:10px">
-      <div>
-        <label>وقت البداية</label>
-        <input id="start" class="input" type="datetime-local" />
-      </div>
-      <div>
-        <label>وقت النهاية</label>
-        <input id="end" class="input" type="datetime-local" />
-      </div>
+    <!-- Create Lecture -->
+    <div class="card">
+      <h3>إنشاء محاضرة</h3>
+      <label>المقرر</label>
+      <input id="course" class="input" placeholder="CS111">
+
+      <label>الشعبة</label>
+      <input id="section" class="input" placeholder="1">
+
+      <label>وقت البداية</label>
+      <input id="start" class="input" type="datetime-local">
+
+      <label>وقت النهاية</label>
+      <input id="end" class="input" type="datetime-local">
+
+      <button class="btn primary" style="margin-top:14px" onclick="createLecture()">إنشاء</button>
+      <div id="createStatus" class="small"></div>
     </div>
 
-    <div class="actions">
-      <button class="btn primary" onclick="createLecture()">إنشاء <span class="sub">محاضرة واحدة</span></button>
-      <button class="btn" onclick="loadLectures()">تحديث <span class="sub">قائمة المحاضرات</span></button>
-    </div>
-
-    <div id="createStatus" class="status" style="display:none"></div>
-
-    <div class="hr"></div>
-
-    <h3 style="margin:0 0 10px">إنشاء جدول أسبوعي</h3>
-    <div class="row">
-      <div>
-        <label>المقرر</label>
-        <input id="wCourse" class="input" placeholder="مثال: CS111" />
-      </div>
-      <div>
-        <label>الشعبة</label>
-        <input id="wSection" class="input" placeholder="مثال: 1" />
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:10px">
-      <div>
-        <label>من تاريخ</label>
-        <input id="fromDate" class="input" type="date" />
-      </div>
-      <div>
-        <label>إلى تاريخ</label>
-        <input id="toDate" class="input" type="date" />
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:10px">
-      <div>
-        <label>وقت البداية</label>
-        <input id="wStartTime" class="input" type="time" />
-      </div>
-      <div>
-        <label>وقت النهاية</label>
-        <input id="wEndTime" class="input" type="time" />
-      </div>
-    </div>
-
-    <div style="margin-top:10px" class="small">الأيام:</div>
-    <div class="row" style="grid-template-columns:repeat(5,1fr); margin-top:8px">
-      <label class="small"><input type="checkbox" class="day" value="0"> أحد</label>
-      <label class="small"><input type="checkbox" class="day" value="1"> اثنين</label>
-      <label class="small"><input type="checkbox" class="day" value="2"> ثلاثاء</label>
-      <label class="small"><input type="checkbox" class="day" value="3"> أربعاء</label>
-      <label class="small"><input type="checkbox" class="day" value="4"> خميس</label>
-    </div>
-
-    <div class="actions" style="margin-top:10px">
-      <button class="btn primary" onclick="createSchedule()">إنشاء الجدول <span class="sub">يولّد محاضرات تلقائيًا</span></button>
-    </div>
-    <div id="scheduleStatus" class="status" style="display:none"></div>
-
-    <div class="hr"></div>
-
-    <h3 style="margin:0 0 10px">المحاضرات</h3>
-    <div class="table-wrap">
+    <!-- Lectures -->
+    <div class="card">
+      <h3>المحاضرات</h3>
       <table>
         <thead>
           <tr>
             <th>LectureID</th>
             <th>المقرر</th>
             <th>الشعبة</th>
-            <th>البداية</th>
-            <th>النهاية</th>
-            <th>الحالة</th>
           </tr>
         </thead>
-        <tbody id="lectureRows"></tbody>
+        <tbody id="lectureRows">
+          <tr><td colspan="3">لا توجد محاضرات</td></tr>
+        </tbody>
       </table>
     </div>
 
-    <div class="hr"></div>
+    <!-- QR -->
+    <div class="card">
+      <h3>الكود و QR للمحاضرة</h3>
+      <label>LectureID المحدد</label>
+      <input id="selectedLectureId" class="input" placeholder="اختر من الجدول أو الصقه هنا">
 
-    <h3 style="margin:0 0 10px">الكود و QR للمحاضرة</h3>
-    <div class="qr-wrap">
-      <div>
-        <label>LectureID المحدد</label>
-        <input id="selectedLectureId" class="input" placeholder="اختر من الجدول أو الصقه هنا" />
-
-        <div class="actions">
-          <button class="btn primary" onclick="generateNewCode()">توليد رمز حضور <span class="sub">Code + QR</span></button>
-          <button class="btn" onclick="showStudents()">عرض الطلاب <span class="sub">لهذه المحاضرة</span></button>
-        </div>
-
-        <div id="codeStatus" class="status" style="display:none"></div>
+      <div style="display:flex;gap:12px;margin-top:12px">
+        <button class="btn primary" onclick="generateCode()">توليد رمز حضور</button>
+        <button class="btn secondary" onclick="showStudents()">عرض الطلاب</button>
       </div>
 
-      <div class="qr-box">
-        <img id="qrImg" alt="QR">
-        <div class="qr-code-text" id="codeText">Code: —</div>
-        <div class="qr-hint">صلاحية قصيرة لتقليل المشاركة</div>
-
-        <div class="actions" style="justify-content:center">
-          <button class="btn" onclick="zoomQR()">⤢ <span class="sub">تكبير QR</span></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="hr"></div>
-
-    <h3 style="margin:0 0 10px">طلاب المحاضرة</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>StudentID</th>
-            <th>الاسم</th>
-            <th>الحالة</th>
-          </tr>
-        </thead>
-        <tbody id="studentRows"></tbody>
-      </table>
+      <div id="codeStatus" class="small"></div>
     </div>
 
   </div>
 </div>
 
-<!-- QR Modal -->
-<div class="modal" id="qrModal" onclick="closeQrModal()">
-  <div class="modal-card" onclick="event.stopPropagation()">
-    <img id="qrBig" alt="QR Big">
-    <div class="modal-actions">
-      <button class="btn primary" onclick="closeQrModal()">إغلاق</button>
-    </div>
-  </div>
-</div>
+<script src="assets/app.js"></script>
 
 <script>
-/* ====== CONFIG ====== */
-const API_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
-const DOCTOR_PIN = "1111";
+const DOCTOR_PIN="1111";
 
-/* ====== UI helpers ====== */
-function showStatus(el, type, msg){
-  el.style.display="block";
-  el.className = "status " + (type||"");
-  el.textContent = msg;
-}
-function hideStatus(el){ el.style.display="none"; el.textContent=""; }
-
-/* ====== Lock ====== */
 function togglePin(){
-  const i = document.getElementById("doctorKeyLock");
-  i.type = (i.type === "password") ? "text" : "password";
+  const i=doctorPin;
+  i.type=i.type==="password"?"text":"password";
 }
 
-function unlockDoctor(){
-  const k = (document.getElementById("doctorKeyLock").value || "").trim();
-  const st = document.getElementById("lockStatus");
-
-  if(k !== DOCTOR_PIN){
-    showStatus(st, "bad", "كلمة المرور غير صحيحة");
+function unlock(){
+  if(doctorPin.value!==DOCTOR_PIN){
+    lockStatus.innerText="❌ كلمة المرور غير صحيحة";
     return;
   }
-
-  document.getElementById("doctorKey").value = k;
-  document.getElementById("lockScreen").style.display = "none";
-  document.getElementById("doctorApp").classList.remove("hidden");
+  lockScreen.style.display="none";
+  doctorApp.classList.remove("hidden");
   loadLectures();
 }
 
-function lockAgain(){
-  document.getElementById("doctorKey").value = "";
-  document.getElementById("doctorKeyLock").value = "";
-  document.getElementById("doctorApp").classList.add("hidden");
-  document.getElementById("lockScreen").style.display = "flex";
-  hideStatus(document.getElementById("lockStatus"));
+function lock(){
+  doctorPin.value="";
+  doctorApp.classList.add("hidden");
+  lockScreen.style.display="flex";
 }
 
-function getDoctorKey(){
-  return (document.getElementById("doctorKey").value || "").trim();
-}
-
-/* ====== API ====== */
-async function apiCall(payload){
-  try{
-    const res = await fetch(API_URL, {
-      method:"POST",
-      body: JSON.stringify(payload)
-    });
-    return await res.json();
-  }catch(e){
-    return { ok:false, error:"Network error", details:String(e) };
-  }
-}
-
-/* ====== Actions ====== */
 async function createLecture(){
-  const doctorKey = getDoctorKey();
-  const st = document.getElementById("createStatus");
-
-  const course = (document.getElementById("course").value||"").trim();
-  const section= (document.getElementById("section").value||"").trim();
-  const start  = (document.getElementById("start").value||"").trim();
-  const end    = (document.getElementById("end").value||"").trim();
-
-  if(!course || !section || !start || !end){
-    showStatus(st, "bad", "فضلاً أكمل جميع الحقول");
-    return;
-  }
-
-  showStatus(st,"warn","جاري الإنشاء...");
-  const res = await apiCall({action:"createLecture", doctorKey, course, section, start, end});
-
-  if(res && res.ok){
-    showStatus(st,"ok","تم إنشاء المحاضرة ✅");
-    loadLectures();
-  }else{
-    showStatus(st,"bad", (res&&res.error)?res.error:"فشل");
-  }
-}
-
-async function createSchedule(){
-  const doctorKey = getDoctorKey();
-  const st = document.getElementById("scheduleStatus");
-
-  const course = (document.getElementById("wCourse").value||"").trim();
-  const section= (document.getElementById("wSection").value||"").trim();
-  const fromDate = (document.getElementById("fromDate").value||"").trim();
-  const toDate   = (document.getElementById("toDate").value||"").trim();
-  const startTime= (document.getElementById("wStartTime").value||"").trim();
-  const endTime  = (document.getElementById("wEndTime").value||"").trim();
-  const days = [...document.querySelectorAll(".day:checked")].map(x=>Number(x.value));
-
-  if(!course || !section || !fromDate || !toDate || !startTime || !endTime || !days.length){
-    showStatus(st,"bad","فضلاً أكمل الحقول واختر الأيام");
-    return;
-  }
-
-  showStatus(st,"warn","جاري إنشاء الجدول...");
-  const res = await apiCall({
-    action:"createWeeklySchedule",
-    doctorKey, course, section,
-    fromDate, toDate,
-    startTime, endTime,
-    days
+  const res=await apiCall({
+    action:"createLecture",
+    doctorKey:DOCTOR_PIN,
+    course:course.value,
+    section:section.value,
+    start:start.value,
+    end:end.value
   });
-
-  if(res && res.ok){
-    showStatus(st,"ok",`تم إنشاء الجدول ✅ (عدد المحاضرات: ${res.created})`);
-    loadLectures();
-  }else{
-    showStatus(st,"bad",(res&&res.error)?res.error:"فشل");
-  }
+  createStatus.innerText=res?.ok?"تم إنشاء المحاضرة":"فشل";
+  loadLectures();
 }
 
 async function loadLectures(){
-  const doctorKey = getDoctorKey();
-  const tbody = document.getElementById("lectureRows");
-  tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
-
-  const res = await apiCall({action:"listLectures", doctorKey});
-
-  if(!res || !res.ok){
-    tbody.innerHTML = `<tr><td colspan="6">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
-    return;
-  }
-
-  const rows = res.rows || [];
-  tbody.innerHTML = rows.map(r=>`
-    <tr onclick="pickLecture('${r.lectureId||""}')">
-      <td><b>${r.lectureId||""}</b></td>
-      <td>${r.course||""}</td>
-      <td>${r.section||""}</td>
-      <td>${r.start||""}</td>
-      <td>${r.end||""}</td>
-      <td>${r.state||""}</td>
-    </tr>
-  `).join("") || `<tr><td colspan="6">لا توجد محاضرات</td></tr>`;
+  const res=await apiCall({action:"listLectures",doctorKey:DOCTOR_PIN});
+  lectureRows.innerHTML=res?.rows?.map(r=>`
+    <tr onclick="selectedLectureId.value='${r.lectureId}'">
+      <td>${r.lectureId}</td>
+      <td>${r.course}</td>
+      <td>${r.section}</td>
+    </tr>`).join("") || "<tr><td colspan='3'>لا توجد محاضرات</td></tr>";
 }
 
-function pickLecture(id){
-  document.getElementById("selectedLectureId").value = id;
+async function generateCode(){
+  const res=await apiCall({
+    action:"generateCode",
+    doctorKey:DOCTOR_PIN,
+    lectureId:selectedLectureId.value
+  });
+  codeStatus.innerText=res?.ok?"تم توليد الرمز":"فشل";
 }
 
-async function generateNewCode(){
-  const doctorKey = getDoctorKey();
-  const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
-  const st = document.getElementById("codeStatus");
-
-  if(!lectureId){
-    showStatus(st,"bad","اختر LectureID أولاً");
-    return;
-  }
-
-  showStatus(st,"warn","جاري توليد الرمز...");
-  const res = await apiCall({action:"generateCode", doctorKey, lectureId});
-
-  if(res && res.ok){
-    showStatus(st,"ok","تم توليد رمز جديد ✅");
-    document.getElementById("codeText").textContent = `Code: ${res.code || "—"}`;
-    document.getElementById("qrImg").src = res.qrUrl || "";
-  }else{
-    showStatus(st,"bad",(res&&res.error)?res.error:"فشل");
-  }
-}
-
-async function showStudents(){
-  const doctorKey = getDoctorKey();
-  const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
-  const tbody = document.getElementById("studentRows");
-
-  if(!lectureId){
-    tbody.innerHTML = `<tr><td colspan="3">اختر LectureID أولاً</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = `<tr><td colspan="3">جاري التحميل...</td></tr>`;
-  const res = await apiCall({action:"listStudentsForLecture", doctorKey, lectureId});
-
-  if(!res || !res.ok){
-    tbody.innerHTML = `<tr><td colspan="3">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
-    return;
-  }
-
-  const rows = res.rows || [];
-  tbody.innerHTML = rows.map(r=>`
-    <tr>
-      <td>${r.studentId||""}</td>
-      <td>${r.name||""}</td>
-      <td>${r.status||""}</td>
-    </tr>
-  `).join("") || `<tr><td colspan="3">لا يوجد طلاب</td></tr>`;
-}
-
-/* ===== QR modal ===== */
-function zoomQR(){
-  const src = document.getElementById("qrImg").src;
-  if(!src) return;
-  document.getElementById("qrBig").src = src;
-  document.getElementById("qrModal").style.display="flex";
-}
-function closeQrModal(){
-  document.getElementById("qrModal").style.display="none";
+function showStudents(){
+  alert("عرض الطلاب (مربوط بالشيت)");
 }
 </script>
+
 </body>
 </html>
