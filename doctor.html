@@ -5,6 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hather - إدارة المحاضرات</title>
 
+<!-- QR local with fallback CDNs -->
+<script>
+(function(){
+  const cdns = [
+    "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js",
+    "https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+  ];
+  let i=0;
+  function load(){
+    if(i>=cdns.length) return;
+    const s=document.createElement("script");
+    s.src=cdns[i++];
+    s.onload=()=>console.log("QR lib loaded:", s.src);
+    s.onerror=()=>load();
+    document.head.appendChild(s);
+  }
+  load();
+})();
+</script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
 body{min-height:100vh;background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
@@ -75,6 +96,7 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
   </div>
 
   <div id="admin" class="hidden">
+
     <div class="panel">
       <div class="sectionTitle" id="s1">إنشاء محاضرة</div>
       <div class="grid">
@@ -134,11 +156,11 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
         <div style="grid-column:span 2">
           <label id="labDays">الأيام</label>
           <div class="row" style="gap:14px">
-            <label><input type="checkbox" class="dow" name="dow" value="0"> <span id="d0">أحد</span></label>
-            <label><input type="checkbox" class="dow" name="dow" value="1"> <span id="d1">اثنين</span></label>
-            <label><input type="checkbox" class="dow" name="dow" value="2"> <span id="d2">ثلاثاء</span></label>
-            <label><input type="checkbox" class="dow" name="dow" value="3"> <span id="d3">أربعاء</span></label>
-            <label><input type="checkbox" class="dow" name="dow" value="4"> <span id="d4">خميس</span></label>
+            <label><input type="checkbox" name="dow" value="0"> <span id="d0">أحد</span></label>
+            <label><input type="checkbox" name="dow" value="1"> <span id="d1">اثنين</span></label>
+            <label><input type="checkbox" name="dow" value="2"> <span id="d2">ثلاثاء</span></label>
+            <label><input type="checkbox" name="dow" value="3"> <span id="d3">أربعاء</span></label>
+            <label><input type="checkbox" name="dow" value="4"> <span id="d4">خميس</span></label>
           </div>
         </div>
       </div>
@@ -176,7 +198,7 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
         <div class="sectionTitle" id="s4">الكود و QR للمحاضرة</div>
         <div class="qrWrap">
           <div class="qrBox">
-            <img id="qrImg" width="200" height="200" style="display:block" alt="QR" />
+            <div id="qrBox"></div>
             <div class="qrText"><span id="codeLabel">Code:</span> <span id="curCode">—</span></div>
             <div class="small" id="codeNote">صلاحية الكود قصيرة لمنع المشاركة.</div>
           </div>
@@ -211,14 +233,13 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <script>
-/* ✅ رابط السكربت */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
-/* ======= fetch helper (يعرض رد السيرفر لو ما كان JSON) ======= */
 async function post(payload){
   const res = await fetch(SCRIPT_URL, {
     method:"POST",
@@ -226,15 +247,10 @@ async function post(payload){
     body: JSON.stringify(payload)
   });
   const text = await res.text();
-  console.log("API raw response:", text);
-  try { return JSON.parse(text); }
-  catch(e){
-    alert("❌ السيرفر رجّع رد غير JSON:\n" + text.slice(0,200));
-    throw e;
-  }
+  console.log("API raw:", text);
+  return JSON.parse(text);
 }
 
-/* ======= ترجمة ======= */
 const STR={
   ar:{dir:"rtl",lang:"ar",back:"رجوع",title:"إدارة المحاضرات",sub:"إنشاء محاضرات — توليد QR/Code — تعديل حالات الطلاب",
       key:"الرمز السري (للدكتور)",unlock:"دخول",logout:"تسجيل خروج",lockHint:"لن تظهر لوحة الإدارة إلا بعد إدخال الرمز الصحيح.",
@@ -279,24 +295,14 @@ function applyLang(){
 langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
 applyLang();
 
-/* ======= UI helpers ======= */
-function msgSet(el, ok, text){
-  el.style.color = ok ? "#0d2c1a" : "#b00020";
-  el.textContent = text;
-}
+function msgSet(el, ok, text){ el.style.color = ok ? "#0d2c1a" : "#b00020"; el.textContent = text; }
 function badge(status){
   if(status==="Active") return `<span class="badge bActive">Active</span>`;
   if(status==="Upcoming") return `<span class="badge bUpcoming">Upcoming</span>`;
   return `<span class="badge bEnded">Ended</span>`;
 }
-function getKey(){
-  return sessionStorage.getItem("hather_doctor_key") || doctorKey.value.trim();
-}
-function requireKey(){
-  const k = getKey();
-  if(!k){ msgSet(lockMsg,false, t().needKey); return false; }
-  return true;
-}
+function getKey(){ return sessionStorage.getItem("hather_doctor_key") || doctorKey.value.trim(); }
+function requireKey(){ const k=getKey(); if(!k){ msgSet(lockMsg,false,t().needKey); return false; } return true; }
 function setLoggedIn(v){
   sessionStorage.setItem("hather_doctor_ok", v ? "1":"0");
   admin.classList.toggle("hidden", !v);
@@ -304,7 +310,6 @@ function setLoggedIn(v){
   studentsArea.classList.add("hidden");
 }
 
-/* ======= Login/Logout ======= */
 btnLogout.onclick=()=>{
   sessionStorage.removeItem("hather_doctor_ok");
   sessionStorage.removeItem("hather_doctor_key");
@@ -317,10 +322,7 @@ btnUnlock.onclick=async ()=>{
   msgSet(lockMsg,true, getLang()==="ar"?"⏳ جاري التحقق...":"⏳ Verifying...");
   try{
     const data = await post({ action:"listLectures", doctorKey:key });
-    if(!data.ok){
-      setLoggedIn(false);
-      return msgSet(lockMsg,false, data.result || "❌ Wrong key");
-    }
+    if(!data.ok){ setLoggedIn(false); return msgSet(lockMsg,false, data.result || "❌ Wrong key"); }
     sessionStorage.setItem("hather_doctor_key", key);
     setLoggedIn(true);
     msgSet(lockMsg,true, t().okUnlock);
@@ -331,14 +333,8 @@ btnUnlock.onclick=async ()=>{
   }
 };
 
-if(sessionStorage.getItem("hather_doctor_ok")==="1"){
-  setLoggedIn(true);
-  refreshLectures();
-}else{
-  setLoggedIn(false);
-}
+if(sessionStorage.getItem("hather_doctor_ok")==="1"){ setLoggedIn(true); refreshLectures(); } else { setLoggedIn(false); }
 
-/* ======= Create lecture ======= */
 btnCreate.onclick=async ()=>{
   if(!requireKey()) return;
   msgSet(createMsg,true, getLang()==="ar"?"⏳ جاري الإنشاء...":"⏳ Creating...");
@@ -355,11 +351,10 @@ btnCreate.onclick=async ()=>{
     msgSet(createMsg,true, `✅ LectureID: ${data.lectureId}`);
     await refreshLectures();
   }catch(e){
-    msgSet(createMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+    msgSet(createMsg,false, (getLang()==="ar"?"❌ خطأ: ":"❌ Error: ") + (e?.message||e));
   }
 };
 
-/* ======= Create schedule (FIXED: shows real reason, no generic Failed) ======= */
 btnSchedule.onclick = async () => {
   if (!requireKey()) return;
 
@@ -373,12 +368,12 @@ btnSchedule.onclick = async () => {
   const days = Array.from(document.querySelectorAll('input[name="dow"]:checked'))
     .map(x => Number(x.value));
 
-  if (!courseV || !sectionV) return msgSet(schMsg, false, getLang()==="ar" ? "❌ أدخل المقرر والشعبة" : "❌ Enter course & section");
-  if (!startDateV || !endDateV) return msgSet(schMsg, false, getLang()==="ar" ? "❌ اختر تاريخ البداية والنهاية" : "❌ Select start/end dates");
-  if (!startTimeV || !endTimeV) return msgSet(schMsg, false, getLang()==="ar" ? "❌ اختر وقت البداية والنهاية" : "❌ Select start/end time");
-  if (days.length === 0) return msgSet(schMsg, false, getLang()==="ar" ? "❌ اختر أيام الجدول (مثل أحد/ثلاثاء/خميس)" : "❌ Select days");
+  if (!courseV || !sectionV) return msgSet(schMsg,false, getLang()==="ar"?"❌ أدخل المقرر والشعبة":"❌ Enter course & section");
+  if (!startDateV || !endDateV) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر تاريخ البداية والنهاية":"❌ Select dates");
+  if (!startTimeV || !endTimeV) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر وقت البداية والنهاية":"❌ Select times");
+  if (!days.length) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر الأيام":"❌ Select days");
 
-  msgSet(schMsg, true, getLang()==="ar" ? "⏳ جاري إنشاء الجدول..." : "⏳ Creating schedule...");
+  msgSet(schMsg,true, getLang()==="ar"?"⏳ جاري إنشاء الجدول...":"⏳ Creating schedule...");
 
   try {
     const data = await post({
@@ -393,17 +388,17 @@ btnSchedule.onclick = async () => {
       days
     });
 
-    if (!data.ok) return msgSet(schMsg, false, data.result || (getLang()==="ar" ? "❌ فشل إنشاء الجدول" : "❌ Schedule failed"));
-    msgSet(schMsg, true, data.result || (getLang()==="ar" ? "✅ تم إنشاء الجدول" : "✅ Schedule created"));
+    if (!data.ok) {
+      return msgSet(schMsg,false, (getLang()==="ar"?"❌ فشل: ":"❌ Failed: ") + (data.result||"No details"));
+    }
+    msgSet(schMsg,true, "✅ " + (data.result || "Done"));
     await refreshLectures();
   } catch (e) {
-    msgSet(schMsg, false, getLang()==="ar" ? "❌ فشل الاتصال" : "❌ Connection failed");
+    msgSet(schMsg,false, (getLang()==="ar"?"❌ خطأ: ":"❌ Error: ") + (e?.message||e));
   }
 };
 
-/* ======= Lectures list ======= */
 btnRefresh.onclick=refreshLectures;
-
 let selectedLectureId=null;
 
 async function refreshLectures(){
@@ -415,7 +410,7 @@ async function refreshLectures(){
     msgSet(listMsg,true, getLang()==="ar"?"✅ تم التحديث":"✅ Updated");
     renderLectures(data.lectures||[]);
   }catch(e){
-    msgSet(listMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+    msgSet(listMsg,false, (getLang()==="ar"?"❌ خطأ: ":"❌ Error: ") + (e?.message||e));
   }
 }
 
@@ -424,49 +419,30 @@ function renderLectures(list){
   list.forEach(item=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
-      <td>${item.lectureId}</td>
-      <td>${escapeHtml(item.course)}</td>
-      <td>${escapeHtml(item.section)}</td>
-      <td>${escapeHtml(item.start)}</td>
-      <td>${escapeHtml(item.end)}</td>
+      <td>${esc(item.lectureId)}</td>
+      <td>${esc(item.course)}</td>
+      <td>${esc(item.section)}</td>
+      <td>${esc(item.start)}</td>
+      <td>${esc(item.end)}</td>
       <td>${badge(item.status)}</td>
-      <td>
-        <button class="btn ghost" data-act="select" data-id="${item.lectureId}">${getLang()==="ar"?"تحديد":"Select"}</button>
-        <button class="btn ghost" data-act="delete" data-id="${item.lectureId}">${getLang()==="ar"?"حذف":"Delete"}</button>
-      </td>
+      <td><button class="btn ghost" data-id="${esc(item.lectureId)}">${getLang()==="ar"?"تحديد":"Select"}</button></td>
     `;
     lecBody.appendChild(tr);
   });
 
   lecBody.querySelectorAll("button").forEach(b=>{
     b.onclick=async ()=>{
-      const act=b.dataset.act, id=b.dataset.id;
-      if(act==="select"){
-        selectedLectureId=id;
-        selLectureId.textContent=id;
-        codeArea.classList.remove("hidden");
-        studentsArea.classList.add("hidden");
-        curCode.textContent="—";
-        msgSet(codeMsg,true,"");
-        await rotateCode();
-      }else if(act==="delete"){
-        if(!confirm(getLang()==="ar"?"هل أنت متأكد من حذف المحاضرة؟":"Delete this lecture?")) return;
-        try{
-          const r=await post({ action:"deleteLecture", doctorKey:getKey(), lectureId:id });
-          if(!r.ok) alert(r.result||"Failed");
-          await refreshLectures();
-          if(selectedLectureId===id){
-            selectedLectureId=null;
-            codeArea.classList.add("hidden");
-            studentsArea.classList.add("hidden");
-          }
-        }catch(e){ alert(getLang()==="ar"?"فشل الاتصال":"Connection failed"); }
-      }
+      selectedLectureId=b.dataset.id;
+      selLectureId.textContent=selectedLectureId;
+      codeArea.classList.remove("hidden");
+      studentsArea.classList.add("hidden");
+      curCode.textContent="—";
+      msgSet(codeMsg,true,"");
+      await rotateCode();
     };
   });
 }
 
-/* ======= Code + QR (FIXED: QuickChart + fallback QRServer) ======= */
 btnRotate.onclick=rotateCode;
 
 async function rotateCode(){
@@ -478,28 +454,23 @@ async function rotateCode(){
 
     const code = String(data.code);
     curCode.textContent=code;
-    msgSet(codeMsg,true, getLang()==="ar"?"✅ تم توليد كود جديد":"✅ New code generated");
 
-    const qrImg = document.getElementById("qrImg");
-    const url1 = "https://quickchart.io/qr?text=" + encodeURIComponent(code) + "&size=200";
-    const url2 = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(code);
+    const qrBox = document.getElementById("qrBox");
+    qrBox.innerHTML = "";
 
-    qrImg.onerror = null;
-    qrImg.src = url1;
-    qrImg.onerror = () => {
-      qrImg.onerror = () => {
-        msgSet(codeMsg,false, getLang()==="ar" ? "❌ فشل توليد QR (جرّب لاحقًا)" : "❌ QR failed (try later)");
-      };
-      qrImg.src = url2;
-    };
+    if (typeof QRCode === "undefined") {
+      return msgSet(codeMsg,false, getLang()==="ar"
+        ? "❌ مكتبة QR لم تُحمّل (احتمال الشبكة حجبت CDN). افتح الصفحة مع ?v=2 أو جرّب شبكة أخرى."
+        : "❌ QR library not loaded. Try ?v=2 or another network.");
+    }
 
+    new QRCode(qrBox, { text: code, width: 200, height: 200 });
+    msgSet(codeMsg,true, getLang()==="ar"?"✅ تم توليد كود و QR":"✅ Code & QR generated");
   }catch(e){
-    console.error(e);
-    msgSet(codeMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+    msgSet(codeMsg,false, (getLang()==="ar"?"❌ خطأ: ":"❌ Error: ") + (e?.message||e));
   }
 }
 
-/* ======= Students ======= */
 btnStudents.onclick=loadStudents;
 
 async function loadStudents(){
@@ -512,7 +483,7 @@ async function loadStudents(){
     msgSet(stuMsg,true, getLang()==="ar"?"✅ تم تحميل الطلاب":"✅ Loaded");
     renderStudents(data.students||[]);
   }catch(e){
-    msgSet(stuMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+    msgSet(stuMsg,false, (getLang()==="ar"?"❌ خطأ: ":"❌ Error: ") + (e?.message||e));
   }
 }
 
@@ -520,7 +491,9 @@ function renderStudents(list){
   stuBody.innerHTML="";
   if(!list.length){
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td colspan="5">${getLang()==="ar"?"لا يوجد طلاب مسجلين لهذه المحاضرة بعد (يظهرون بعد أول تسجيل حضور).":"No students yet (they appear after first check-in)."}</td>`;
+    tr.innerHTML=`<td colspan="5">${getLang()==="ar"
+      ? "لا يوجد طلاب في شيت Students لهذه الشعبة. (لازم الطلاب موجودين في Students)."
+      : "No students found in Students sheet for this section."}</td>`;
     stuBody.appendChild(tr);
     return;
   }
@@ -528,18 +501,18 @@ function renderStudents(list){
   list.forEach(s=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
-      <td>${escapeHtml(s.studentId)}</td>
-      <td>${escapeHtml(s.name||"")}</td>
-      <td>${escapeHtml(s.status||"—")}</td>
+      <td>${esc(s.studentId)}</td>
+      <td>${esc(s.name||"")}</td>
+      <td>${esc(s.status||"—")}</td>
       <td>
-        <select data-sid="${escapeHtml(s.studentId)}">
+        <select data-sid="${esc(s.studentId)}">
           <option value="حضور">حضور</option>
           <option value="تأخير">تأخير</option>
           <option value="غياب">غياب</option>
           <option value="معذور">معذور</option>
         </select>
       </td>
-      <td><button class="btn" data-save="${escapeHtml(s.studentId)}">${getLang()==="ar"?"حفظ":"Save"}</button></td>
+      <td><button class="btn" data-save="${esc(s.studentId)}">${getLang()==="ar"?"حفظ":"Save"}</button></td>
     `;
     stuBody.appendChild(tr);
   });
@@ -560,10 +533,7 @@ function renderStudents(list){
   });
 }
 
-/* ======= utils ======= */
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
+function esc(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 </script>
 </body>
 </html>
