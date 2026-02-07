@@ -7,87 +7,44 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{
-  min-height:100vh;
-  background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
-  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
-}
-.card{
-  width:100%;max-width:1050px;border-radius:20px;padding:22px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(10px);
-  box-shadow:0 20px 50px rgba(0,0,0,0.35);
-  border:1px solid rgba(255,255,255,0.12);
-}
+body{min-height:100vh;background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
+display:flex;align-items:center;justify-content:center;padding:20px;color:#fff}
+.card{width:100%;max-width:1050px;border-radius:20px;padding:22px;background:rgba(255,255,255,0.15);
+backdrop-filter:blur(10px);box-shadow:0 20px 50px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12)}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .topbar a{color:#eafff3;text-decoration:none;font-weight:900}
-.icon-btn{
-  width:40px;height:40px;border-radius:12px;border:none;
-  background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px
-}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px}
 .h1{font-size:20px;font-weight:900;color:#eafff3;margin-top:6px}
 .h2{font-size:13px;color:#d2f5e3;margin-top:6px}
-
-.panel{
-  margin-top:16px;border-radius:16px;padding:16px;
-  background:linear-gradient(135deg,#e9fff4,#c9f5de);
-  color:#0d2c1a;
-  box-shadow:0 10px 25px rgba(0,0,0,0.20);
-}
-
+.panel{margin-top:16px;border-radius:16px;padding:16px;background:linear-gradient(135deg,#e9fff4,#c9f5de);
+color:#0d2c1a;box-shadow:0 10px 25px rgba(0,0,0,0.20)}
 .sectionTitle{font-size:16px;font-weight:900;margin:6px 0 12px;color:#0d2c1a}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.grid{grid-template-columns:1fr}}
-
 label{display:block;font-weight:900;margin-bottom:6px;color:#0d2c1a}
-input,select{
-  width:100%;padding:12px 10px;border-radius:12px;border:2px solid #bfead4;
-  font-size:15px;outline:none;background:#fff;color:#0d2c1a;
-}
+input,select{width:100%;padding:12px 10px;border-radius:12px;border:2px solid #bfead4;
+font-size:15px;outline:none;background:#fff;color:#0d2c1a}
 input:focus,select:focus{border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,70,.18)}
-.btn{
-  border:none;border-radius:14px;padding:12px 14px;
-  font-weight:900;font-size:15px;cursor:pointer;
-  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);
-  transition:transform .15s ease;
-}
+.btn{border:none;border-radius:14px;padding:12px 14px;font-weight:900;font-size:15px;cursor:pointer;
+background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);transition:transform .15s ease}
 .btn:hover{transform:translateY(-2px)}
-.btn.ghost{
-  background:rgba(13,44,26,.10);color:#0d2c1a;border:2px solid rgba(13,44,26,.22);
-  box-shadow:none
-}
+.btn.ghost{background:rgba(13,44,26,.10);color:#0d2c1a;border:2px solid rgba(13,44,26,.22);box-shadow:none}
 .msg{margin-top:10px;font-weight:900;min-height:22px}
-
-.table{
-  width:100%;border-collapse:collapse;margin-top:10px;
-  overflow:hidden;border-radius:14px;background:#fff;border:2px solid #d9f7ea;
-}
+.table{width:100%;border-collapse:collapse;margin-top:10px;overflow:hidden;border-radius:14px;background:#fff;border:2px solid #d9f7ea}
 .table th,.table td{padding:10px;border-bottom:1px solid #e9f7ef;text-align:center;font-size:13px}
 .table th{background:#f2fff8;color:#0d2c1a;font-weight:900}
 .badge{padding:4px 10px;border-radius:999px;font-weight:900;font-size:12px;display:inline-block}
 .bActive{background:#e7fff2;color:#146c43;border:1px solid #bfead4}
 .bUpcoming{background:#fff7e6;color:#7a5200;border:1px solid #ffe3b0}
 .bEnded{background:#ffeef0;color:#8a1f2e;border:1px solid #ffc1c8}
-
-.qrWrap{
-  display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:10px
-}
-.qrBox{
-  background:#fff;border:2px solid #d9f7ea;border-radius:14px;padding:12px;min-width:220px
-}
+.qrWrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.qrBox{background:#fff;border:2px solid #d9f7ea;border-radius:14px;padding:12px;min-width:220px}
 .qrText{font-weight:900;color:#0d2c1a;margin-top:6px}
 .small{font-size:12px;color:#2f6b4c;font-weight:800;margin-top:6px}
-
 hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
-
-.lockBox{
-  background:rgba(255,255,255,0.16);
-  border:1px solid rgba(255,255,255,0.15);
-  border-radius:16px;padding:14px;margin-top:14px;
-}
+.lockBox{background:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:14px;margin-top:14px}
 .lockHint{font-size:12px;color:rgba(255,255,255,.8);margin-top:6px}
 .hidden{display:none}
 </style>
@@ -103,7 +60,6 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
   <div class="h1" id="titleTxt">إدارة المحاضرات</div>
   <div class="h2" id="subTxt">إنشاء محاضرات — توليد QR/Code — تعديل حالات الطلاب</div>
 
-  <!-- قفل الدخول -->
   <div class="lockBox">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
       <div style="flex:1;min-width:240px">
@@ -117,7 +73,6 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
     <div class="msg" id="lockMsg"></div>
   </div>
 
-  <!-- لوحة الإدارة -->
   <div id="admin" class="hidden">
     <div class="panel">
       <div class="sectionTitle" id="s1">إنشاء محاضرة</div>
@@ -254,40 +209,42 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
           </table>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
-// ===== لغة =====
+async function post(payload){
+  const res = await fetch(SCRIPT_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  });
+  return await res.json();
+}
+
 const STR={
-  ar:{dir:"rtl",lang:"ar",
-      back:"رجوع",title:"إدارة المحاضرات",sub:"إنشاء محاضرات — توليد QR/Code — تعديل حالات الطلاب",
+  ar:{dir:"rtl",lang:"ar",back:"رجوع",title:"إدارة المحاضرات",sub:"إنشاء محاضرات — توليد QR/Code — تعديل حالات الطلاب",
       key:"الرمز السري (للدكتور)",unlock:"دخول",logout:"تسجيل خروج",lockHint:"لن تظهر لوحة الإدارة إلا بعد إدخال الرمز الصحيح.",
       s1:"إنشاء محاضرة",course:"المقرر",section:"الشعبة",start:"البداية",end:"النهاية",create:"إنشاء",
       s2:"إنشاء جدول أسبوعي (ترم كامل)",from:"من تاريخ",to:"إلى تاريخ",st:"وقت البداية",et:"وقت النهاية",days:"الأيام",
       sun:"أحد",mon:"اثنين",tue:"ثلاثاء",wed:"أربعاء",thu:"خميس",sch:"إنشاء الجدول",
-      s3:"المحاضرات",ref:"تحديث",
-      thCourse:"المقرر",thSection:"الشعبة",thStart:"البداية",thEnd:"النهاية",thStatus:"الحالة",thAct:"إجراءات",
+      s3:"المحاضرات",ref:"تحديث",thCourse:"المقرر",thSection:"الشعبة",thStart:"البداية",thEnd:"النهاية",thStatus:"الحالة",thAct:"إجراءات",
       s4:"الكود و QR للمحاضرة",codeNote:"صلاحية الكود قصيرة لمنع المشاركة.",sel:"LectureID المحدد:",rot:"توليد كود جديد",stu:"عرض الطلاب",
-      s5:"طلاب المحاضرة",thName:"الاسم",thCur:"الحالة الحالية",thSet:"تغيير الحالة",thSave:"حفظ",
-      okUnlock:"✅ تم الدخول",badKey:"❌ رمز غير صحيح",needKey:"❌ أدخل الرمز السري أولاً"
+      s5:"طلاب المحاضرة",thName:"الاسم (اختياري)",thCur:"الحالة الحالية",thSet:"تغيير الحالة",thSave:"حفظ",
+      okUnlock:"✅ تم الدخول",needKey:"❌ أدخل الرمز السري أولاً"
   },
-  en:{dir:"ltr",lang:"en",
-      back:"Back",title:"Lecture Management",sub:"Create lectures — Generate QR/Code — Manage student statuses",
+  en:{dir:"ltr",lang:"en",back:"Back",title:"Lecture Management",sub:"Create lectures — Generate QR/Code — Manage student statuses",
       key:"Doctor Secret Key",unlock:"Login",logout:"Logout",lockHint:"Admin panel is hidden until the correct key is provided.",
       s1:"Create Lecture",course:"Course",section:"Section",start:"Start",end:"End",create:"Create",
       s2:"Create Weekly Schedule (Full Term)",from:"From",to:"To",st:"Start time",et:"End time",days:"Days",
       sun:"Sun",mon:"Mon",tue:"Tue",wed:"Wed",thu:"Thu",sch:"Create Schedule",
-      s3:"Lectures",ref:"Refresh",
-      thCourse:"Course",thSection:"Section",thStart:"Start",thEnd:"End",thStatus:"Status",thAct:"Actions",
+      s3:"Lectures",ref:"Refresh",thCourse:"Course",thSection:"Section",thStart:"Start",thEnd:"End",thStatus:"Status",thAct:"Actions",
       s4:"Lecture Code & QR",codeNote:"Short code validity to prevent sharing.",sel:"Selected LectureID:",rot:"Generate new code",stu:"Students",
-      s5:"Lecture Students",thName:"Name",thCur:"Current Status",thSet:"Set Status",thSave:"Save",
-      okUnlock:"✅ Logged in",badKey:"❌ Wrong key",needKey:"❌ Enter the secret key first"
+      s5:"Lecture Students",thName:"Name (optional)",thCur:"Current Status",thSet:"Set Status",thSave:"Save",
+      okUnlock:"✅ Logged in",needKey:"❌ Enter the secret key first"
   }
 };
 
@@ -299,44 +256,39 @@ function applyLang(){
   document.documentElement.lang=x.lang; document.documentElement.dir=x.dir;
   backTxt.textContent=x.back; titleTxt.textContent=x.title; subTxt.textContent=x.sub;
   labKey.textContent=x.key; unlockTxt.textContent=x.unlock; logoutTxt.textContent=x.logout; lockHint.textContent=x.lockHint;
-
   s1.textContent=x.s1; labCourse.textContent=x.course; labSection.textContent=x.section; labStart.textContent=x.start; labEnd.textContent=x.end; createTxt.textContent=x.create;
   s2.textContent=x.s2; labSchCourse.textContent=x.course; labSchSection.textContent=x.section; labFrom.textContent=x.from; labTo.textContent=x.to;
   labSt.textContent=x.st; labEt.textContent=x.et; labDays.textContent=x.days;
   d0.textContent=x.sun; d1.textContent=x.mon; d2.textContent=x.tue; d3.textContent=x.wed; d4.textContent=x.thu;
   schTxt.textContent=x.sch;
-
   s3.textContent=x.s3; refTxt.textContent=x.ref;
   thCourse.textContent=x.thCourse; thSection.textContent=x.thSection; thStart.textContent=x.thStart; thEnd.textContent=x.thEnd; thStatus.textContent=x.thStatus; thAct.textContent=x.thAct;
-
   s4.textContent=x.s4; codeNote.textContent=x.codeNote; selLecTxt.textContent=x.sel; rotTxt.textContent=x.rot; stuTxt.textContent=x.stu;
   s5.textContent=x.s5; thName.textContent=x.thName; thCur.textContent=x.thCur; thSet.textContent=x.thSet; thSave.textContent=x.thSave;
-
-  // زر scan يغير نصه عند الحاجة (مو موجود هنا)
 }
 langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
 applyLang();
 
-// ===== API (حل CORS) =====
-async function post(payload){
-  const res = await fetch(SCRIPT_URL,{
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  });
-  return await res.json();
+function msgSet(el, ok, text){
+  el.style.color = ok ? "#0d2c1a" : "#b00020";
+  el.textContent = text;
 }
-
-// ===== قفل الدخول =====
-function setLockMsg(ok, text){
-  lockMsg.style.color = ok ? "#0d2c1a" : "#b00020";
-  lockMsg.textContent = text;
+function badge(status){
+  if(status==="Active") return `<span class="badge bActive">Active</span>`;
+  if(status==="Upcoming") return `<span class="badge bUpcoming">Upcoming</span>`;
+  return `<span class="badge bEnded">Ended</span>`;
 }
-
+function getKey(){
+  return sessionStorage.getItem("hather_doctor_key") || doctorKey.value.trim();
+}
+function requireKey(){
+  const k = getKey();
+  if(!k){ msgSet(lockMsg,false, t().needKey); return false; }
+  return true;
+}
 function setLoggedIn(v){
   sessionStorage.setItem("hather_doctor_ok", v ? "1":"0");
   admin.classList.toggle("hidden", !v);
-  // اخفاء مساحات
   codeArea.classList.add("hidden");
   studentsArea.classList.add("hidden");
 }
@@ -345,30 +297,28 @@ btnLogout.onclick=()=>{
   sessionStorage.removeItem("hather_doctor_ok");
   sessionStorage.removeItem("hather_doctor_key");
   setLoggedIn(false);
-  setLockMsg(true, "");
+  msgSet(lockMsg,true,"");
 };
 
 btnUnlock.onclick=async ()=>{
   const key = doctorKey.value.trim();
-  // نحاول نعمل listLectures للتأكد من صحة الرمز
-  setLockMsg(true, getLang()==="ar"?"⏳ جاري التحقق...":"⏳ Verifying...");
+  msgSet(lockMsg,true, getLang()==="ar"?"⏳ جاري التحقق...":"⏳ Verifying...");
   try{
     const data = await post({ action:"listLectures", doctorKey:key });
     if(!data.ok){
       setLoggedIn(false);
-      return setLockMsg(false, data.result || t().badKey);
+      return msgSet(lockMsg,false, data.result || "❌ Wrong key");
     }
     sessionStorage.setItem("hather_doctor_key", key);
     setLoggedIn(true);
-    setLockMsg(true, t().okUnlock);
+    msgSet(lockMsg,true, t().okUnlock);
     await refreshLectures();
   }catch(e){
     setLoggedIn(false);
-    setLockMsg(false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+    msgSet(lockMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
   }
 };
 
-// استرجاع جلسة
 if(sessionStorage.getItem("hather_doctor_ok")==="1"){
   setLoggedIn(true);
   refreshLectures();
@@ -376,43 +326,19 @@ if(sessionStorage.getItem("hather_doctor_ok")==="1"){
   setLoggedIn(false);
 }
 
-// ===== أدوات UI =====
-function badge(status){
-  if(status==="Active") return `<span class="badge bActive">Active</span>`;
-  if(status==="Upcoming") return `<span class="badge bUpcoming">Upcoming</span>`;
-  return `<span class="badge bEnded">Ended</span>`;
-}
-function msgSet(el, ok, text){
-  el.style.color = ok ? "#0d2c1a" : "#b00020";
-  el.textContent = text;
-}
-function getKey(){
-  const k = sessionStorage.getItem("hather_doctor_key") || doctorKey.value.trim();
-  return k;
-}
-function requireKey(){
-  const k = getKey();
-  if(!k){
-    setLockMsg(false, t().needKey);
-    return false;
-  }
-  return true;
-}
-
-// ===== Create Lecture =====
+// Create lecture
 btnCreate.onclick=async ()=>{
   if(!requireKey()) return;
-  const payload = {
-    action:"createLecture",
-    doctorKey:getKey(),
-    course:course.value.trim(),
-    section:section.value.trim(),
-    startTime:startTime.value,
-    endTime:endTime.value
-  };
   msgSet(createMsg,true, getLang()==="ar"?"⏳ جاري الإنشاء...":"⏳ Creating...");
   try{
-    const data = await post(payload);
+    const data = await post({
+      action:"createLecture",
+      doctorKey:getKey(),
+      course:course.value.trim(),
+      section:section.value.trim(),
+      startTime:startTime.value,
+      endTime:endTime.value
+    });
     if(!data.ok) return msgSet(createMsg,false, data.result||"❌ Failed");
     msgSet(createMsg,true, `✅ LectureID: ${data.lectureId}`);
     await refreshLectures();
@@ -421,25 +347,40 @@ btnCreate.onclick=async ()=>{
   }
 };
 
-// ===== Create Schedule =====
+// Create schedule
 btnSchedule.onclick=async ()=>{
   if(!requireKey()) return;
+
+  const courseV = schCourse.value.trim();
+  const sectionV = schSection.value.trim();
+  const startDateV = schStartDate.value;
+  const endDateV = schEndDate.value;
+  const startTimeV = schStartHHMM.value;
+  const endTimeV = schEndHHMM.value;
+
   const days = Array.from(document.querySelectorAll(".dow:checked")).map(x=>Number(x.value));
-  const payload = {
-    action:"createSchedule",
-    doctorKey:getKey(),
-    course:schCourse.value.trim(),
-    section:schSection.value.trim(),
-    startDate:schStartDate.value,
-    endDate:schEndDate.value,
-    startHHMM:schStartHHMM.value,
-    endHHMM:schEndHHMM.value,
-    days
-  };
+
+  if(!courseV || !sectionV) return msgSet(schMsg,false, getLang()==="ar"?"❌ أدخل المقرر والشعبة":"❌ Enter course & section");
+  if(!startDateV || !endDateV) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر تاريخ البداية والنهاية":"❌ Select dates");
+  if(!startTimeV || !endTimeV) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر وقت البداية والنهاية":"❌ Select times");
+  if(days.length===0) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر أيام الجدول":"❌ Select days");
+
   msgSet(schMsg,true, getLang()==="ar"?"⏳ جاري إنشاء الجدول...":"⏳ Creating schedule...");
+
   try{
-    const data = await post(payload);
-    if(!data.ok) return msgSet(schMsg,false, data.result||"❌ Failed");
+    const data = await post({
+      action:"createSchedule",
+      doctorKey:getKey(),
+      course:courseV,
+      section:sectionV,
+      startDate:startDateV,
+      endDate:endDateV,
+      startHHMM:startTimeV,
+      endHHMM:endTimeV,
+      days:days
+    });
+
+    if(!data.ok) return msgSet(schMsg,false, data.result || "❌ Failed");
     msgSet(schMsg,true, data.result || "✅ Done");
     await refreshLectures();
   }catch(e){
@@ -447,14 +388,13 @@ btnSchedule.onclick=async ()=>{
   }
 };
 
-// ===== List Lectures =====
 btnRefresh.onclick=refreshLectures;
 
-let selectedLectureId = null;
+let selectedLectureId=null;
 
 async function refreshLectures(){
   if(!requireKey()) return;
-  msgSet(listMsg,true, getLang()==="ar"?"⏳ جاري تحميل المحاضرات...":"⏳ Loading lectures...");
+  msgSet(listMsg,true, getLang()==="ar"?"⏳ جاري تحميل المحاضرات...":"⏳ Loading...");
   try{
     const data = await post({ action:"listLectures", doctorKey:getKey() });
     if(!data.ok) return msgSet(listMsg,false, data.result||"❌ Failed");
@@ -466,10 +406,10 @@ async function refreshLectures(){
 }
 
 function renderLectures(list){
-  lecBody.innerHTML = "";
+  lecBody.innerHTML="";
   list.forEach(item=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
       <td>${item.lectureId}</td>
       <td>${item.course}</td>
       <td>${item.section}</td>
@@ -485,20 +425,20 @@ function renderLectures(list){
   });
 
   lecBody.querySelectorAll("button").forEach(b=>{
-    b.onclick = async ()=>{
+    b.onclick=async ()=>{
       const act=b.dataset.act, id=b.dataset.id;
       if(act==="select"){
-        selectedLectureId = id;
-        selLectureId.textContent = id;
+        selectedLectureId=id;
+        selLectureId.textContent=id;
         codeArea.classList.remove("hidden");
         studentsArea.classList.add("hidden");
         curCode.textContent="—";
         msgSet(codeMsg,true,"");
-        await rotateCode(); // توليد أول كود مباشرة
+        await rotateCode();
       }else if(act==="delete"){
         if(!confirm(getLang()==="ar"?"هل أنت متأكد من حذف المحاضرة؟":"Delete this lecture?")) return;
         try{
-          const r = await post({ action:"deleteLecture", doctorKey:getKey(), lectureId:id });
+          const r=await post({ action:"deleteLecture", doctorKey:getKey(), lectureId:id });
           if(!r.ok) alert(r.result||"Failed");
           await refreshLectures();
           if(selectedLectureId===id){
@@ -506,45 +446,57 @@ function renderLectures(list){
             codeArea.classList.add("hidden");
             studentsArea.classList.add("hidden");
           }
-        }catch(e){
-          alert(getLang()==="ar"?"فشل الاتصال":"Connection failed");
-        }
+        }catch(e){ alert(getLang()==="ar"?"فشل الاتصال":"Connection failed"); }
       }
     };
   });
 }
 
-// ===== Rotate Code + QR =====
 btnRotate.onclick=rotateCode;
 
 async function rotateCode(){
   if(!selectedLectureId) return msgSet(codeMsg,false, getLang()==="ar"?"❌ اختر محاضرة أولاً":"❌ Select lecture first");
   msgSet(codeMsg,true, getLang()==="ar"?"⏳ جاري توليد الكود...":"⏳ Generating...");
   try{
-    const data = await post({ action:"rotateCode", doctorKey:getKey(), lectureId:selectedLectureId });
+    const data=await post({ action:"rotateCode", doctorKey:getKey(), lectureId:selectedLectureId });
     if(!data.ok) return msgSet(codeMsg,false, data.result||"❌ Failed");
-    curCode.textContent = data.code;
+    curCode.textContent=data.code;
     msgSet(codeMsg,true, getLang()==="ar"?"✅ تم توليد كود جديد":"✅ New code generated");
 
-    // QR يحتوي الكود فقط (ممكن يحتوي رابط إذا تبغى)
-    const qrText = String(data.code);
+    // ✅ QR بدون مكتبات (Google Chart API)
     const canvas = document.getElementById("qrCanvas");
-    await QRCode.toCanvas(canvas, qrText, { width: 200, margin: 1 });
+    const ctx = canvas.getContext("2d");
+    canvas.width = 200;
+    canvas.height = 200;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.onerror = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.font = "14px Arial";
+      ctx.fillText("QR failed", 60, 100);
+    };
+    const qrUrl = "https://chart.googleapis.com/chart?cht=qr&chs=200x200&chld=M|0&chl=" + encodeURIComponent(String(data.code));
+    img.src = qrUrl;
 
   }catch(e){
-    msgSet(codeMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+    console.error(e);
+    msgSet(codeMsg,false, getLang()==="ar"?"❌ تعذر إنشاء QR":"❌ QR failed");
   }
 }
 
-// ===== Students =====
 btnStudents.onclick=loadStudents;
 
 async function loadStudents(){
   if(!selectedLectureId) return msgSet(stuMsg,false, getLang()==="ar"?"❌ اختر محاضرة أولاً":"❌ Select lecture first");
   studentsArea.classList.remove("hidden");
-  msgSet(stuMsg,true, getLang()==="ar"?"⏳ جاري تحميل الطلاب...":"⏳ Loading students...");
+  msgSet(stuMsg,true, getLang()==="ar"?"⏳ جاري تحميل الطلاب...":"⏳ Loading...");
   try{
-    const data = await post({ action:"getLectureStudents", doctorKey:getKey(), lectureId:selectedLectureId });
+    const data=await post({ action:"getLectureStudents", doctorKey:getKey(), lectureId:selectedLectureId });
     if(!data.ok) return msgSet(stuMsg,false, data.result||"❌ Failed");
     msgSet(stuMsg,true, getLang()==="ar"?"✅ تم تحميل الطلاب":"✅ Loaded");
     renderStudents(data.students||[]);
@@ -555,6 +507,13 @@ async function loadStudents(){
 
 function renderStudents(list){
   stuBody.innerHTML="";
+  if(!list.length){
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td colspan="5">${getLang()==="ar"?"لا يوجد طلاب مسجلين لهذه المحاضرة بعد (يظهرون بعد أول تسجيل حضور).":"No students yet (they appear after first check-in)."}</td>`;
+    stuBody.appendChild(tr);
+    return;
+  }
+
   list.forEach(s=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
@@ -575,20 +534,17 @@ function renderStudents(list){
   });
 
   stuBody.querySelectorAll("button[data-save]").forEach(btn=>{
-    btn.onclick = async ()=>{
-      const sid = btn.dataset.save;
-      const sel = stuBody.querySelector(`select[data-sid="${sid}"]`);
-      const st = sel.value;
+    btn.onclick=async ()=>{
+      const sid=btn.dataset.save;
+      const sel=stuBody.querySelector(`select[data-sid="${sid}"]`);
+      const st=sel.value;
       btn.disabled=true;
       try{
-        const r = await post({ action:"setStudentStatus", doctorKey:getKey(), lectureId:selectedLectureId, studentId:sid, status:st });
+        const r=await post({ action:"setStudentStatus", doctorKey:getKey(), lectureId:selectedLectureId, studentId:sid, status:st });
         if(!r.ok) alert(r.result||"Failed");
         await loadStudents();
-      }catch(e){
-        alert(getLang()==="ar"?"فشل الاتصال":"Connection failed");
-      }finally{
-        btn.disabled=false;
-      }
+      }catch(e){ alert(getLang()==="ar"?"فشل الاتصال":"Connection failed"); }
+      finally{ btn.disabled=false; }
     };
   });
 }
