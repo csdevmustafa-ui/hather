@@ -3,150 +3,203 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hather - Reports</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Hather - تقارير الحضور</title>
 
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-  body{
-    min-height:100vh;
-    background: linear-gradient(135deg,#0d2c1a 0%, #1a472a 45%, #2d7d46 100%);
-    display:flex;align-items:center;justify-content:center;
-    padding:20px;color:#fff;
-  }
-  .wrap{
-    width:100%;max-width:560px;border-radius:18px;padding:22px;
-    background: rgba(13, 44, 26, 0.78);
-    box-shadow: 0 18px 45px rgba(0,0,0,.35);
-    border: 1px solid rgba(255,255,255,.12);
-    backdrop-filter: blur(8px);
-  }
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-  .icon-btn{
-    width:42px;height:42px;border-radius:12px;border:none;cursor:pointer;
-    background: rgba(255,255,255,.12);color:#fff;font-size:18px;font-weight:900;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .back{color:#d6ffe9;text-decoration:none;font-weight:900;opacity:.9}
-  .header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
-  .header::after{
-    content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
-    background: linear-gradient(to right, transparent, rgba(76,201,135,.95), transparent);
-  }
-  .title{
-    font-size:42px;font-weight:900;
-    background: linear-gradient(135deg, #b9ffd9, #4cc987);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#d6ffe9;opacity:.95}
-  label{display:block;margin:14px 0 6px;font-weight:900;color: rgba(255,255,255,.92)}
-  input{
-    width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
-    background: rgba(255,255,255,.92);font-size:17px;color:#0d2c1a;direction:ltr;
-  }
-  button.primary{
-    width:100%;margin-top:14px;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
-    color:#fff;font-weight:900;font-size:18px;
-    background: linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-  }
-  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
-  .stat{
-    border-radius:14px;padding:12px;
-    background: rgba(255,255,255,.10);
-    border:1px solid rgba(255,255,255,.10);
-    text-align:center
-  }
-  .stat .n{font-size:26px;font-weight:900;margin-top:6px}
-  .msg{min-height:22px;margin-top:12px;text-align:center;font-weight:900}
-  canvas{background: rgba(255,255,255,.08);border-radius:14px;padding:10px;margin-top:14px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
+}
+.card{
+  width:100%;max-width:760px;border-radius:20px;padding:22px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(10px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,0.12);
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.topbar a{color:#eafff3;text-decoration:none;font-weight:900}
+.icon-btn{
+  width:40px;height:40px;border-radius:12px;border:none;
+  background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px
+}
+.h1{font-size:20px;font-weight:900;color:#eafff3;margin-top:6px}
+.h2{font-size:13px;color:#d2f5e3;margin-top:6px}
+
+.panel{
+  margin-top:16px;border-radius:16px;padding:16px;
+  background:linear-gradient(135deg,#e9fff4,#c9f5de);
+  color:#0d2c1a;
+  box-shadow:0 10px 25px rgba(0,0,0,0.20);
+}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+label{display:block;font-weight:900;margin-bottom:6px;color:#0d2c1a}
+input{
+  padding:14px 12px;border-radius:12px;border:2px solid #bfead4;
+  font-size:16px;outline:none;background:#fff;color:#0d2c1a;min-width:240px
+}
+input:focus{border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,70,.18)}
+.btn{
+  border:none;border-radius:14px;padding:14px 16px;
+  font-weight:900;font-size:16px;cursor:pointer;
+  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
+  color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);
+}
+.msg{margin-top:10px;font-weight:900;min-height:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.box{
+  background:rgba(13,44,26,.08);
+  border:1px solid rgba(13,44,26,.18);
+  border-radius:14px;padding:14px;
+}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+@media(max-width:620px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{
+  background:#fff;border-radius:14px;padding:12px;
+  border:2px solid #d9f7ea;
+}
+.kpi .v{font-size:22px;font-weight:900;color:#0d2c1a}
+.kpi .l{font-size:12px;font-weight:800;color:#2f6b4c;margin-top:3px}
+canvas{width:100% !important; height:280px !important;}
 </style>
 </head>
 
 <body>
-<div class="wrap">
+<div class="card">
   <div class="topbar">
-    <a class="back" href="index.html" id="backHome">↩ الرئيسية</a>
+    <a href="./index.html">⟵ <span id="backTxt">رجوع</span></a>
     <button class="icon-btn" id="langBtn" title="Language">🌐</button>
   </div>
 
-  <div class="header">
-    <div class="title">Hather</div>
-    <div class="subtitle" id="subTitle">تقارير الطالب</div>
+  <div class="h1" id="titleTxt">تقارير الحضور</div>
+  <div class="h2" id="subTxt">ادخل الرقم الجامعي لعرض الإحصائيات</div>
+
+  <div class="panel">
+    <div class="row">
+      <div>
+        <label id="labSid">الرقم الجامعي</label>
+        <input id="studentId" inputmode="numeric" maxlength="9" placeholder="123456789">
+      </div>
+      <button class="btn" id="btnLoad"><span id="btnTxt">عرض التقرير</span></button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="kpis" id="kpis" style="display:none">
+      <div class="kpi"><div class="v" id="vPresent">0</div><div class="l" id="lPresent">حضور</div></div>
+      <div class="kpi"><div class="v" id="vLate">0</div><div class="l" id="lLate">تأخير</div></div>
+      <div class="kpi"><div class="v" id="vAbsent">0</div><div class="l" id="lAbsent">غياب</div></div>
+      <div class="kpi"><div class="v" id="vExcused">0</div><div class="l" id="lExcused">معذور</div></div>
+    </div>
+
+    <div class="grid" id="charts" style="display:none">
+      <div class="box">
+        <div style="font-weight:900;margin-bottom:10px" id="chartTitle1">توزيع الحالات</div>
+        <canvas id="pie"></canvas>
+      </div>
+      <div class="box">
+        <div style="font-weight:900;margin-bottom:10px" id="chartTitle2">نسبة الحضور</div>
+        <canvas id="bar"></canvas>
+      </div>
+    </div>
   </div>
-
-  <label id="lblId">الرقم الجامعي</label>
-  <input id="studentId" maxlength="9" inputmode="numeric" placeholder="441234567" />
-  <button class="primary" id="btn">عرض التقرير</button>
-
-  <div class="stats">
-    <div class="stat"><div id="pLbl">حضور</div><div class="n" id="pN">0</div></div>
-    <div class="stat"><div id="lLbl">تأخير</div><div class="n" id="lN">0</div></div>
-    <div class="stat"><div id="aLbl">غياب</div><div class="n" id="aN">0</div></div>
-    <div class="stat"><div id="eLbl">معذور</div><div class="n" id="eN">0</div></div>
-  </div>
-
-  <div class="msg" id="msg"></div>
-  <canvas id="pie"></canvas>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyojswsuqQi3sHXxNuqmED2pXMm0wRHkWEg6s8dx3tlpKvrl3hs5RDbPonj8EjdYX0/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
-  const STR = {
-    ar:{dir:"rtl",lang:"ar",back:"↩ الرئيسية",sub:"تقارير الطالب",lbl:"الرقم الجامعي",btn:"عرض التقرير",
-        p:"حضور",l:"تأخير",a:"غياب",e:"معذور",inv:"❌ الرقم الجامعي لازم 9 أرقام",load:"⏳ جاري التحميل...",fail:"❌ فشل الاتصال"},
-    en:{dir:"ltr",lang:"en",back:"↩ Home",sub:"Student Reports",lbl:"University ID",btn:"View report",
-        p:"Present",l:"Late",a:"Absent",e:"Excused",inv:"❌ University ID must be 9 digits",load:"⏳ Loading...",fail:"❌ Connection failed"}
-  };
+// لغة
+const STR={
+  ar:{dir:"rtl",lang:"ar",back:"رجوع",title:"تقارير الحضور",sub:"ادخل الرقم الجامعي لعرض الإحصائيات",
+      sid:"الرقم الجامعي",btn:"عرض التقرير",
+      p:"حضور",l:"تأخير",a:"غياب",e:"معذور",
+      c1:"توزيع الحالات",c2:"نسبة الحضور"},
+  en:{dir:"ltr",lang:"en",back:"Back",title:"Attendance Reports",sub:"Enter student ID to view stats",
+      sid:"Student ID",btn:"View Report",
+      p:"Present",l:"Late",a:"Absent",e:"Excused",
+      c1:"Status Distribution",c2:"Attendance Rate"}
+};
+function getLang(){return localStorage.getItem("hather_lang")||"ar";}
+function setLang(l){localStorage.setItem("hather_lang",l);}
+function applyLang(){
+  const t=STR[getLang()];
+  document.documentElement.lang=t.lang; document.documentElement.dir=t.dir;
+  backTxt.textContent=t.back; titleTxt.textContent=t.title; subTxt.textContent=t.sub;
+  labSid.textContent=t.sid; btnTxt.textContent=t.btn;
+  lPresent.textContent=t.p; lLate.textContent=t.l; lAbsent.textContent=t.a; lExcused.textContent=t.e;
+  chartTitle1.textContent=t.c1; chartTitle2.textContent=t.c2;
+}
+langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
+applyLang();
 
-  function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
-  function setLang(l){ localStorage.setItem("hather_lang", l); }
-  function applyLang(){
-    const t = STR[getLang()];
-    document.documentElement.lang = t.lang;
-    document.documentElement.dir = t.dir;
-    backHome.textContent = t.back;
-    subTitle.textContent = t.sub;
-    lblId.textContent = t.lbl;
-    btn.textContent = t.btn;
-    pLbl.textContent = t.p; lLbl.textContent = t.l; aLbl.textContent = t.a; eLbl.textContent = t.e;
-  }
-  langBtn.onclick = ()=>{ setLang(getLang()==="ar"?"en":"ar"); applyLang(); };
-  applyLang();
+let pieChart=null, barChart=null;
 
-  let pieChart=null;
-  function draw(p,l,a,e){
+function okMsg(t){msg.style.color="#0d2c1a"; msg.textContent=t;}
+function badMsg(t){msg.style.color="#b00020"; msg.textContent=t;}
+
+btnLoad.onclick = async ()=>{
+  const sid = studentId.value.trim();
+  if(!/^\d{9}$/.test(sid)) return badMsg(getLang()==="ar"?"❌ الرقم الجامعي لازم 9 أرقام":"❌ Student ID must be 9 digits");
+
+  okMsg(getLang()==="ar"?"⏳ جاري تحميل التقرير...":"⏳ Loading...");
+  try{
+    const url = SCRIPT_URL + "?studentId=" + encodeURIComponent(sid);
+    const res = await fetch(url);
+    const data = await res.json();
+    if(!data.ok) return badMsg(data.result || "❌ Failed");
+
+    const present = Number(data.present||0);
+    const late = Number(data.late||0);
+    const absent = Number(data.absent||0);
+    const excused = Number(data.excused||0);
+    const total = present + late + absent + excused;
+
+    vPresent.textContent=present;
+    vLate.textContent=late;
+    vAbsent.textContent=absent;
+    vExcused.textContent=excused;
+
+    kpis.style.display="grid";
+    charts.style.display="grid";
+
+    // Pie
+    const pieCtx = document.getElementById("pie");
     if(pieChart) pieChart.destroy();
-    pieChart = new Chart(document.getElementById("pie"),{
+    pieChart = new Chart(pieCtx,{
       type:"doughnut",
       data:{
         labels:[STR[getLang()].p, STR[getLang()].l, STR[getLang()].a, STR[getLang()].e],
-        datasets:[{ data:[p,l,a,e] }]
+        datasets:[{ data:[present,late,absent,excused] }]
       },
-      options:{ plugins:{ legend:{ labels:{ color:"#eafff3" } } } }
+      options:{responsive:true, plugins:{legend:{position:"bottom"}}}
     });
+
+    // Bar: attendance rate
+    const attRate = total ? Math.round(((present+late+excused)/total)*100) : 0;
+    const barCtx = document.getElementById("bar");
+    if(barChart) barChart.destroy();
+    barChart = new Chart(barCtx,{
+      type:"bar",
+      data:{
+        labels:[getLang()==="ar"?"الحضور الإجمالي":"Overall Attendance"],
+        datasets:[{ data:[attRate] }]
+      },
+      options:{
+        responsive:true,
+        scales:{y:{beginAtZero:true,max:100}},
+        plugins:{legend:{display:false}}
+      }
+    });
+
+    okMsg(getLang()==="ar"?"✅ تم عرض التقرير":"✅ Report loaded");
+  }catch(e){
+    badMsg(getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
   }
-
-  btn.addEventListener("click", ()=>{
-    const t = STR[getLang()];
-    const id = studentId.value.trim();
-    if(!/^\d{9}$/.test(id)){ msg.style.color="salmon"; msg.textContent=t.inv; return; }
-
-    msg.style.color="#d6ffe9"; msg.textContent=t.load;
-
-    fetch(`${SCRIPT_URL}?studentId=${id}`)
-      .then(r=>r.json())
-      .then(d=>{
-        if(!d.ok) throw new Error();
-        pN.textContent=d.present||0;
-        lN.textContent=d.late||0;
-        aN.textContent=d.absent||0;
-        eN.textContent=d.excused||0;
-        msg.style.color="#7CFFB2"; msg.textContent="✅";
-        draw(d.present||0,d.late||0,d.absent||0,d.excused||0);
-      })
-      .catch(()=>{ msg.style.color="salmon"; msg.textContent=t.fail; });
-  });
+};
 </script>
 </body>
 </html>
