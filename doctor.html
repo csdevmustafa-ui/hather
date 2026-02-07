@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hather - Doctor</title>
 
+<!-- QR Generator -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
   body{
@@ -70,6 +73,10 @@
   .pA{background:rgba(76,201,135,.18);color:#7CFFB2}
   .pU{background:rgba(244,180,0,.16);color:#ffd27a}
   .pE{background:rgba(255,120,120,.16);color:#ffb2b2}
+
+  /* code card */
+  .code-num{font-size:48px;font-weight:1000;letter-spacing:2px;color:#d6ffe9;margin-top:6px}
+  .qrWhite{background:#fff;padding:12px;border-radius:14px}
 </style>
 </head>
 
@@ -96,6 +103,23 @@
       </div>
     </div>
     <div class="msg" id="topMsg"></div>
+  </div>
+
+  <!-- Code + QR card -->
+  <div class="card" id="codeCard" style="display:none">
+    <h3 style="margin-bottom:10px" id="codeTitle">كود المحاضرة</h3>
+
+    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+      <div style="flex:1;min-width:240px">
+        <div style="font-weight:900;opacity:.9" id="codeLabel">الكود الحالي</div>
+        <div id="codeText" class="code-num"></div>
+        <div style="opacity:.8;margin-top:6px" id="codeHint">امسح الـ QR أو اكتب الكود يدويًا</div>
+      </div>
+
+      <div class="qrWhite">
+        <div id="qrBox"></div>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -187,7 +211,9 @@
         students:"طلاب المحاضرة",loadStudents:"عرض الطلاب",name:"الاسم",cur:"الحالة الحالية",set:"تغيير الحالة",saveOne:"حفظ",
         needKey:"❌ اكتب رمز الدكتور أولًا",loading:"⏳ جاري التحميل...",done:"✅ تم",fail:"❌ فشل",
         active:"نشطة",up:"قادمة",ended:"منتهية",
-        gen:"كود",del:"حذف"},
+        gen:"كود",del:"حذف",
+        codeTitle:"كود المحاضرة", codeLabel:"الكود الحالي", codeHint:"امسح الـ QR أو اكتب الكود يدويًا"
+    },
     en:{dir:"ltr",lang:"en",back:"↩ Home",sub:"Doctor",
         key:"Doctor key",refresh:"Refresh",
         create:"Create lecture",course:"Course",section:"Section",start:"Start",end:"End",save:"Save",
@@ -195,7 +221,9 @@
         students:"Lecture students",loadStudents:"Load students",name:"Name",cur:"Current status",set:"Set status",saveOne:"Save",
         needKey:"❌ Enter doctor key first",loading:"⏳ Loading...",done:"✅ Done",fail:"❌ Failed",
         active:"Active",up:"Upcoming",ended:"Ended",
-        gen:"Code",del:"Delete"}
+        gen:"Code",del:"Delete",
+        codeTitle:"Lecture Code", codeLabel:"Current code", codeHint:"Scan the QR or type the code"
+    }
   };
 
   function getLang(){return localStorage.getItem("hather_lang")||"ar";}
@@ -211,6 +239,10 @@
     thStatus.textContent=t.status; thActions.textContent=t.actions;
     studentsTitle.textContent=t.students; btnLoadStudents.textContent=t.loadStudents;
     thName.textContent=t.name; thCur.textContent=t.cur; thSet.textContent=t.set; thSave.textContent=t.saveOne;
+
+    codeTitle.textContent=t.codeTitle;
+    codeLabel.textContent=t.codeLabel;
+    codeHint.textContent=t.codeHint;
   }
   langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
   applyLang();
@@ -231,11 +263,16 @@
     return `<span class="pill pE">${t.ended}</span>`;
   }
   async function post(payload){
-    const res = await fetch(SCRIPT_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+    const res = await fetch(SCRIPT_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    });
     return await res.json();
   }
 
   btnRefresh.onclick = refreshLectures;
+
   async function refreshLectures(){
     if(!requireKey()) return;
     msg(listMsg, STR[getLang()].loading, true);
@@ -268,13 +305,19 @@
   }
 
   btnCreate.onclick = createLecture;
+
   async function createLecture(){
     if(!requireKey()) return;
     const courseV = course.value.trim();
     const sectionV = section.value.trim();
     const startTime = start.value;
     const endTime = end.value;
-    if(!courseV || !sectionV || !startTime || !endTime){ msg(createMsg, "❌ أدخل كل البيانات", false); return; }
+
+    if(!courseV || !sectionV || !startTime || !endTime){
+      msg(createMsg, getLang()==="ar" ? "❌ أدخل كل البيانات" : "❌ Fill all fields", false);
+      return;
+    }
+
     msg(createMsg, STR[getLang()].loading, true);
     try{
       const data = await post({action:"createLecture", doctorKey: doctorKeyVal(), course:courseV, section:sectionV, startTime, endTime});
@@ -300,11 +343,20 @@
     }
   }
 
+  // Generate code + show QR
   async function rotateCode(lectureId){
     if(!requireKey()) return;
+
     try{
       const data = await post({action:"rotateCode", doctorKey: doctorKeyVal(), lectureId});
       if(!data.ok) throw new Error();
+
+      codeCard.style.display = "block";
+      codeText.textContent = data.code;
+
+      qrBox.innerHTML = "";
+      new QRCode(qrBox, { text: data.code, width: 170, height: 170 });
+
       alert(`Lecture Code: ${data.code}\nValid for 2 minutes`);
     }catch(e){
       alert(getLang()==="ar" ? "فشل توليد الكود" : "Failed to generate code");
@@ -317,6 +369,7 @@
   }
 
   btnLoadStudents.onclick = loadLectureStudents;
+
   async function loadLectureStudents(){
     if(!requireKey()) return;
     const lectureId = studentsLectureId.value.trim();
@@ -371,6 +424,9 @@
       msg(studentsMsg, STR[getLang()].fail, false);
     }
   }
+
+  // auto-load lectures
+  window.addEventListener("load", ()=>{ refreshLectures(); });
 </script>
 </body>
 </html>
