@@ -1,96 +1,133 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hather</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hather - حاضر</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg1:#062716;
+  --bg2:#0a3a22;
+  --bg3:#0f5a34;
+  --card: rgba(255,255,255,.08);
+  --line: rgba(255,255,255,.14);
+  --text: rgba(255,255,255,.94);
+  --muted: rgba(255,255,255,.78);
+  --accent:#18c26b;
+  --accent2:#11a85b;
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+  --radius: 22px;
+}
+*{box-sizing:border-box;font-family:"Cairo",sans-serif}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+    radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
+    linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
+  display:flex; align-items:center; justify-content:center;
+  padding:18px;
+}
+.wrap{width:min(980px, 94vw)}
+.header{
+  text-align:center;
+  margin-bottom:14px;
+}
+.title{
+  font-size:44px; font-weight:900; letter-spacing:.5px;
+  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(24,194,107,.95));
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+  margin:0;
+}
+.subtitle{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+.grid{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:12px;
+}
+@media(max-width:900px){ .grid{grid-template-columns:1fr} .title{font-size:38px} }
+.card{
+  background: var(--card);
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding:16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  transition:.15s ease;
+  cursor:pointer;
+}
+.card:hover{ transform: translateY(-2px); background: rgba(255,255,255,.10); }
+.icon{
+  width:52px; height:52px; border-radius:18px;
+  display:grid; place-items:center;
+  background: rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.16);
+  margin-bottom:12px;
+}
+.card h3{ margin:0; font-weight:900; font-size:18px; }
+.card p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.6; }
+.badge{
+  display:inline-flex; align-items:center; gap:8px;
+  margin-top:12px;
+  padding:8px 10px;
+  border-radius:999px;
+  background: rgba(0,0,0,.16);
+  border:1px solid rgba(255,255,255,.12);
+  font-size:12px;
+  color:#fff;
+  opacity:.95;
+}
+.footer{
+  text-align:center;
+  margin-top:14px;
+  color: rgba(255,255,255,.65);
+  font-size:12px;
+}
+a{color:inherit;text-decoration:none}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="brand">
-      <div class="brand-left">
-        <div class="logo" aria-hidden="true">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="rgba(255,255,255,.9)" stroke-width="1.8"/>
-            <path d="M8 12l2.2 2.2L16.5 8" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="brand-titles">
-          <h1 data-i18n="homeTitle">Hather</h1>
-          <p data-i18n="homeSub">نظام إدارة الحضور الأكاديمي</p>
-        </div>
-      </div>
-
-      <div class="top-actions">
-        <div class="lang-chip" onclick="toggleLang()">
-          <span>AR/EN</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid-center">
-      <div class="card">
-        <div class="card-title">
-          <p class="title" style="margin:0" data-i18n="homeTitle">Hather</p>
-          <p class="subtitle" data-i18n="homeSub">نظام إدارة الحضور الأكاديمي</p>
-        </div>
-        <div class="hr"></div>
-
-        <button class="btn primary" onclick="location.href='student.html'">
-          <div class="left">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
-              <path d="M4 22a8 8 0 0 1 16 0" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="text">
-            <span data-i18n="toStudent">قسم الطالب</span>
-            <span class="sub" data-i18n="toStudentSub">تسجيل حضور المحاضرة</span>
-          </div>
-        </button>
-
-        <div style="height:10px"></div>
-
-        <button class="btn" onclick="location.href='student-report.html'">
-          <div class="left">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M4 19V5" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-              <path d="M4 19H20" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-              <path d="M8 15V11" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-              <path d="M12 15V7" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-              <path d="M16 15V9" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="text">
-            <span data-i18n="toReport">تقارير الطالب</span>
-            <span class="sub" data-i18n="toReportSub">نسبة الحضور والتأخير</span>
-          </div>
-        </button>
-
-        <div style="height:10px"></div>
-
-        <button class="btn dark" onclick="location.href='doctor.html'">
-          <div class="left">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2a4 4 0 0 1 4 4v2h-8V6a4 4 0 0 1 4-4Z" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
-              <path d="M6 22v-8a6 6 0 0 1 12 0v8" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="text">
-            <span data-i18n="toDoctor">لوحة عضو هيئة التدريس</span>
-            <span class="sub" data-i18n="toDoctorSub">إدارة المحاضرات والرموز</span>
-          </div>
-        </button>
-
-      </div>
-    </div>
+<div class="wrap">
+  <div class="header">
+    <h1 class="title">Hather — حاضر</h1>
+    <div class="subtitle">نظام حضور جامعي رسمي — اختر القسم المناسب للمتابعة</div>
   </div>
 
-  <script src="assets/app.js"></script>
-  <script>applyLang();</script>
+  <div class="grid">
+    <a href="student.html" class="card">
+      <div class="icon">🎓</div>
+      <h3>قسم الطالب — تسجيل الحضور</h3>
+      <p>سجّل حضورك بإدخال الكود أو مسح QR عبر الكاميرا.</p>
+      <div class="badge">Student Check-in</div>
+    </a>
+
+    <a href="reports.html" class="card">
+      <div class="icon">📊</div>
+      <h3>قسم التقارير</h3>
+      <p>لوحة ملخصات ورسوم بيانية للحضور (للطلبة/الدكتور حسب الصلاحية).</p>
+      <div class="badge">Reports & Charts</div>
+    </a>
+
+    <a href="doctor.html" class="card">
+      <div class="icon">🧑‍🏫</div>
+      <h3>لوحة عضو هيئة التدريس</h3>
+      <p>إنشاء محاضرات، جدول أسبوعي، توليد كود وQR، وعرض الطلاب.</p>
+      <div class="badge">PIN Required</div>
+    </a>
+  </div>
+
+  <div class="footer">© 2026 Hather Attendance System</div>
+</div>
 </body>
 </html>
