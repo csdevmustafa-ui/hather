@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Reports - Hather</title>
+<title>التقارير - Hather</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,183 +11,152 @@
 
 <style>
 :root{
-  --bg1:#083d25;
-  --bg2:#0f6b42;
-  --card:rgba(255,255,255,.08);
-  --line:rgba(255,255,255,.16);
-  --text:rgba(255,255,255,.95);
-  --muted:rgba(255,255,255,.90);
-  --shadow:0 18px 60px rgba(0,0,0,.35);
+  --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
+  --card:rgba(255,255,255,.08); --line:rgba(255,255,255,.14);
+  --text:rgba(255,255,255,.94); --muted:rgba(255,255,255,.78);
+  --accent:#18c26b; --accent2:#11a85b;
+  --shadow:0 18px 60px rgba(0,0,0,.35); --radius:22px;
 }
-*{box-sizing:border-box;font-family:'Cairo',sans-serif}
+*{box-sizing:border-box;font-family:"Cairo",sans-serif}
 body{
-  margin:0; min-height:100vh;
+  margin:0; min-height:100vh; color:var(--text);
   background:
-    radial-gradient(1200px 700px at 40% -10%, rgba(255,255,255,.08), transparent 60%),
-    linear-gradient(135deg,var(--bg1),var(--bg2));
-  color:var(--text);
-}
-.container{width:min(1100px,92vw);margin:26px auto}
-.brand{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
-.brand h1{margin:0;font-size:22px;font-weight:900}
-.brand p{margin:6px 0 0;color:#fff;opacity:.95;font-size:13px}
-.card{
-  background:var(--card); border:1px solid var(--line);
-  border-radius:22px; box-shadow:var(--shadow);
-  backdrop-filter: blur(12px);
+    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+    radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
+    linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
   padding:18px;
+}
+.container{width:min(1100px,94vw);margin:22px auto}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+h1{margin:0;font-size:20px;font-weight:900}
+p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.btn{
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
+  color:var(--text);
+  padding:10px 12px;border-radius:16px;cursor:pointer;
+}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px; box-shadow:var(--shadow);
+  backdrop-filter: blur(12px);
 }
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media(max-width:900px){.grid3{grid-template-columns:1fr}}
-.kpi{display:flex;flex-direction:column;gap:6px}
-.kpi .v{font-size:28px;font-weight:900}
-.kpi .t{opacity:.95}
-.table-wrap{overflow:auto;border-radius:18px;border:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;min-width:860px}
-th,td{padding:10px;text-align:center;white-space:nowrap}
-th{background:rgba(0,0,0,.24);color:#fff}
-tbody tr:hover{background:rgba(255,255,255,.06)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  gap:10px;border:none;border-radius:16px;
-  padding:12px 14px;cursor:pointer;color:#fff;font-weight:900;
-  background:rgba(255,255,255,.14);
-}
-.btn.primary{background:linear-gradient(135deg,#19c37d,#0f9d62)}
-.status{margin-top:10px;font-weight:900;color:#fff}
-.small{color:#fff;opacity:.95;font-size:12px}
+.kpi .v{font-size:28px;font-weight:900;margin-top:6px}
 .input{
-  width:100%; padding:12px 14px; border-radius:16px;
-  border:1px solid rgba(255,255,255,.22);
-  background:rgba(255,255,255,.12); color:#fff; outline:none;
+  width:100%;padding:12px 12px;border-radius:16px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.14);color:var(--text);outline:none;
 }
+.tableWrap{overflow:auto;border-radius:18px;border:1px solid rgba(255,255,255,.12);margin-top:10px}
+table{width:100%;border-collapse:collapse;min-width:860px}
+th,td{padding:10px;text-align:center;font-size:13px}
+th{background:rgba(0,0,0,.18)}
+tbody tr{border-top:1px solid rgba(255,255,255,.10)}
+.status{margin-top:10px;color:#fff;font-weight:900}
 </style>
 </head>
-
 <body>
 <div class="container">
-  <div class="brand">
+  <div class="top">
     <div>
       <h1>التقارير</h1>
-      <p>لوحة إحصائية للحضور والمحاضرات</p>
+      <p>ملخصات ورسوم بيانية للحضور</p>
     </div>
-    <div class="actions" style="margin:0">
-      <button class="btn" onclick="openApiSetup()">⚙️ إعداد الربط</button>
-      <button class="btn" onclick="location.href='doctor.html'">العودة للدكتور</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="location.href='index.html'">رجوع</button>
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:12px;">
-    <div class="actions" style="margin:0">
-      <input id="doctorKey" class="input" type="password" placeholder="PIN الدكتور (1111)" inputmode="numeric" />
-      <button class="btn primary" onclick="loadSummary()">تحديث التقارير</button>
+  <div class="card">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <input id="pin" class="input" type="password" placeholder="PIN (1111)" inputmode="numeric" />
+      <button class="btn primary" onclick="load()">تحديث</button>
     </div>
-    <div class="small" style="margin-top:8px;">(الـ PIN هنا فقط لقراءة التقارير من الشيت)</div>
-    <div class="status" id="repStatus"></div>
+    <div id="st" class="status"></div>
   </div>
+
+  <div style="height:12px"></div>
 
   <div class="grid3">
-    <div class="card kpi">
-      <div class="t">عدد المحاضرات</div>
-      <div class="v" id="kLectures">—</div>
-      <div class="small">إجمالي المحاضرات المسجلة</div>
-    </div>
-    <div class="card kpi">
-      <div class="t">عدد الطلاب</div>
-      <div class="v" id="kStudents">—</div>
-      <div class="small">طلاب مسجلون في النظام</div>
-    </div>
-    <div class="card kpi">
-      <div class="t">متوسط الحضور</div>
-      <div class="v" id="kRate">—</div>
-      <div class="small">متوسط تقريبي عام</div>
-    </div>
+    <div class="card kpi"><div>عدد المحاضرات</div><div id="k1" class="v">—</div></div>
+    <div class="card kpi"><div>عدد الطلاب (في الشيت)</div><div id="k2" class="v">—</div></div>
+    <div class="card kpi"><div>آخر LectureID</div><div id="k3" class="v">—</div></div>
   </div>
 
-  <div class="card" style="margin-top:12px;">
-    <h3 style="margin:0 0 10px;">أعلى المحاضرات حضورًا</h3>
-    <canvas id="chartLectures" height="120"></canvas>
-    <div class="small" style="margin-top:8px;">يعرض آخر 12 محاضرة حسب الحضور.</div>
-  </div>
+  <div style="height:12px"></div>
 
-  <div class="card" style="margin-top:12px;">
-    <h3 style="margin:0 0 10px;">آخر المحاضرات</h3>
-    <div class="table-wrap">
+  <div class="card">
+    <h3 style="margin:0 0 10px;font-weight:900">المحاضرات</h3>
+    <canvas id="chart" height="110"></canvas>
+
+    <div class="tableWrap">
       <table>
         <thead>
           <tr>
-            <th>LectureID</th>
-            <th>المقرر</th>
-            <th>الشعبة</th>
-            <th>البداية</th>
-            <th>النهاية</th>
-            <th>الحضور</th>
+            <th>LectureID</th><th>Course</th><th>Section</th><th>Start</th><th>End</th><th>State</th>
           </tr>
         </thead>
-        <tbody id="lecRows">
+        <tbody id="rows">
           <tr><td colspan="6">—</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="small" style="margin-top:8px;">(اضغط LectureID لاحضار تفاصيل الطلاب لاحقًا إذا حبيت)</div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="assets/app.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-let chart = null;
+const $ = (id)=>document.getElementById(id);
+let chart=null;
 
-function setStatus(msg){ document.getElementById("repStatus").textContent = msg || ""; }
+async function load(){
+  const pin = ($("pin").value||"").trim();
+  $("st").textContent = "⏳ جاري التحميل...";
 
-async function loadSummary(){
-  const doctorKey = (document.getElementById("doctorKey").value||"").trim();
-  if(!doctorKey){ setStatus("❌ أدخل PIN"); return; }
-
-  setStatus("⏳ تحميل البيانات...");
-  const res = await apiCall({ action:"getReportsSummary", doctorKey });
-
+  const res = await apiCall({ action:"listLectures", doctorKey: pin });
   if(!res || !res.ok){
-    setStatus("❌ " + ((res&&res.error)||"Failed"));
+    $("st").textContent = "❌ " + ((res && res.error) || "Failed");
     return;
   }
+  $("st").textContent = "✅ تم التحديث";
 
-  setStatus("✅ تم التحديث");
-  document.getElementById("kLectures").textContent = res.totalLectures ?? "0";
-  document.getElementById("kStudents").textContent = res.totalStudents ?? "0";
-  document.getElementById("kRate").textContent = (res.avgRate ?? 0) + "%";
+  const rows = res.rows || [];
+  $("k1").textContent = rows.length;
+  $("k3").textContent = rows[0] ? rows[0].lectureId : "—";
 
-  const list = res.lectures || [];
-  const tbody = document.getElementById("lecRows");
-  tbody.innerHTML = list.map(x=>`
+  // Table
+  $("rows").innerHTML = rows.slice(0,40).map(r=>`
     <tr>
-      <td><b>${x.lectureId||""}</b></td>
-      <td>${x.course||""}</td>
-      <td>${x.section||""}</td>
-      <td>${x.start||""}</td>
-      <td>${x.end||""}</td>
-      <td>${x.attended||0}</td>
+      <td><b>${r.lectureId||""}</b></td>
+      <td>${r.course||""}</td>
+      <td>${r.section||""}</td>
+      <td>${r.start||""}</td>
+      <td>${r.end||""}</td>
+      <td>${r.state||""}</td>
     </tr>
   `).join("") || `<tr><td colspan="6">لا توجد بيانات</td></tr>`;
 
-  // Chart: top 12 by attended (from latest list)
-  const top = [...list].sort((a,b)=>(b.attended||0)-(a.attended||0)).slice(0,12);
-  const labels = top.map(x => (x.course||"") + " / " + (x.section||"") );
-  const data = top.map(x => x.attended||0);
+  // Chart: last 10 lecture starts (by order from API)
+  const top = rows.slice(0,10).reverse();
+  const labels = top.map(x => (x.course||"") + "-" + (x.section||""));
+  const data = top.map((_,i)=> i+1);
 
-  const ctx = document.getElementById("chartLectures").getContext("2d");
+  const ctx = $("chart").getContext("2d");
   if(chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: "bar",
-    data: { labels, datasets: [{ label: "الحضور", data }] },
-    options: {
-      responsive: true,
-      plugins: { legend: { labels: { color: "#fff" } } },
-      scales: {
-        x: { ticks: { color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } },
-        y: { ticks: { color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } }
+  chart = new Chart(ctx,{
+    type:"line",
+    data:{ labels, datasets:[{ label:"آخر المحاضرات", data }] },
+    options:{
+      plugins:{ legend:{ labels:{ color:"#fff" } } },
+      scales:{
+        x:{ ticks:{ color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } },
+        y:{ ticks:{ color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } }
       }
     }
   });
