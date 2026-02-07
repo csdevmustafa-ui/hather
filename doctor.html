@@ -6,195 +6,203 @@
 <title>لوحة عضو هيئة التدريس</title>
 
 <style>
-/* ================== ROOT ================== */
 :root{
-  --g1:#0f5132;
-  --g2:#198754;
-  --g3:#2fbf71;
-  --card:rgba(255,255,255,.08);
-  --stroke:rgba(255,255,255,.15);
-  --txt:rgba(255,255,255,.96);
-  --muted:rgba(255,255,255,.7);
+  --g1:#0f3d2e;
+  --g2:#145a3a;
+  --g3:#1f8a5b;
+  --card:#1a6f4a;
+  --soft:#e9fff5;
+  --white:#ffffff;
 }
 
-/* ================== BASE ================== */
-*{box-sizing:border-box;font-family:"Segoe UI",Tahoma,sans-serif}
+*{box-sizing:border-box;font-family:"Segoe UI",Tahoma}
+
 body{
   margin:0;
   min-height:100vh;
   background:linear-gradient(135deg,var(--g1),var(--g2),var(--g3));
-  color:var(--txt);
   display:flex;
   align-items:center;
   justify-content:center;
+  color:#fff;
 }
 
-/* ================== CARD ================== */
 .card{
   width:100%;
   max-width:420px;
-  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));
-  border:1px solid var(--stroke);
+  background:linear-gradient(180deg,#1d7a52,#155a3c);
   border-radius:22px;
   padding:28px;
-  backdrop-filter: blur(16px);
-  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  box-shadow:0 30px 60px rgba(0,0,0,.35);
 }
 
-/* ================== HEAD ================== */
-.h-title{
-  font-size:22px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-.h-sub{
-  font-size:14px;
-  color:var(--muted);
-  margin-bottom:22px;
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
 }
 
-/* ================== INPUT ================== */
-.input{
-  width:100%;
-  height:54px;
-  border-radius:16px;
-  border:1px solid var(--stroke);
-  background:rgba(255,255,255,.12);
+.lang-btn{
+  background:rgba(255,255,255,.15);
+  border:none;
   color:#fff;
+  padding:6px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+h1{
+  font-size:22px;
+  margin:0;
+  font-weight:700;
+}
+
+.subtitle{
+  font-size:14px;
+  color:#dff7ec;
+  margin-bottom:20px;
+}
+
+.field{
+  margin-bottom:18px;
+}
+
+.label{
+  font-size:14px;
+  margin-bottom:6px;
+  display:block;
+}
+
+.pass-wrap{
+  display:flex;
+  align-items:center;
+  background:var(--soft);
+  border-radius:14px;
+  padding:8px 12px;
+}
+
+.pass-wrap input{
+  flex:1;
+  border:none;
+  background:transparent;
   font-size:16px;
-  padding:0 16px;
   outline:none;
 }
-.input::placeholder{color:rgba(255,255,255,.6)}
 
-/* ================== PASSWORD ================== */
-.pass-wrap{position:relative}
-.pass-wrap .input{padding-left:52px}
 .eye-btn{
-  position:absolute;
-  left:10px;
-  top:50%;
-  transform:translateY(-50%);
-  width:36px;
-  height:36px;
-  border-radius:12px;
-  border:1px solid var(--stroke);
-  background:rgba(255,255,255,.18);
-  color:#fff;
+  background:none;
+  border:none;
   cursor:pointer;
+  font-size:18px;
 }
 
-/* ================== BUTTON ================== */
 .btn{
   width:100%;
-  height:54px;
-  border-radius:18px;
+  background:linear-gradient(135deg,#2ecc71,#27ae60);
   border:none;
-  margin-top:18px;
+  padding:14px;
+  border-radius:16px;
+  color:#fff;
   font-size:16px;
-  font-weight:600;
-  color:#0a3d2a;
-  background:linear-gradient(135deg,#9be7c4,#d7fff0);
   cursor:pointer;
+  font-weight:600;
 }
+
 .btn:hover{opacity:.95}
 
-/* ================== FOOT ================== */
 .note{
-  margin-top:16px;
+  margin-top:14px;
   font-size:13px;
+  color:#c9f3df;
   text-align:center;
-  color:rgba(255,255,255,.75)
 }
 
-/* ================== LANG ================== */
-.lang{
-  position:absolute;
-  top:16px;
-  left:16px;
-}
-.lang button{
-  border-radius:12px;
-  border:1px solid var(--stroke);
-  background:rgba(255,255,255,.12);
-  color:#fff;
-  padding:8px 12px;
-  cursor:pointer;
-}
-
-/* ================== HIDE ================== */
-.hidden{display:none}
 .error{
   margin-top:12px;
-  color:#ffb3b3;
+  background:#b93a3a;
+  padding:10px;
+  border-radius:12px;
   font-size:14px;
-  text-align:center;
+  display:none;
 }
+
+.success{
+  background:#1abc9c;
+}
+
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<div class="lang">
-  <button onclick="toggleLang()">AR / EN</button>
-</div>
+<div class="card">
 
-<!-- ================== LOCK SCREEN ================== -->
-<div id="lockScreen" class="card">
-  <div class="h-title">لوحة عضو هيئة التدريس</div>
-  <div class="h-sub">يرجى إدخال كلمة المرور للمتابعة</div>
-
-  <div class="pass-wrap">
-    <input id="doctorKeyLock" class="input" type="password"
-           placeholder="كلمة المرور"
-           inputmode="numeric"
-           maxlength="10" />
-    <button class="eye-btn" onclick="togglePassword()">👁️</button>
+  <div class="header">
+    <button class="lang-btn">AR / EN</button>
   </div>
 
-  <button class="btn" onclick="checkKey()">دخول</button>
-  <div id="err" class="error hidden">كلمة المرور غير صحيحة</div>
+  <h1>لوحة عضو هيئة التدريس</h1>
+  <div class="subtitle">يرجى إدخال كلمة المرور للمتابعة</div>
 
-  <div class="note">هذه الصفحة مخصصة للدكتور فقط</div>
-</div>
-
-<!-- ================== DASHBOARD ================== -->
-<div id="dashboard" class="card hidden">
-  <div class="h-title">إدارة المحاضرات</div>
-  <div class="h-sub">إنشاء ومتابعة الحضور</div>
-
-  <div style="margin-top:18px;color:var(--muted);font-size:14px">
-    ✅ تم فتح لوحة التحكم بنجاح
+  <div class="field">
+    <label class="label">كلمة المرور</label>
+    <div class="pass-wrap">
+      <input
+        id="doctorKeyLock"
+        type="password"
+        placeholder="••••"
+        inputmode="numeric"
+        maxlength="6"
+      />
+      <button class="eye-btn" type="button"
+        onclick="togglePassword(this)"
+        aria-label="إظهار/إخفاء كلمة المرور">👁️</button>
+    </div>
   </div>
 
-  <!-- هنا يكمل شغلك الحالي بدون تغيير -->
+  <button class="btn" onclick="loginDoctor()">دخول</button>
+
+  <div id="msg" class="error"></div>
+
+  <div class="note">
+    هذه الصفحة مخصصة لأعضاء هيئة التدريس فقط
+  </div>
+
 </div>
 
 <script>
-/* ================== PASSWORD ================== */
-const CORRECT_KEY = "1111";
+const DOCTOR_PASSWORD = "1111";
 
-function checkKey(){
-  const v = document.getElementById("doctorKeyLock").value;
-  if(v === CORRECT_KEY){
-    document.getElementById("lockScreen").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
+function togglePassword(btn){
+  const input = document.getElementById("doctorKeyLock");
+  const hidden = input.type === "password";
+
+  input.type = hidden ? "text" : "password";
+  btn.textContent = hidden ? "🙈" : "👁️";
+}
+
+function loginDoctor(){
+  const val = document.getElementById("doctorKeyLock").value.trim();
+  const msg = document.getElementById("msg");
+
+  if(val === DOCTOR_PASSWORD){
+    msg.className = "error success";
+    msg.textContent = "تم التحقق بنجاح، يتم تحويلك...";
+    msg.style.display = "block";
+
+    setTimeout(()=>{
+      // غير الرابط لو تحب
+      window.location.href = "dashboard.html";
+    },900);
+
   }else{
-    document.getElementById("err").classList.remove("hidden");
+    msg.className = "error";
+    msg.textContent = "كلمة المرور غير صحيحة";
+    msg.style.display = "block";
   }
-}
-
-function togglePassword(){
-  const i = document.getElementById("doctorKeyLock");
-  i.type = i.type === "password" ? "text" : "password";
-}
-
-/* ================== LANG (placeholder) ================== */
-let lang="ar";
-function toggleLang(){
-  lang = lang==="ar" ? "en" : "ar";
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang==="ar" ? "rtl" : "ltr";
 }
 </script>
 
