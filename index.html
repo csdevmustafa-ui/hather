@@ -6,136 +6,120 @@
 <title>Hather - حاضر</title>
 
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-  body{
-    min-height:100vh;
-    background: linear-gradient(135deg,#0d2c1a 0%, #1a472a 45%, #2d7d46 100%);
-    display:flex;align-items:center;justify-content:center;
-    padding:20px;color:#fff;
-  }
-  .card{
-    width:100%;max-width:440px;border-radius:18px;padding:22px;
-    background: rgba(13, 44, 26, 0.78);
-    box-shadow: 0 18px 45px rgba(0,0,0,.35);
-    border: 1px solid rgba(255,255,255,.12);
-    backdrop-filter: blur(8px);
-  }
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-  .icon-btn{
-    width:42px;height:42px;border-radius:12px;border:none;cursor:pointer;
-    background: rgba(255,255,255,.12);color:#fff;font-size:18px;font-weight:900;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
-  .header::after{
-    content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
-    background: linear-gradient(to right, transparent, rgba(76,201,135,.95), transparent);
-  }
-  .title{
-    font-size:46px;font-weight:900;letter-spacing:-.5px;
-    background: linear-gradient(135deg, #b9ffd9, #4cc987);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .subtitle{margin-top:6px;font-size:20px;font-weight:900;color:#d6ffe9;opacity:.95}
-  .hint{margin-top:10px;font-size:14px;color: rgba(255,255,255,.78)}
-  .menu{display:flex;flex-direction:column;gap:12px;margin-top:16px}
-  .btn{
-    width:100%;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
-    display:flex;align-items:center;justify-content:space-between;color:#fff;
-    font-weight:900;font-size:18px;box-shadow: 0 10px 22px rgba(0,0,0,.22);
-    transition: transform .15s ease;
-  }
-  .btn:hover{transform: translateY(-2px)} .btn:active{transform: translateY(0)}
-  .btn.student{ background: linear-gradient(135deg,#1a472a,#2d7d46,#4cc987); }
-  .btn.reports{ background: linear-gradient(135deg,#0e3b24,#1f6b43); }
-  .btn.doctor{ background: linear-gradient(135deg,#244b3a,#0d2c1a); }
-  .btn .meta{font-size:13px;font-weight:800;opacity:.9;margin-top:3px}
-  .footer{margin-top:14px;text-align:center;font-size:12px;color: rgba(255,255,255,.72)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
+}
+.card{
+  width:100%;max-width:460px;border-radius:20px;padding:24px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(10px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,0.12);
+}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.topbar span{font-weight:900;color:#eafff3}
+.icon-btn{
+  width:40px;height:40px;border-radius:12px;border:none;
+  background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px
+}
+.header{text-align:center;margin-bottom:22px}
+.title{
+  font-size:44px;font-weight:900;
+  background:linear-gradient(135deg,#c8ffe2,#4cc987);
+  -webkit-background-clip:text;color:transparent
+}
+.subtitle{font-size:20px;font-weight:800;color:#e6fff1;margin-top:6px}
+.hint{font-size:14px;color:#d2f5e3;margin-top:6px}
+
+.menu{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.btn{
+  width:100%;padding:16px 18px;border:none;border-radius:16px;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:18px;font-weight:900;
+  background:linear-gradient(135deg,#e9fff4,#c9f5de);
+  color:#0d2c1a;
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,0.3)}
+.meta{font-size:13px;font-weight:700;color:#2f6b4c;margin-top:3px}
+.footer{text-align:center;margin-top:18px;font-size:13px;color:#d9f7ea}
 </style>
 </head>
 
 <body>
-  <div class="card">
-    <div class="topbar">
-      <div style="font-weight:900;opacity:.9">Hather</div>
-      <button class="icon-btn" id="langBtn" title="Language">🌐</button>
-    </div>
-
-    <div class="header">
-      <div class="title">Hather</div>
-      <div class="subtitle" id="subTitle">حاضر</div>
-      <div class="hint" id="hint">اختر القسم المناسب للمتابعة</div>
-    </div>
-
-    <div class="menu">
-      <button class="btn student" onclick="location.href='student.html'">
-        <div>
-          <div id="b1">قسم الطالب</div>
-          <div class="meta" id="b1m">تسجيل الحضور (QR/Code)</div>
-        </div>
-        <div>➜</div>
-      </button>
-
-      <button class="btn reports" onclick="location.href='reports.html'">
-        <div>
-          <div id="b2">تقارير الطالب</div>
-          <div class="meta" id="b2m">حضور/تأخير/غياب/معذور</div>
-        </div>
-        <div>➜</div>
-      </button>
-
-      <button class="btn doctor" onclick="location.href='doctor.html'">
-        <div>
-          <div id="b3">قسم الدكتور</div>
-          <div class="meta" id="b3m">محاضرات + QR + تعديل حالات</div>
-        </div>
-        <div>➜</div>
-      </button>
-    </div>
-
-    <div class="footer" id="footer">نظام حضور بسيط وعملي</div>
+<div class="card">
+  <div class="topbar">
+    <span>Hather</span>
+    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
   </div>
 
-<script>
-  const STR = {
-    ar: {
-      dir:"rtl", lang:"ar",
-      subTitle:"حاضر",
-      hint:"اختر القسم المناسب للمتابعة",
-      b1:"قسم الطالب", b1m:"تسجيل الحضور (QR/Code)",
-      b2:"تقارير الطالب", b2m:"حضور/تأخير/غياب/معذور",
-      b3:"قسم الدكتور", b3m:"محاضرات + QR + تعديل حالات",
-      footer:"نظام حضور بسيط وعملي"
-    },
-    en: {
-      dir:"ltr", lang:"en",
-      subTitle:"Attendance",
-      hint:"Choose the section to continue",
-      b1:"Student", b1m:"Check-in (QR/Code)",
-      b2:"Reports", b2m:"Present/Late/Absent/Excused",
-      b3:"Doctor", b3m:"Lectures + QR + Status control",
-      footer:"Simple & practical attendance system"
-    }
-  };
+  <div class="header">
+    <div class="title">Hather</div>
+    <div class="subtitle" id="subTitle">حاضر</div>
+    <div class="hint" id="hint">اختر الخدمة المطلوبة</div>
+  </div>
 
-  function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
-  function setLang(l){ localStorage.setItem("hather_lang", l); }
-  function applyLang(){
-    const t = STR[getLang()];
-    document.documentElement.lang = t.lang;
-    document.documentElement.dir = t.dir;
-    subTitle.textContent = t.subTitle;
-    hint.textContent = t.hint;
-    b1.textContent = t.b1; b1m.textContent = t.b1m;
-    b2.textContent = t.b2; b2m.textContent = t.b2m;
-    b3.textContent = t.b3; b3m.textContent = t.b3m;
-    footer.textContent = t.footer;
-  }
-  langBtn.addEventListener("click", ()=>{
-    setLang(getLang()==="ar" ? "en" : "ar");
-    applyLang();
-  });
-  applyLang();
+  <div class="menu">
+    <button class="btn" onclick="location.href='student.html'">
+      <div>
+        <div id="b1">تسجيل الحضور</div>
+        <div class="meta" id="b1m">للطلاب داخل القاعة</div>
+      </div>
+      <div>➜</div>
+    </button>
+
+    <button class="btn" onclick="location.href='reports.html'">
+      <div>
+        <div id="b2">تقارير الحضور</div>
+        <div class="meta" id="b2m">إحصائيات ونسب الحضور</div>
+      </div>
+      <div>➜</div>
+    </button>
+
+    <button class="btn" onclick="location.href='doctor.html'">
+      <div>
+        <div id="b3">إدارة المحاضرات</div>
+        <div class="meta" id="b3m">لأعضاء هيئة التدريس</div>
+      </div>
+      <div>➜</div>
+    </button>
+  </div>
+
+  <div class="footer" id="footer">نظام إلكتروني لإدارة الحضور الأكاديمي</div>
+</div>
+
+<script>
+const STR={
+  ar:{dir:"rtl",lang:"ar",sub:"حاضر",hint:"اختر الخدمة المطلوبة",
+      b1:"تسجيل الحضور",b1m:"للطلاب داخل القاعة",
+      b2:"تقارير الحضور",b2m:"إحصائيات ونسب الحضور",
+      b3:"إدارة المحاضرات",b3m:"لأعضاء هيئة التدريس",
+      foot:"نظام إلكتروني لإدارة الحضور الأكاديمي"},
+  en:{dir:"ltr",lang:"en",sub:"Attendance",hint:"Select the required service",
+      b1:"Check-in",b1m:"For students in class",
+      b2:"Attendance Reports",b2m:"Statistics & percentages",
+      b3:"Lecture Management",b3m:"For faculty members",
+      foot:"Electronic Academic Attendance Management System"}
+};
+
+function getLang(){return localStorage.getItem("hather_lang")||"ar";}
+function setLang(l){localStorage.setItem("hather_lang",l);}
+function applyLang(){
+  const t=STR[getLang()];
+  document.documentElement.lang=t.lang;
+  document.documentElement.dir=t.dir;
+  subTitle.textContent=t.sub; hint.textContent=t.hint;
+  b1.textContent=t.b1; b1m.textContent=t.b1m;
+  b2.textContent=t.b2; b2m.textContent=t.b2m;
+  b3.textContent=t.b3; b3m.textContent=t.b3m;
+  footer.textContent=t.foot;
+}
+langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
+applyLang();
 </script>
 </body>
 </html>
