@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Report - Hather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="brand">
+      <div class="brand-left">
+        <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="rgba(255,255,255,.9)" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1 data-i18n="reportTitle">تقارير الطالب</h1>
+          <p data-i18n="reportSub">عرض الحضور والغياب والتأخير</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-chip" onclick="toggleLang()"><span>AR/EN</span></div>
+      </div>
+    </div>
+
+    <div class="grid-center">
+      <div class="card wide">
+
+        <div class="row">
+          <div>
+            <label data-i18n="studentId">الرقم الجامعي (9 أرقام)</label>
+            <input id="studentId" class="input" inputmode="numeric" maxlength="9" placeholder="مثال: 202311644">
+          </div>
+          <div style="display:flex; align-items:end;">
+            <button class="btn primary" onclick="loadReport()">
+              <div class="left"><div class="spinner" id="sp"></div></div>
+              <div class="text" style="text-align:right">
+                <span>عرض التقرير</span>
+                <span class="sub">إحصائيات ورسوم</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="status" id="status"></div>
+        <div class="hr"></div>
+
+        <div class="row">
+          <div class="card" style="margin:0">
+            <h3 style="margin:0 0 10px">ملخص</h3>
+            <div id="summary" class="small">—</div>
+          </div>
+
+          <div class="card" style="margin:0">
+            <h3 style="margin:0 0 10px">الرسم</h3>
+            <canvas id="chart" height="180"></canvas>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h3 style="margin:0 0 10px">تفاصيل آخر السجلات</h3>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>LectureID</th>
+                <th>الوقت</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script src="assets/app.js"></script>
+<script>
+applyLang();
+let chartInstance;
+
+async function loadReport(){
+  const id = (document.getElementById("studentId").value||"").trim();
+  const status = document.getElementById("status");
+  const sp = document.getElementById("sp");
+
+  if(!/^[0-9]{9}$/.test(id)){
+    showStatus(status,"danger",t("badId"));
+    return;
+  }
+
+  sp.style.display="inline-block";
+  showStatus(status,"warn",t("loading"));
+
+  const res = await apiCall({action:"studentReport", studentId:id});
+  sp.style.display="none";
+
+  if(!res || !res.ok){
+    showStatus(status,"danger",(res&&res.error)?res.error:t("failed"));
+    return;
+  }
+
+  showStatus(status,"success","تم تحميل التقرير");
+
+  const data = res.data || {};
+  const present = data.present || 0;
+  const absent  = data.absent || 0;
+  const late    = data.late || 0;
+  const total   = (present+absent+late) || 1;
+
+  document.getElementById("summary").innerHTML = `
+    <div>إجمالي السجلات: <b>${total}</b></div>
+    <div>حضور: <b style="color:#d7ffe7">${present}</b></div>
+    <div>تأخير: <b style="color:#fff2cc">${late}</b></div>
+    <div>غياب: <b style="color:#ffe1e1">${absent}</b></div>
+  `;
+
+  const ctx = document.getElementById("chart");
+  if(chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["حضور","تأخير","غياب"],
+      datasets: [{
+        data: [present, late, absent],
+        backgroundColor: ["#22c55e","#f59e0b","#ef4444"]
+      }]
+    },
+    options: {
+      plugins: { legend: { position:"bottom", labels:{ color:"#eafbf4" } } },
+      cutout: "70%"
+    }
+  });
+
+  const rows = data.rows || [];
+  const tbody = document.getElementById("rows");
+  tbody.innerHTML = rows.map(r=>`
+    <tr>
+      <td>${r.lectureId||""}</td>
+      <td>${r.time||""}</td>
+      <td>${r.status||""}</td>
+    </tr>
+  `).join("");
+}
+</script>
+</body>
+</html>
