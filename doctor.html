@@ -133,11 +133,11 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
         <div style="grid-column:span 2">
           <label id="labDays">الأيام</label>
           <div class="row" style="gap:14px">
-            <label><input type="checkbox" class="dow" value="0"> <span id="d0">أحد</span></label>
-            <label><input type="checkbox" class="dow" value="2"> <span id="d2">ثلاثاء</span></label>
-            <label><input type="checkbox" class="dow" value="4"> <span id="d4">خميس</span></label>
-            <label><input type="checkbox" class="dow" value="1"> <span id="d1">اثنين</span></label>
-            <label><input type="checkbox" class="dow" value="3"> <span id="d3">أربعاء</span></label>
+            <label><input type="checkbox" class="dow" name="dow" value="0"> <span id="d0">أحد</span></label>
+            <label><input type="checkbox" class="dow" name="dow" value="1"> <span id="d1">اثنين</span></label>
+            <label><input type="checkbox" class="dow" name="dow" value="2"> <span id="d2">ثلاثاء</span></label>
+            <label><input type="checkbox" class="dow" name="dow" value="3"> <span id="d3">أربعاء</span></label>
+            <label><input type="checkbox" class="dow" name="dow" value="4"> <span id="d4">خميس</span></label>
           </div>
         </div>
       </div>
@@ -175,7 +175,7 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
         <div class="sectionTitle" id="s4">الكود و QR للمحاضرة</div>
         <div class="qrWrap">
           <div class="qrBox">
-            <canvas id="qrCanvas"></canvas>
+            <img id="qrImg" width="200" height="200" style="display:block" />
             <div class="qrText"><span id="codeLabel">Code:</span> <span id="curCode">—</span></div>
             <div class="small" id="codeNote">صلاحية الكود قصيرة لمنع المشاركة.</div>
           </div>
@@ -217,12 +217,19 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
 async function post(payload){
-  const res = await fetch(SCRIPT_URL,{
+  const res = await fetch(SCRIPT_URL, {
     method:"POST",
     headers:{ "Content-Type":"text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   });
-  return await res.json();
+
+  const text = await res.text();
+  console.log("API raw response:", text);
+  try { return JSON.parse(text); }
+  catch(e){
+    alert("❌ السيرفر رجّع رد غير JSON:\n" + text.slice(0,200));
+    throw e;
+  }
 }
 
 const STR={
@@ -358,7 +365,8 @@ btnSchedule.onclick=async ()=>{
   const startTimeV = schStartHHMM.value;
   const endTimeV = schEndHHMM.value;
 
-  const days = Array.from(document.querySelectorAll(".dow:checked")).map(x=>Number(x.value));
+  const days = Array.from(document.querySelectorAll('input[name="dow"]:checked')).map(x=>Number(x.value));
+  console.log("Schedule days:", days);
 
   if(!courseV || !sectionV) return msgSet(schMsg,false, getLang()==="ar"?"❌ أدخل المقرر والشعبة":"❌ Enter course & section");
   if(!startDateV || !endDateV) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر تاريخ البداية والنهاية":"❌ Select dates");
@@ -460,28 +468,14 @@ async function rotateCode(){
   try{
     const data=await post({ action:"rotateCode", doctorKey:getKey(), lectureId:selectedLectureId });
     if(!data.ok) return msgSet(codeMsg,false, data.result||"❌ Failed");
+
     curCode.textContent=data.code;
     msgSet(codeMsg,true, getLang()==="ar"?"✅ تم توليد كود جديد":"✅ New code generated");
 
-    // ✅ QR بدون مكتبات (Google Chart API)
-    const canvas = document.getElementById("qrCanvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = 200;
-    canvas.height = 200;
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-    img.onerror = () => {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.font = "14px Arial";
-      ctx.fillText("QR failed", 60, 100);
-    };
+    const qrImg = document.getElementById("qrImg");
     const qrUrl = "https://chart.googleapis.com/chart?cht=qr&chs=200x200&chld=M|0&chl=" + encodeURIComponent(String(data.code));
-    img.src = qrUrl;
+    qrImg.src = qrUrl;
+    qrImg.onerror = () => msgSet(codeMsg,false, getLang()==="ar" ? "❌ فشل توليد QR (جرّب مرة ثانية)" : "❌ QR failed (try again)");
 
   }catch(e){
     console.error(e);
