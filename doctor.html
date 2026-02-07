@@ -196,11 +196,11 @@
 
         <div style="margin-top:8px" class="small">الأيام:</div>
         <div class="row" style="grid-template-columns: repeat(5, 1fr); margin-top:8px">
-          <label><input type="checkbox" class="day" value="0"> أحد</label>
-          <label><input type="checkbox" class="day" value="1"> اثنين</label>
-          <label><input type="checkbox" class="day" value="2"> ثلاثاء</label>
-          <label><input type="checkbox" class="day" value="3"> أربعاء</label>
-          <label><input type="checkbox" class="day" value="4"> خميس</label>
+          <label class="day-chip"><input type="checkbox" class="day" value="0"> أحد</label>
+          <label class="day-chip"><input type="checkbox" class="day" value="1"> اثنين</label>
+          <label class="day-chip"><input type="checkbox" class="day" value="2"> ثلاثاء</label>
+          <label class="day-chip"><input type="checkbox" class="day" value="3"> أربعاء</label>
+          <label class="day-chip"><input type="checkbox" class="day" value="4"> خميس</label>
         </div>
 
         <div class="actions" style="margin-top:10px">
@@ -238,7 +238,7 @@
         <h3 style="margin:0 0 10px">الكود و QR للمحاضرة</h3>
 
         <div class="qr-wrap">
-          <div class="card" style="margin:0">
+          <div class="card inner-card">
             <label>LectureID المحدد</label>
             <input id="selectedLectureId" class="input" placeholder="اختر من الجدول أو الصقه هنا" />
 
@@ -319,14 +319,10 @@ function unlockDoctor(){
     return;
   }
 
-  // خزّنها بالصفحة لاستخدامها مع API
   document.getElementById("doctorKey").value = k;
-
-  // افتح التطبيق
   document.getElementById("lockScreen").style.display = "none";
   document.getElementById("doctorApp").classList.remove("hidden");
 
-  // حمّل المحاضرات مباشرة
   loadLectures();
 }
 
@@ -416,13 +412,13 @@ async function loadLectures(){
 
   const rows = res.rows || [];
   tbody.innerHTML = rows.map(r=>`
-    <tr onclick="pickLecture('${r.lectureId||""}')">
-      <td><b>${r.lectureId||""}</b></td>
-      <td>${r.course||""}</td>
-      <td>${r.section||""}</td>
-      <td>${r.start||""}</td>
-      <td>${r.end||""}</td>
-      <td>${r.state||""}</td>
+    <tr onclick="pickLecture('${escapeAttr(r.lectureId||"")}')">
+      <td><b>${escapeHtml(r.lectureId||"")}</b></td>
+      <td>${escapeHtml(r.course||"")}</td>
+      <td>${escapeHtml(r.section||"")}</td>
+      <td>${escapeHtml(r.start||"")}</td>
+      <td>${escapeHtml(r.end||"")}</td>
+      <td>${escapeHtml(r.state||"")}</td>
     </tr>
   `).join("") || `<tr><td colspan="6">لا توجد محاضرات</td></tr>`;
 }
@@ -453,6 +449,7 @@ async function generateNewCode(){
     const qrUrl = res.qrUrl || "";
     document.getElementById("codeText").textContent = `Code: ${code}`;
 
+    // إذا السكربت ما يرجع qrUrl بنستخدم QR جاهز من الخدمة العامة
     const qr = qrUrl || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(code)}`;
     document.getElementById("qrImg").src = qr;
   }else{
@@ -485,13 +482,13 @@ async function showStudents(){
   const rows = res.rows || [];
   tbody.innerHTML = rows.map(r=>`
     <tr>
-      <td>${r.studentId||""}</td>
-      <td>${r.name||""}</td>
-      <td>${r.status||""}</td>
+      <td>${escapeHtml(r.studentId||"")}</td>
+      <td>${escapeHtml(r.name||"")}</td>
+      <td>${escapeHtml(r.status||"")}</td>
     </tr>
   `).join("") || `<tr><td colspan="3">لا يوجد طلاب</td></tr>`;
 }
 </script>
 
 </body>
-</html>
+  </html>
