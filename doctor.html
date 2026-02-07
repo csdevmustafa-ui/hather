@@ -1,484 +1,428 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hather - إدارة المحاضرات</title>
-
-<script>
-(function(){
-  const cdns = [
-    "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js",
-    "https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js",
-    "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
-  ];
-  let i=0;
-  function load(){
-    if(i>=cdns.length) return;
-    const s=document.createElement("script");
-    s.src=cdns[i++];
-    s.onload=()=>console.log("QR lib loaded:", s.src);
-    s.onerror=()=>load();
-    document.head.appendChild(s);
-  }
-  load();
-})();
-</script>
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{min-height:100vh;background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
-display:flex;align-items:center;justify-content:center;padding:20px;color:#fff}
-.card{width:100%;max-width:1050px;border-radius:20px;padding:22px;background:rgba(255,255,255,0.15);
-backdrop-filter:blur(10px);box-shadow:0 20px 50px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.12)}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.topbar a{color:#eafff3;text-decoration:none;font-weight:900}
-.icon-btn{width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px}
-.h1{font-size:20px;font-weight:900;color:#eafff3;margin-top:6px}
-.h2{font-size:13px;color:#d2f5e3;margin-top:6px}
-.panel{margin-top:16px;border-radius:16px;padding:16px;background:linear-gradient(135deg,#e9fff4,#c9f5de);
-color:#0d2c1a;box-shadow:0 10px 25px rgba(0,0,0,0.20)}
-.sectionTitle{font-size:16px;font-weight:900;margin:6px 0 12px;color:#0d2c1a}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.grid{grid-template-columns:1fr}}
-label{display:block;font-weight:900;margin-bottom:6px;color:#0d2c1a}
-input,select{width:100%;padding:12px 10px;border-radius:12px;border:2px solid #bfead4;
-font-size:15px;outline:none;background:#fff;color:#0d2c1a}
-input:focus,select:focus{border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,70,.18)}
-.btn{border:none;border-radius:14px;padding:12px 14px;font-weight:900;font-size:15px;cursor:pointer;
-background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);transition:transform .15s ease}
-.btn:hover{transform:translateY(-2px)}
-.btn.ghost{background:rgba(13,44,26,.10);color:#0d2c1a;border:2px solid rgba(13,44,26,.22);box-shadow:none}
-.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.msg{margin-top:10px;font-weight:900;min-height:22px;word-break:break-word}
-.table{width:100%;border-collapse:collapse;margin-top:10px;overflow:hidden;border-radius:14px;background:#fff;border:2px solid #d9f7ea}
-.table th,.table td{padding:10px;border-bottom:1px solid #e9f7ef;text-align:center;font-size:13px}
-.table th{background:#f2fff8;color:#0d2c1a;font-weight:900}
-.badge{padding:4px 10px;border-radius:999px;font-weight:900;font-size:12px;display:inline-block}
-.bActive{background:#e7fff2;color:#146c43;border:1px solid #bfead4}
-.bUpcoming{background:#fff7e6;color:#7a5200;border:1px solid #ffe3b0}
-.bEnded{background:#ffeef0;color:#8a1f2e;border:1px solid #ffc1c8}
-.qrWrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.qrBox{background:#fff;border:2px solid #d9f7ea;border-radius:14px;padding:12px;min-width:220px}
-.qrText{font-weight:900;color:#0d2c1a;margin-top:6px}
-.small{font-size:12px;color:#2f6b4c;font-weight:800;margin-top:6px}
-hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
-.lockBox{background:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:14px;margin-top:14px}
-.lockHint{font-size:12px;color:rgba(255,255,255,.8);margin-top:6px}
-.hidden{display:none}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor - Hather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
-
 <body>
-<div class="card">
-  <div class="topbar">
-    <a href="./index.html">⟵ <span id="backTxt">رجوع</span></a>
-    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
-  </div>
-
-  <div class="h1" id="titleTxt">إدارة المحاضرات</div>
-  <div class="h2" id="subTxt">لوحة الدكتور: إنشاء محاضرات وجدولة أسبوعية وتعديل الحالات</div>
-
-  <div class="lockBox">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
-      <div style="flex:1;min-width:240px">
-        <label id="labKey">الرمز السري (للدكتور)</label>
-        <input id="doctorKey" type="password" value="1111" inputmode="numeric" maxlength="10" />
+<div class="container">
+  <div class="brand">
+    <div class="brand-left">
+      <div class="logo" onclick="location.href='index.html'" style="cursor:pointer">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="rgba(255,255,255,.9)" stroke-width="1.8"/>
+        </svg>
       </div>
-      <button class="btn" id="btnUnlock">دخول</button>
-      <button class="btn ghost" id="btnLogout">تسجيل خروج</button>
+      <div class="brand-titles">
+        <h1 data-i18n="doctorTitle">لوحة عضو هيئة التدريس</h1>
+        <p data-i18n="doctorSub">إنشاء محاضرة / توليد QR / إدارة الحالات</p>
+      </div>
     </div>
-    <div class="lockHint" id="lockHint">لن تظهر لوحة الإدارة إلا بعد إدخال الرمز الصحيح.</div>
-    <div class="msg" id="lockMsg"></div>
+
+    <div class="top-actions">
+      <div class="lang-chip" onclick="toggleLang()"><span>AR/EN</span></div>
+    </div>
   </div>
 
-  <div id="admin" class="hidden">
+  <div class="grid-center">
+    <div class="card wide">
 
-    <div class="panel">
-      <div class="sectionTitle">إنشاء محاضرة</div>
-      <div class="grid">
+      <!-- PIN -->
+      <div class="row">
+        <div>
+          <label data-i18n="secret">الرمز السري</label>
+          <input id="pin" class="input" type="password" value="1111" />
+          <div class="small" data-i18n="secretHint">للدخول فقط</div>
+        </div>
+        <div style="display:flex; align-items:end;">
+          <button class="btn primary" onclick="checkPin()">
+            <div class="left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 15v2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 10V8a5 5 0 0 1 10 0v2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 22h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2Z" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="text" style="text-align:right">
+              <span data-i18n="enter">دخول</span>
+              <span class="sub">PIN = 1111</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="status" id="pinStatus"></div>
+
+      <div class="hr"></div>
+
+      <!-- Create Lecture -->
+      <h3 style="margin:0 0 10px" data-i18n="createLecture">إنشاء محاضرة</h3>
+      <div class="row">
         <div>
           <label>المقرر</label>
-          <input id="course" placeholder="CS101" />
+          <input id="course" class="input" placeholder="مثال: CS111" />
         </div>
         <div>
           <label>الشعبة</label>
-          <input id="section" placeholder="1" />
-        </div>
-        <div>
-          <label>البداية</label>
-          <input id="startTime" type="datetime-local" />
-        </div>
-        <div>
-          <label>النهاية</label>
-          <input id="endTime" type="datetime-local" />
+          <input id="section" class="input" placeholder="مثال: 1" />
         </div>
       </div>
-      <div class="row" style="margin-top:12px">
-        <button class="btn" id="btnCreate">إنشاء</button>
-        <div class="msg" id="createMsg"></div>
-      </div>
-
-      <hr>
-
-      <div class="sectionTitle">إنشاء جدول أسبوعي (ترم كامل)</div>
-      <div class="grid">
-        <div>
-          <label>المقرر</label>
-          <input id="schCourse" placeholder="CS101" />
-        </div>
-        <div>
-          <label>الشعبة</label>
-          <input id="schSection" placeholder="1" />
-        </div>
-        <div>
-          <label>من تاريخ</label>
-          <input id="schStartDate" type="date" />
-        </div>
-        <div>
-          <label>إلى تاريخ</label>
-          <input id="schEndDate" type="date" />
-        </div>
-      </div>
-
-      <div class="grid" style="margin-top:12px">
+      <div class="row">
         <div>
           <label>وقت البداية</label>
-          <input id="schStartHHMM" type="time" />
+          <input id="start" class="input" type="datetime-local" />
         </div>
         <div>
           <label>وقت النهاية</label>
-          <input id="schEndHHMM" type="time" />
+          <input id="end" class="input" type="datetime-local" />
         </div>
-        <div style="grid-column:span 2">
-          <label>الأيام</label>
-          <div class="row" style="gap:14px">
-            <label><input type="checkbox" name="dow" value="0"> أحد</label>
-            <label><input type="checkbox" name="dow" value="1"> اثنين</label>
-            <label><input type="checkbox" name="dow" value="2"> ثلاثاء</label>
-            <label><input type="checkbox" name="dow" value="3"> أربعاء</label>
-            <label><input type="checkbox" name="dow" value="4"> خميس</label>
+      </div>
+
+      <div class="actions">
+        <button id="btnCreate" class="btn primary" onclick="createLecture()">
+          <div class="left"><div class="spinner" id="spCreate"></div></div>
+          <div class="text"><span>إنشاء</span><span class="sub">تسجيل محاضرة واحدة</span></div>
+        </button>
+        <button class="btn" onclick="loadLectures()">
+          <div class="left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M21 12a9 9 0 1 1-3-6.7" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 3v6h-6" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
           </div>
-        </div>
+          <div class="text"><span data-i18n="refresh">تحديث</span><span class="sub">عرض المحاضرات</span></div>
+        </button>
       </div>
 
-      <div class="row" style="margin-top:12px">
-        <button class="btn" id="btnSchedule">إنشاء الجدول</button>
-        <div class="msg" id="schMsg"></div>
-      </div>
-    </div>
+      <div class="status" id="createStatus"></div>
 
-    <div class="panel" style="margin-top:16px">
-      <div class="sectionTitle">المحاضرات</div>
+      <div class="hr"></div>
+
+      <!-- Weekly Schedule -->
+      <h3 style="margin:0 0 10px" data-i18n="createSchedule">إنشاء جدول أسبوعي</h3>
       <div class="row">
-        <button class="btn ghost" id="btnRefresh">تحديث</button>
-        <div class="msg" id="listMsg"></div>
-      </div>
-
-      <table class="table" id="lecTable">
-        <thead>
-          <tr>
-            <th>LectureID</th>
-            <th>المقرر</th>
-            <th>الشعبة</th>
-            <th>البداية</th>
-            <th>النهاية</th>
-            <th>الحالة</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
-        <tbody id="lecBody"></tbody>
-      </table>
-
-      <div id="codeArea" class="hidden">
-        <hr>
-        <div class="sectionTitle">الكود و QR للمحاضرة</div>
-        <div class="qrWrap">
-          <div class="qrBox">
-            <div id="qrBox"></div>
-            <div class="qrText">Code: <span id="curCode">—</span></div>
-            <div class="small">صلاحية الكود قصيرة لمنع المشاركة.</div>
-          </div>
-
-          <div style="flex:1;min-width:240px">
-            <div style="font-weight:900">LectureID المحدد:</div>
-            <div style="margin-top:6px;font-weight:900;color:#0d2c1a" id="selLectureId">—</div>
-            <div class="row" style="margin-top:10px">
-              <button class="btn" id="btnRotate">توليد كود جديد</button>
-              <button class="btn ghost" id="btnStudents">عرض الطلاب</button>
-            </div>
-            <div class="msg" id="codeMsg"></div>
-          </div>
+        <div>
+          <label>المقرر</label>
+          <input id="wCourse" class="input" placeholder="مثال: CS111" />
         </div>
-
-        <div id="studentsArea" class="hidden">
-          <hr>
-          <div class="sectionTitle">طلاب المحاضرة</div>
-          <div class="msg" id="stuMsg"></div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>StudentID</th>
-                <th>الاسم</th>
-                <th>الحالة الحالية</th>
-                <th>تغيير الحالة</th>
-                <th>حفظ</th>
-              </tr>
-            </thead>
-            <tbody id="stuBody"></tbody>
-          </table>
+        <div>
+          <label>الشعبة</label>
+          <input id="wSection" class="input" placeholder="مثال: 1" />
         </div>
       </div>
+
+      <div class="row">
+        <div>
+          <label>من تاريخ</label>
+          <input id="fromDate" class="input" type="date" />
+        </div>
+        <div>
+          <label>إلى تاريخ</label>
+          <input id="toDate" class="input" type="date" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>وقت البداية</label>
+          <input id="wStartTime" class="input" type="time" />
+        </div>
+        <div>
+          <label>وقت النهاية</label>
+          <input id="wEndTime" class="input" type="time" />
+        </div>
+      </div>
+
+      <div style="margin-top:8px" class="small">الأيام:</div>
+      <div class="row" style="grid-template-columns: repeat(5, 1fr); margin-top:8px">
+        <label><input type="checkbox" class="day" value="0"> أحد</label>
+        <label><input type="checkbox" class="day" value="1"> اثنين</label>
+        <label><input type="checkbox" class="day" value="2"> ثلاثاء</label>
+        <label><input type="checkbox" class="day" value="3"> أربعاء</label>
+        <label><input type="checkbox" class="day" value="4"> خميس</label>
+      </div>
+
+      <div class="actions" style="margin-top:10px">
+        <button id="btnSchedule" class="btn primary" onclick="createSchedule()">
+          <div class="left"><div class="spinner" id="spSchedule"></div></div>
+          <div class="text"><span>إنشاء الجدول</span><span class="sub">يولّد محاضرات تلقائيًا</span></div>
+        </button>
+      </div>
+
+      <div class="status" id="scheduleStatus"></div>
+
+      <div class="hr"></div>
+
+      <!-- Lectures table -->
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px">
+        <h3 style="margin:0">المحاضرات</h3>
+        <button class="btn" style="max-width:180px" onclick="loadLectures()">
+          <div class="left"><span style="font-weight:900">↻</span></div>
+          <div class="text"><span>تحديث</span><span class="sub">قائمة المحاضرات</span></div>
+        </button>
+      </div>
+
+      <div style="margin-top:10px" class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>LectureID</th>
+              <th>المقرر</th>
+              <th>الشعبة</th>
+              <th>البداية</th>
+              <th>النهاية</th>
+              <th>الحالة</th>
+            </tr>
+          </thead>
+          <tbody id="lectureRows"></tbody>
+        </table>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- QR + Code -->
+      <h3 style="margin:0 0 10px">الكود و QR للمحاضرة</h3>
+
+      <div class="qr-wrap">
+        <div class="card" style="margin:0">
+          <label>LectureID المحدد</label>
+          <input id="selectedLectureId" class="input" placeholder="اختر من الجدول أو الصقه هنا" />
+
+          <div style="height:10px"></div>
+          <div class="actions">
+            <button id="btnCode" class="btn primary" onclick="generateNewCode()">
+              <div class="left"><div class="spinner" id="spCode"></div></div>
+              <div class="text"><span data-i18n="generateCode">توليد رمز حضور جديد</span><span class="sub">Code + QR</span></div>
+            </button>
+            <button class="btn" onclick="showStudents()">
+              <div class="left"><span style="font-weight:900">👥</span></div>
+              <div class="text"><span data-i18n="showStudents">عرض الطلاب</span><span class="sub">لهذه المحاضرة</span></div>
+            </button>
+          </div>
+
+          <div class="status" id="codeStatus"></div>
+        </div>
+
+        <div class="qr-box">
+          <img id="qrImg" alt="QR">
+          <div class="qr-code-text" id="codeText">Code: —</div>
+          <div class="qr-hint">صلاحية الكود قصيرة للحد من المشاركة</div>
+          <div class="qr-actions">
+            <button class="btn" onclick="zoomQR()">
+              <div class="left"><span style="font-weight:900">⤢</span></div>
+              <div class="text"><span data-i18n="zoomQR">تكبير QR</span><span class="sub">للعرض على الطلاب</span></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- Students -->
+      <h3 style="margin:0 0 10px">طلاب المحاضرة</h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>StudentID</th>
+              <th>الاسم</th>
+              <th>الحالة</th>
+            </tr>
+          </thead>
+          <tbody id="studentRows"></tbody>
+        </table>
+      </div>
+
     </div>
-
   </div>
 </div>
 
+<!-- QR Modal -->
+<div class="modal" id="qrModal" onclick="closeQrModal()">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <img id="qrBig" alt="QR Big">
+    <div class="modal-actions">
+      <button class="btn primary" onclick="closeQrModal()">
+        <div class="left"><span style="font-weight:900">✕</span></div>
+        <div class="text"><span data-i18n="close">إغلاق</span><span class="sub">—</span></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
+applyLang();
 
-async function post(payload){
-  const res = await fetch(SCRIPT_URL, {
-    method:"POST",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  });
-
-  const raw = await res.text();
-  console.log("API raw:", raw);
-
-  try { return JSON.parse(raw); }
-  catch(e){ return { ok:false, error:"Non-JSON response", raw }; }
-}
-
-function msgSet(el, ok, text){
-  el.style.color = ok ? "#0d2c1a" : "#b00020";
-  el.textContent = text;
-}
-
-function badge(status){
-  if(status==="Active") return `<span class="badge bActive">Active</span>`;
-  if(status==="Upcoming") return `<span class="badge bUpcoming">Upcoming</span>`;
-  return `<span class="badge bEnded">Ended</span>`;
-}
-
-function esc(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-function getKey(){
-  return sessionStorage.getItem("hather_doctor_key") || doctorKey.value.trim();
-}
-function requireKey(){
-  const k = getKey();
-  if(!k){ msgSet(lockMsg,false,"❌ أدخل الرمز السري"); return false; }
-  return true;
-}
-function setLoggedIn(v){
-  sessionStorage.setItem("hather_doctor_ok", v ? "1":"0");
-  admin.classList.toggle("hidden", !v);
-  codeArea.classList.add("hidden");
-  studentsArea.classList.add("hidden");
-}
-
-btnLogout.onclick=()=>{
-  sessionStorage.removeItem("hather_doctor_ok");
-  sessionStorage.removeItem("hather_doctor_key");
-  setLoggedIn(false);
-  msgSet(lockMsg,true,"");
-};
-
-btnUnlock.onclick=async ()=>{
-  const key = doctorKey.value.trim();
-  msgSet(lockMsg,true,"⏳ جاري التحقق...");
-  const data = await post({ action:"listLectures", doctorKey:key });
-  if(!data.ok){
-    setLoggedIn(false);
-    return msgSet(lockMsg,false, data.error || data.result || JSON.stringify(data));
+function checkPin(){
+  const pin = (document.getElementById("pin").value||"").trim();
+  const st = document.getElementById("pinStatus");
+  if(pin !== "1111"){
+    showStatus(st,"danger",t("wrongSecret"));
+  }else{
+    showStatus(st,"success","تم الدخول بنجاح");
   }
-  sessionStorage.setItem("hather_doctor_key", key);
-  setLoggedIn(true);
-  msgSet(lockMsg,true,"✅ تم الدخول");
-  refreshLectures();
-};
+}
 
-if(sessionStorage.getItem("hather_doctor_ok")==="1"){ setLoggedIn(true); refreshLectures(); } else setLoggedIn(false);
+async function createLecture(){
+  const pin = (document.getElementById("pin").value||"").trim();
+  const st = document.getElementById("createStatus");
+  if(pin!=="1111"){ showStatus(st,"danger",t("wrongSecret")); return; }
 
-btnCreate.onclick=async ()=>{
-  if(!requireKey()) return;
-  msgSet(createMsg,true,"⏳ جاري الإنشاء...");
-  const data = await post({
-    action:"createLecture",
-    doctorKey:getKey(),
-    course:course.value.trim(),
-    section:section.value.trim(),
-    startTime:startTime.value,
-    endTime:endTime.value
-  });
-  if(!data.ok) return msgSet(createMsg,false, data.error || data.result || data.raw || JSON.stringify(data));
-  msgSet(createMsg,true, `✅ LectureID: ${data.lectureId}`);
-  refreshLectures();
-};
+  const course = (document.getElementById("course").value||"").trim();
+  const section= (document.getElementById("section").value||"").trim();
+  const start  = (document.getElementById("start").value||"").trim();
+  const end    = (document.getElementById("end").value||"").trim();
 
-btnSchedule.onclick=async ()=>{
-  if(!requireKey()) return;
+  const btn = document.getElementById("btnCreate");
+  const sp  = document.getElementById("spCreate");
+  setLoading(btn, sp, true);
+  showStatus(st,"warn",t("loading"));
 
-  const courseV = schCourse.value.trim();
-  const sectionV = schSection.value.trim();
-  const startDateV = schStartDate.value;
-  const endDateV = schEndDate.value;
-  const startTimeV = schStartHHMM.value;
-  const endTimeV = schEndHHMM.value;
+  const res = await apiCall({action:"createLecture", pin, course, section, start, end});
+  setLoading(btn, sp, false);
 
-  const days = Array.from(document.querySelectorAll('input[name="dow"]:checked')).map(x=>Number(x.value));
+  if(res && res.ok){
+    showStatus(st,"success","تم إنشاء المحاضرة");
+    loadLectures();
+  }else{
+    showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
+  }
+}
 
-  if(!courseV || !sectionV) return msgSet(schMsg,false,"❌ أدخل المقرر والشعبة");
-  if(!startDateV || !endDateV) return msgSet(schMsg,false,"❌ اختر تاريخ البداية والنهاية");
-  if(!startTimeV || !endTimeV) return msgSet(schMsg,false,"❌ اختر وقت البداية والنهاية");
-  if(!days.length) return msgSet(schMsg,false,"❌ اختر الأيام");
+async function createSchedule(){
+  const pin = (document.getElementById("pin").value||"").trim();
+  const st = document.getElementById("scheduleStatus");
+  if(pin!=="1111"){ showStatus(st,"danger",t("wrongSecret")); return; }
 
-  msgSet(schMsg,true,"⏳ جاري إنشاء الجدول...");
+  const course = (document.getElementById("wCourse").value||"").trim();
+  const section= (document.getElementById("wSection").value||"").trim();
+  const fromDate = (document.getElementById("fromDate").value||"").trim();
+  const toDate   = (document.getElementById("toDate").value||"").trim();
+  const startTime= (document.getElementById("wStartTime").value||"").trim();
+  const endTime  = (document.getElementById("wEndTime").value||"").trim();
 
-  const data = await post({
+  const days = [...document.querySelectorAll(".day:checked")].map(x=>Number(x.value));
+
+  const btn = document.getElementById("btnSchedule");
+  const sp  = document.getElementById("spSchedule");
+  setLoading(btn, sp, true);
+  showStatus(st,"warn",t("loading"));
+
+  const res = await apiCall({
     action:"createWeeklySchedule",
-    doctorKey:getKey(),
-    course:courseV,
-    section:sectionV,
-    startDate:startDateV,
-    endDate:endDateV,
-    startHHMM:startTimeV,
-    endHHMM:endTimeV,
+    pin, course, section,
+    fromDate, toDate,
+    startTime, endTime,
     days
   });
 
-  if(!data.ok){
-    return msgSet(schMsg,false, "❌ فشل: " + (data.error || data.result || data.raw || JSON.stringify(data)));
+  setLoading(btn, sp, false);
+
+  if(res && res.ok){
+    showStatus(st,"success","تم إنشاء الجدول الأسبوعي");
+    loadLectures();
+  }else{
+    showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
   }
-
-  msgSet(schMsg,true, `✅ تم إنشاء الجدول (${data.count} محاضرات)`);
-  refreshLectures();
-};
-
-btnRefresh.onclick=refreshLectures;
-
-let selectedLectureId=null;
-
-async function refreshLectures(){
-  if(!requireKey()) return;
-  msgSet(listMsg,true,"⏳ تحميل...");
-  const data = await post({ action:"listLectures", doctorKey:getKey() });
-  if(!data.ok) return msgSet(listMsg,false, data.error || data.result || JSON.stringify(data));
-  msgSet(listMsg,true,"✅ تم التحديث");
-  renderLectures(data.lectures||[]);
 }
 
-function renderLectures(list){
-  lecBody.innerHTML="";
-  list.forEach(item=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td>${esc(item.lectureId)}</td>
-      <td>${esc(item.course)}</td>
-      <td>${esc(item.section)}</td>
-      <td>${esc(item.start)}</td>
-      <td>${esc(item.end)}</td>
-      <td>${badge(item.status)}</td>
-      <td><button class="btn ghost" data-id="${esc(item.lectureId)}">تحديد</button></td>
-    `;
-    lecBody.appendChild(tr);
-  });
+async function loadLectures(){
+  const pin = (document.getElementById("pin").value||"").trim();
+  const tbody = document.getElementById("lectureRows");
+  tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
 
-  lecBody.querySelectorAll("button").forEach(b=>{
-    b.onclick=async ()=>{
-      selectedLectureId=b.dataset.id;
-      selLectureId.textContent=selectedLectureId;
-      codeArea.classList.remove("hidden");
-      studentsArea.classList.add("hidden");
-      curCode.textContent="—";
-      msgSet(codeMsg,true,"");
-      await rotateCode();
-    };
-  });
-}
-
-btnRotate.onclick=rotateCode;
-
-async function rotateCode(){
-  if(!selectedLectureId) return msgSet(codeMsg,false,"❌ اختر محاضرة أولاً");
-  msgSet(codeMsg,true,"⏳ توليد...");
-  const data = await post({ action:"rotateCode", doctorKey:getKey(), lectureId:selectedLectureId });
-  if(!data.ok) return msgSet(codeMsg,false, data.error || data.result || JSON.stringify(data));
-
-  curCode.textContent = String(data.code);
-
-  const box = document.getElementById("qrBox");
-  box.innerHTML="";
-
-  if(typeof QRCode === "undefined"){
-    return msgSet(codeMsg,false,"❌ مكتبة QR لم تُحمّل (جرب شبكة ثانية)");
+  const res = await apiCall({action:"listLectures", pin});
+  if(!res || !res.ok){
+    tbody.innerHTML = `<tr><td colspan="6">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
+    return;
   }
-
-  new QRCode(box, { text: String(data.code), width:200, height:200 });
-  msgSet(codeMsg,true,"✅ تم توليد الكود و QR");
+  const rows = res.rows || [];
+  tbody.innerHTML = rows.map(r=>`
+    <tr onclick="pickLecture('${r.lectureId}')">
+      <td><b>${r.lectureId||""}</b></td>
+      <td>${r.course||""}</td>
+      <td>${r.section||""}</td>
+      <td>${r.start||""}</td>
+      <td>${r.end||""}</td>
+      <td>${r.state||""}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="6">لا توجد محاضرات</td></tr>`;
 }
 
-btnStudents.onclick=loadStudents;
-
-async function loadStudents(){
-  if(!selectedLectureId) return msgSet(stuMsg,false,"❌ اختر محاضرة أولاً");
-  studentsArea.classList.remove("hidden");
-  msgSet(stuMsg,true,"⏳ تحميل الطلاب...");
-  const data = await post({ action:"getLectureStudents", doctorKey:getKey(), lectureId:selectedLectureId });
-  if(!data.ok) return msgSet(stuMsg,false, data.error || data.result || JSON.stringify(data));
-  msgSet(stuMsg,true,"✅ تم تحميل الطلاب");
-  renderStudents(data.students||[]);
+function pickLecture(id){
+  document.getElementById("selectedLectureId").value = id;
 }
 
-function renderStudents(list){
-  stuBody.innerHTML="";
-  if(!list.length){
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td colspan="5">لا يوجد طلاب لهذه الشعبة في Students</td>`;
-    stuBody.appendChild(tr);
+async function generateNewCode(){
+  const pin = (document.getElementById("pin").value||"").trim();
+  const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
+  const st = document.getElementById("codeStatus");
+  if(pin!=="1111"){ showStatus(st,"danger",t("wrongSecret")); return; }
+  if(!lectureId){ showStatus(st,"danger","اختر LectureID أولاً"); return; }
+
+  const btn = document.getElementById("btnCode");
+  const sp  = document.getElementById("spCode");
+  setLoading(btn, sp, true);
+  showStatus(st,"warn",t("loading"));
+
+  const res = await apiCall({action:"generateCode", pin, lectureId});
+  setLoading(btn, sp, false);
+
+  if(res && res.ok){
+    showStatus(st,"success","تم توليد كود جديد");
+    const code = res.code || "—";
+    const qrUrl = res.qrUrl || ""; // السكربت لازم يرجع رابط QR أو نركبها من هنا
+
+    document.getElementById("codeText").textContent = `Code: ${code}`;
+
+    // لو السكربت ما يرجع qrUrl: نولد QR من خدمة public
+    const qr = qrUrl || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(code)}`;
+    document.getElementById("qrImg").src = qr;
+  } else {
+    showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
+  }
+}
+
+function zoomQR(){
+  const src = document.getElementById("qrImg").src;
+  if(!src) return;
+  openQrModal(src);
+}
+
+async function showStudents(){
+  const pin = (document.getElementById("pin").value||"").trim();
+  const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
+  const tbody = document.getElementById("studentRows");
+
+  if(pin!=="1111"){ tbody.innerHTML = `<tr><td colspan="3">PIN غير صحيح</td></tr>`; return; }
+  if(!lectureId){ tbody.innerHTML = `<tr><td colspan="3">اختر LectureID أولاً</td></tr>`; return; }
+
+  tbody.innerHTML = `<tr><td colspan="3">جاري التحميل...</td></tr>`;
+  const res = await apiCall({action:"listStudentsForLecture", pin, lectureId});
+
+  if(!res || !res.ok){
+    tbody.innerHTML = `<tr><td colspan="3">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
     return;
   }
 
-  list.forEach(s=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td>${esc(s.studentId)}</td>
-      <td>${esc(s.name||"")}</td>
-      <td>${esc(s.status||"—")}</td>
-      <td>
-        <select id="sel_${esc(s.studentId)}">
-          <option value="حضور">حضور</option>
-          <option value="تأخير">تأخير</option>
-          <option value="غياب">غياب</option>
-          <option value="معذور">معذور</option>
-        </select>
-      </td>
-      <td>
-        <button class="btn" onclick="saveStatus('${esc(s.studentId)}')">حفظ</button>
-      </td>
-    `;
-    stuBody.appendChild(tr);
-  });
+  const rows = res.rows || [];
+  tbody.innerHTML = rows.map(r=>`
+    <tr>
+      <td>${r.studentId||""}</td>
+      <td>${r.name||""}</td>
+      <td>${r.status||""}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="3">لا يوجد طلاب</td></tr>`;
 }
 
-window.saveStatus = async (studentId)=>{
-  const sel = document.getElementById("sel_"+studentId);
-  const status = sel.value;
-  msgSet(stuMsg,true,"⏳ حفظ...");
-  const data = await post({
-    action:"updateStudentStatus",
-    doctorKey:getKey(),
-    lectureId:selectedLectureId,
-    studentId,
-    status
-  });
-  if(!data.ok) return msgSet(stuMsg,false, data.error || data.result || JSON.stringify(data));
-  msgSet(stuMsg,true,"✅ تم الحفظ");
-};
+// initial
+loadLectures();
 </script>
 </body>
 </html>
