@@ -174,7 +174,7 @@
       object-fit:contain;
     }
     .qrHint{
-      color:#fff; /* مهم: أبيض واضح مثل طلبك */
+      color:#fff;
       font-size:12px;
       opacity:.95;
     }
@@ -214,7 +214,7 @@
       display:flex; align-items:center; justify-content:space-between; gap:10px;
     }
     .lockTitle h3{ margin:0; font-size:18px; font-weight:900; }
-    .lockTitle p{ margin:4px 0 0; font-size:12px; color:#fff; opacity:.92; } /* أبيض واضح */
+    .lockTitle p{ margin:4px 0 0; font-size:12px; color:#fff; opacity:.92; }
     .pinRow{
       display:grid;
       grid-template-columns: 1fr auto;
@@ -246,7 +246,7 @@
       display:grid; place-items:center;
       cursor:pointer;
     }
-    .footNote{ margin-top:10px; font-size:12px; color:#fff; opacity:.88; } /* أبيض */
+    .footNote{ margin-top:10px; font-size:12px; color:#fff; opacity:.88; }
     .hidden{ display:none !important; }
 
     /* Modal */
@@ -546,11 +546,11 @@
   </div>
 </div>
 
-<script>
-  // IMPORTANT: Your API endpoint (hardcoded)
-  const API_URL = "https://script.google.com/macros/s/AKfycbyYrlS2KNKfACmTuOHhhOvSaYK-QM5M7CFqfDFZ8dgzl8Lrr-i9pSv2yxSCQL5Zrjak/exec";
-  const DOCTOR_PIN = "1111";
+<!-- ✅ IMPORTANT: shared api helper -->
+<script src="assets/app.js"></script>
 
+<script>
+  const DOCTOR_PIN = "1111";
   const $ = (id) => document.getElementById(id);
 
   function showStatus(el, type, msg){
@@ -595,8 +595,6 @@
     }, 150);
   }
 
-  function_topics = {};
-
   function lockAgain(){
     $("pinInput").value = "";
     $("lockScreen").classList.remove("hidden");
@@ -607,29 +605,15 @@
     location.href = "index.html";
   }
 
-  async function apiCall(payload){
-    // Keep it a "simple request" to avoid CORS preflight issues:
-    // No custom headers.
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
-    return await res.json();
-  }
-
   function pickLecture(id){
     $("selectedLectureId").value = id;
-    // reset students table text
     $("studentRows").innerHTML = `<tr><td colspan="3">اضغط "عرض الطلاب" لعرض حضور هذه المحاضرة.</td></tr>`;
   }
 
   async function refreshAll(){
     await loadLectures();
-    // also ping health to ensure connected
-    try{
-      const h = await fetch(API_URL + "?action=health").then(r=>r.json());
-      // optional
-    }catch(e){}
+    // optional health ping
+    try{ await fetch(window.HATHER_API_URL + "?action=health"); }catch(e){}
   }
 
   async function loadLectures(){
@@ -638,7 +622,7 @@
 
     let res;
     try{
-      res = await apiCall({ action:"listLectures", doctorKey: DOCTOR_PIN });
+      res = await window.apiCall({ action:"listLectures", doctorKey: DOCTOR_PIN });
     }catch(e){
       tbody.innerHTML = `<tr><td colspan="6">فشل الاتصال بالـ API</td></tr>`;
       return;
@@ -686,7 +670,7 @@
 
     let res;
     try{
-      res = await apiCall({ action:"createLecture", doctorKey: DOCTOR_PIN, course, section, start, end });
+      res = await window.apiCall({ action:"createLecture", doctorKey: DOCTOR_PIN, course, section, start, end });
     }catch(e){
       setSpin("spCreate", false);
       showStatus(st, "bad", "فشل الاتصال بالـ API");
@@ -725,7 +709,7 @@
 
     let res;
     try{
-      res = await apiCall({
+      res = await window.apiCall({
         action:"createWeeklySchedule",
         doctorKey: DOCTOR_PIN,
         course, section, fromDate, toDate, startTime, endTime, days
@@ -762,7 +746,7 @@
 
     let res;
     try{
-      res = await apiCall({ action:"generateCode", doctorKey: DOCTOR_PIN, lectureId });
+      res = await window.apiCall({ action:"generateCode", doctorKey: DOCTOR_PIN, lectureId });
     }catch(e){
       setSpin("spCode", false);
       showStatus(st, "bad", "فشل الاتصال بالـ API");
@@ -774,8 +758,7 @@
     if(res && res.ok){
       showStatus(st, "ok", "تم توليد كود جديد ✅");
       $("codeText").textContent = "Code: " + (res.code || "—");
-      const img = $("qrImg");
-      img.src = res.qrUrl || "";
+      $("qrImg").src = res.qrUrl || "";
     }else{
       showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
     }
@@ -803,7 +786,7 @@
 
     let res;
     try{
-      res = await apiCall({ action:"listStudentsForLecture", doctorKey: DOCTOR_PIN, lectureId });
+      res = await window.apiCall({ action:"listStudentsForLecture", doctorKey: DOCTOR_PIN, lectureId });
     }catch(e){
       tbody.innerHTML = `<tr><td colspan="3">فشل الاتصال بالـ API</td></tr>`;
       return;
