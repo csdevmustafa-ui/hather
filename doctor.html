@@ -4,9 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Doctor - Hather</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
@@ -20,7 +22,7 @@
       </div>
       <div class="brand-titles">
         <h1 data-i18n="doctorTitle">لوحة عضو هيئة التدريس</h1>
-        <p data-i18n="doctorSub">إنشاء محاضرة / توليد QR / إدارة الحالات</p>
+        <p data-i18n="doctorSub">إدارة المحاضرات والرموز</p>
       </div>
     </div>
 
@@ -32,15 +34,15 @@
   <div class="grid-center">
     <div class="card wide">
 
-      <!-- PIN -->
+      <!-- Doctor Password -->
       <div class="row">
         <div>
-          <label data-i18n="secret">الرمز السري</label>
-          <input id="pin" class="input" type="password" value="1111" />
-          <div class="small" data-i18n="secretHint">للدخول فقط</div>
+          <label>كلمة مرور الدكتور</label>
+          <input id="doctorKey" class="input" type="password" value="111" />
+          <div class="small">مطلوبة للوصول للوحة الدكتور</div>
         </div>
         <div style="display:flex; align-items:end;">
-          <button class="btn primary" onclick="checkPin()">
+          <button class="btn primary" onclick="checkDoctorKey()">
             <div class="left">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <path d="M12 15v2" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
@@ -49,8 +51,8 @@
               </svg>
             </div>
             <div class="text" style="text-align:right">
-              <span data-i18n="enter">دخول</span>
-              <span class="sub">PIN = 1111</span>
+              <span>تسجيل الدخول</span>
+              <span class="sub">Password: 111</span>
             </div>
           </button>
         </div>
@@ -61,7 +63,7 @@
       <div class="hr"></div>
 
       <!-- Create Lecture -->
-      <h3 style="margin:0 0 10px" data-i18n="createLecture">إنشاء محاضرة</h3>
+      <h3 style="margin:0 0 10px">إنشاء محاضرة</h3>
       <div class="row">
         <div>
           <label>المقرر</label>
@@ -86,16 +88,11 @@
       <div class="actions">
         <button id="btnCreate" class="btn primary" onclick="createLecture()">
           <div class="left"><div class="spinner" id="spCreate"></div></div>
-          <div class="text"><span>إنشاء</span><span class="sub">تسجيل محاضرة واحدة</span></div>
+          <div class="text"><span>إنشاء</span><span class="sub">محاضرة واحدة</span></div>
         </button>
         <button class="btn" onclick="loadLectures()">
-          <div class="left">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M21 12a9 9 0 1 1-3-6.7" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-              <path d="M21 3v6h-6" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="text"><span data-i18n="refresh">تحديث</span><span class="sub">عرض المحاضرات</span></div>
+          <div class="left"><span style="font-weight:900">↻</span></div>
+          <div class="text"><span>تحديث</span><span class="sub">قائمة المحاضرات</span></div>
         </button>
       </div>
 
@@ -104,7 +101,7 @@
       <div class="hr"></div>
 
       <!-- Weekly Schedule -->
-      <h3 style="margin:0 0 10px" data-i18n="createSchedule">إنشاء جدول أسبوعي</h3>
+      <h3 style="margin:0 0 10px">إنشاء جدول أسبوعي</h3>
       <div class="row">
         <div>
           <label>المقرر</label>
@@ -158,16 +155,9 @@
 
       <div class="hr"></div>
 
-      <!-- Lectures table -->
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px">
-        <h3 style="margin:0">المحاضرات</h3>
-        <button class="btn" style="max-width:180px" onclick="loadLectures()">
-          <div class="left"><span style="font-weight:900">↻</span></div>
-          <div class="text"><span>تحديث</span><span class="sub">قائمة المحاضرات</span></div>
-        </button>
-      </div>
-
-      <div style="margin-top:10px" class="table-wrap">
+      <!-- Lectures -->
+      <h3 style="margin:0 0 10px">المحاضرات</h3>
+      <div class="table-wrap">
         <table class="table">
           <thead>
             <tr>
@@ -197,11 +187,11 @@
           <div class="actions">
             <button id="btnCode" class="btn primary" onclick="generateNewCode()">
               <div class="left"><div class="spinner" id="spCode"></div></div>
-              <div class="text"><span data-i18n="generateCode">توليد رمز حضور جديد</span><span class="sub">Code + QR</span></div>
+              <div class="text"><span>توليد رمز حضور جديد</span><span class="sub">Code + QR</span></div>
             </button>
             <button class="btn" onclick="showStudents()">
               <div class="left"><span style="font-weight:900">👥</span></div>
-              <div class="text"><span data-i18n="showStudents">عرض الطلاب</span><span class="sub">لهذه المحاضرة</span></div>
+              <div class="text"><span>عرض الطلاب</span><span class="sub">لهذه المحاضرة</span></div>
             </button>
           </div>
 
@@ -211,11 +201,11 @@
         <div class="qr-box">
           <img id="qrImg" alt="QR">
           <div class="qr-code-text" id="codeText">Code: —</div>
-          <div class="qr-hint">صلاحية الكود قصيرة للحد من المشاركة</div>
+          <div class="qr-hint">صلاحية قصيرة لتقليل المشاركة</div>
           <div class="qr-actions">
             <button class="btn" onclick="zoomQR()">
               <div class="left"><span style="font-weight:900">⤢</span></div>
-              <div class="text"><span data-i18n="zoomQR">تكبير QR</span><span class="sub">للعرض على الطلاب</span></div>
+              <div class="text"><span>تكبير QR</span><span class="sub">للعرض على الطلاب</span></div>
             </button>
           </div>
         </div>
@@ -223,7 +213,6 @@
 
       <div class="hr"></div>
 
-      <!-- Students -->
       <h3 style="margin:0 0 10px">طلاب المحاضرة</h3>
       <div class="table-wrap">
         <table class="table">
@@ -249,7 +238,7 @@
     <div class="modal-actions">
       <button class="btn primary" onclick="closeQrModal()">
         <div class="left"><span style="font-weight:900">✕</span></div>
-        <div class="text"><span data-i18n="close">إغلاق</span><span class="sub">—</span></div>
+        <div class="text"><span>إغلاق</span><span class="sub">—</span></div>
       </button>
     </div>
   </div>
@@ -259,20 +248,25 @@
 <script>
 applyLang();
 
-function checkPin(){
-  const pin = (document.getElementById("pin").value||"").trim();
+function getDoctorKey(){
+  return (document.getElementById("doctorKey").value||"").trim();
+}
+
+function checkDoctorKey(){
+  const k = getDoctorKey();
   const st = document.getElementById("pinStatus");
-  if(pin !== "1111"){
-    showStatus(st,"danger",t("wrongSecret"));
+  if(k !== "111"){
+    showStatus(st,"danger","كلمة المرور غير صحيحة");
   }else{
-    showStatus(st,"success","تم الدخول بنجاح");
+    showStatus(st,"success","تم الدخول بنجاح ✅");
+    loadLectures();
   }
 }
 
 async function createLecture(){
-  const pin = (document.getElementById("pin").value||"").trim();
+  const doctorKey = getDoctorKey();
   const st = document.getElementById("createStatus");
-  if(pin!=="1111"){ showStatus(st,"danger",t("wrongSecret")); return; }
+  if(doctorKey!=="111"){ showStatus(st,"danger","كلمة المرور غير صحيحة"); return; }
 
   const course = (document.getElementById("course").value||"").trim();
   const section= (document.getElementById("section").value||"").trim();
@@ -284,7 +278,7 @@ async function createLecture(){
   setLoading(btn, sp, true);
   showStatus(st,"warn",t("loading"));
 
-  const res = await apiCall({action:"createLecture", pin, course, section, start, end});
+  const res = await apiCall({action:"createLecture", doctorKey, course, section, start, end});
   setLoading(btn, sp, false);
 
   if(res && res.ok){
@@ -296,9 +290,9 @@ async function createLecture(){
 }
 
 async function createSchedule(){
-  const pin = (document.getElementById("pin").value||"").trim();
+  const doctorKey = getDoctorKey();
   const st = document.getElementById("scheduleStatus");
-  if(pin!=="1111"){ showStatus(st,"danger",t("wrongSecret")); return; }
+  if(doctorKey!=="111"){ showStatus(st,"danger","كلمة المرور غير صحيحة"); return; }
 
   const course = (document.getElementById("wCourse").value||"").trim();
   const section= (document.getElementById("wSection").value||"").trim();
@@ -306,7 +300,6 @@ async function createSchedule(){
   const toDate   = (document.getElementById("toDate").value||"").trim();
   const startTime= (document.getElementById("wStartTime").value||"").trim();
   const endTime  = (document.getElementById("wEndTime").value||"").trim();
-
   const days = [...document.querySelectorAll(".day:checked")].map(x=>Number(x.value));
 
   const btn = document.getElementById("btnSchedule");
@@ -316,7 +309,7 @@ async function createSchedule(){
 
   const res = await apiCall({
     action:"createWeeklySchedule",
-    pin, course, section,
+    doctorKey, course, section,
     fromDate, toDate,
     startTime, endTime,
     days
@@ -328,23 +321,25 @@ async function createSchedule(){
     showStatus(st,"success","تم إنشاء الجدول الأسبوعي");
     loadLectures();
   }else{
+    // هذا اللي يطلع عندك غالباً: Doctor key invalid أو Unknown action من السكربت
     showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
   }
 }
 
 async function loadLectures(){
-  const pin = (document.getElementById("pin").value||"").trim();
+  const doctorKey = getDoctorKey();
   const tbody = document.getElementById("lectureRows");
   tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
 
-  const res = await apiCall({action:"listLectures", pin});
+  const res = await apiCall({action:"listLectures", doctorKey});
   if(!res || !res.ok){
     tbody.innerHTML = `<tr><td colspan="6">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
     return;
   }
+
   const rows = res.rows || [];
   tbody.innerHTML = rows.map(r=>`
-    <tr onclick="pickLecture('${r.lectureId}')">
+    <tr onclick="pickLecture('${r.lectureId||""}')">
       <td><b>${r.lectureId||""}</b></td>
       <td>${r.course||""}</td>
       <td>${r.section||""}</td>
@@ -360,10 +355,11 @@ function pickLecture(id){
 }
 
 async function generateNewCode(){
-  const pin = (document.getElementById("pin").value||"").trim();
+  const doctorKey = getDoctorKey();
   const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
   const st = document.getElementById("codeStatus");
-  if(pin!=="1111"){ showStatus(st,"danger",t("wrongSecret")); return; }
+
+  if(doctorKey!=="111"){ showStatus(st,"danger","كلمة المرور غير صحيحة"); return; }
   if(!lectureId){ showStatus(st,"danger","اختر LectureID أولاً"); return; }
 
   const btn = document.getElementById("btnCode");
@@ -371,20 +367,18 @@ async function generateNewCode(){
   setLoading(btn, sp, true);
   showStatus(st,"warn",t("loading"));
 
-  const res = await apiCall({action:"generateCode", pin, lectureId});
+  const res = await apiCall({action:"generateCode", doctorKey, lectureId});
   setLoading(btn, sp, false);
 
   if(res && res.ok){
-    showStatus(st,"success","تم توليد كود جديد");
+    showStatus(st,"success","تم توليد كود جديد ✅");
     const code = res.code || "—";
-    const qrUrl = res.qrUrl || ""; // السكربت لازم يرجع رابط QR أو نركبها من هنا
-
+    const qrUrl = res.qrUrl || "";
     document.getElementById("codeText").textContent = `Code: ${code}`;
 
-    // لو السكربت ما يرجع qrUrl: نولد QR من خدمة public
     const qr = qrUrl || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(code)}`;
     document.getElementById("qrImg").src = qr;
-  } else {
+  }else{
     showStatus(st,"danger",(res&&res.error)?res.error:t("failed"));
   }
 }
@@ -396,15 +390,15 @@ function zoomQR(){
 }
 
 async function showStudents(){
-  const pin = (document.getElementById("pin").value||"").trim();
+  const doctorKey = getDoctorKey();
   const lectureId = (document.getElementById("selectedLectureId").value||"").trim();
   const tbody = document.getElementById("studentRows");
 
-  if(pin!=="1111"){ tbody.innerHTML = `<tr><td colspan="3">PIN غير صحيح</td></tr>`; return; }
+  if(doctorKey!=="111"){ tbody.innerHTML = `<tr><td colspan="3">كلمة المرور غير صحيحة</td></tr>`; return; }
   if(!lectureId){ tbody.innerHTML = `<tr><td colspan="3">اختر LectureID أولاً</td></tr>`; return; }
 
   tbody.innerHTML = `<tr><td colspan="3">جاري التحميل...</td></tr>`;
-  const res = await apiCall({action:"listStudentsForLecture", pin, lectureId});
+  const res = await apiCall({action:"listStudentsForLecture", doctorKey, lectureId});
 
   if(!res || !res.ok){
     tbody.innerHTML = `<tr><td colspan="3">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
@@ -420,9 +414,6 @@ async function showStudents(){
     </tr>
   `).join("") || `<tr><td colspan="3">لا يوجد طلاب</td></tr>`;
 }
-
-// initial
-loadLectures();
 </script>
 </body>
 </html>
