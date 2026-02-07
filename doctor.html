@@ -31,6 +31,7 @@ input:focus,select:focus{border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,7
 background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);transition:transform .15s ease}
 .btn:hover{transform:translateY(-2px)}
 .btn.ghost{background:rgba(13,44,26,.10);color:#0d2c1a;border:2px solid rgba(13,44,26,.22);box-shadow:none}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .msg{margin-top:10px;font-weight:900;min-height:22px}
 .table{width:100%;border-collapse:collapse;margin-top:10px;overflow:hidden;border-radius:14px;background:#fff;border:2px solid #d9f7ea}
 .table th,.table td{padding:10px;border-bottom:1px solid #e9f7ef;text-align:center;font-size:13px}
@@ -175,7 +176,7 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
         <div class="sectionTitle" id="s4">الكود و QR للمحاضرة</div>
         <div class="qrWrap">
           <div class="qrBox">
-            <img id="qrImg" width="200" height="200" style="display:block" />
+            <img id="qrImg" width="200" height="200" style="display:block" alt="QR" />
             <div class="qrText"><span id="codeLabel">Code:</span> <span id="curCode">—</span></div>
             <div class="small" id="codeNote">صلاحية الكود قصيرة لمنع المشاركة.</div>
           </div>
@@ -214,15 +215,16 @@ hr{border:none;height:1px;background:rgba(13,44,26,.14);margin:14px 0}
 </div>
 
 <script>
+/* ✅ رابط السكربت */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
+/* ======= fetch helper (يعرض رد السيرفر لو ما كان JSON) ======= */
 async function post(payload){
   const res = await fetch(SCRIPT_URL, {
     method:"POST",
     headers:{ "Content-Type":"text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   });
-
   const text = await res.text();
   console.log("API raw response:", text);
   try { return JSON.parse(text); }
@@ -232,6 +234,7 @@ async function post(payload){
   }
 }
 
+/* ======= ترجمة ======= */
 const STR={
   ar:{dir:"rtl",lang:"ar",back:"رجوع",title:"إدارة المحاضرات",sub:"إنشاء محاضرات — توليد QR/Code — تعديل حالات الطلاب",
       key:"الرمز السري (للدكتور)",unlock:"دخول",logout:"تسجيل خروج",lockHint:"لن تظهر لوحة الإدارة إلا بعد إدخال الرمز الصحيح.",
@@ -240,7 +243,7 @@ const STR={
       sun:"أحد",mon:"اثنين",tue:"ثلاثاء",wed:"أربعاء",thu:"خميس",sch:"إنشاء الجدول",
       s3:"المحاضرات",ref:"تحديث",thCourse:"المقرر",thSection:"الشعبة",thStart:"البداية",thEnd:"النهاية",thStatus:"الحالة",thAct:"إجراءات",
       s4:"الكود و QR للمحاضرة",codeNote:"صلاحية الكود قصيرة لمنع المشاركة.",sel:"LectureID المحدد:",rot:"توليد كود جديد",stu:"عرض الطلاب",
-      s5:"طلاب المحاضرة",thName:"الاسم (اختياري)",thCur:"الحالة الحالية",thSet:"تغيير الحالة",thSave:"حفظ",
+      s5:"طلاب المحاضرة",thName:"الاسم",thCur:"الحالة الحالية",thSet:"تغيير الحالة",thSave:"حفظ",
       okUnlock:"✅ تم الدخول",needKey:"❌ أدخل الرمز السري أولاً"
   },
   en:{dir:"ltr",lang:"en",back:"Back",title:"Lecture Management",sub:"Create lectures — Generate QR/Code — Manage student statuses",
@@ -250,7 +253,7 @@ const STR={
       sun:"Sun",mon:"Mon",tue:"Tue",wed:"Wed",thu:"Thu",sch:"Create Schedule",
       s3:"Lectures",ref:"Refresh",thCourse:"Course",thSection:"Section",thStart:"Start",thEnd:"End",thStatus:"Status",thAct:"Actions",
       s4:"Lecture Code & QR",codeNote:"Short code validity to prevent sharing.",sel:"Selected LectureID:",rot:"Generate new code",stu:"Students",
-      s5:"Lecture Students",thName:"Name (optional)",thCur:"Current Status",thSet:"Set Status",thSave:"Save",
+      s5:"Lecture Students",thName:"Name",thCur:"Current Status",thSet:"Set Status",thSave:"Save",
       okUnlock:"✅ Logged in",needKey:"❌ Enter the secret key first"
   }
 };
@@ -276,6 +279,7 @@ function applyLang(){
 langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
 applyLang();
 
+/* ======= UI helpers ======= */
 function msgSet(el, ok, text){
   el.style.color = ok ? "#0d2c1a" : "#b00020";
   el.textContent = text;
@@ -300,6 +304,7 @@ function setLoggedIn(v){
   studentsArea.classList.add("hidden");
 }
 
+/* ======= Login/Logout ======= */
 btnLogout.onclick=()=>{
   sessionStorage.removeItem("hather_doctor_ok");
   sessionStorage.removeItem("hather_doctor_key");
@@ -333,7 +338,7 @@ if(sessionStorage.getItem("hather_doctor_ok")==="1"){
   setLoggedIn(false);
 }
 
-// Create lecture
+/* ======= Create lecture ======= */
 btnCreate.onclick=async ()=>{
   if(!requireKey()) return;
   msgSet(createMsg,true, getLang()==="ar"?"⏳ جاري الإنشاء...":"⏳ Creating...");
@@ -354,9 +359,9 @@ btnCreate.onclick=async ()=>{
   }
 };
 
-// Create schedule
-btnSchedule.onclick=async ()=>{
-  if(!requireKey()) return;
+/* ======= Create schedule (FIXED: shows real reason, no generic Failed) ======= */
+btnSchedule.onclick = async () => {
+  if (!requireKey()) return;
 
   const courseV = schCourse.value.trim();
   const sectionV = schSection.value.trim();
@@ -365,37 +370,38 @@ btnSchedule.onclick=async ()=>{
   const startTimeV = schStartHHMM.value;
   const endTimeV = schEndHHMM.value;
 
-  const days = Array.from(document.querySelectorAll('input[name="dow"]:checked')).map(x=>Number(x.value));
-  console.log("Schedule days:", days);
+  const days = Array.from(document.querySelectorAll('input[name="dow"]:checked'))
+    .map(x => Number(x.value));
 
-  if(!courseV || !sectionV) return msgSet(schMsg,false, getLang()==="ar"?"❌ أدخل المقرر والشعبة":"❌ Enter course & section");
-  if(!startDateV || !endDateV) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر تاريخ البداية والنهاية":"❌ Select dates");
-  if(!startTimeV || !endTimeV) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر وقت البداية والنهاية":"❌ Select times");
-  if(days.length===0) return msgSet(schMsg,false, getLang()==="ar"?"❌ اختر أيام الجدول":"❌ Select days");
+  if (!courseV || !sectionV) return msgSet(schMsg, false, getLang()==="ar" ? "❌ أدخل المقرر والشعبة" : "❌ Enter course & section");
+  if (!startDateV || !endDateV) return msgSet(schMsg, false, getLang()==="ar" ? "❌ اختر تاريخ البداية والنهاية" : "❌ Select start/end dates");
+  if (!startTimeV || !endTimeV) return msgSet(schMsg, false, getLang()==="ar" ? "❌ اختر وقت البداية والنهاية" : "❌ Select start/end time");
+  if (days.length === 0) return msgSet(schMsg, false, getLang()==="ar" ? "❌ اختر أيام الجدول (مثل أحد/ثلاثاء/خميس)" : "❌ Select days");
 
-  msgSet(schMsg,true, getLang()==="ar"?"⏳ جاري إنشاء الجدول...":"⏳ Creating schedule...");
+  msgSet(schMsg, true, getLang()==="ar" ? "⏳ جاري إنشاء الجدول..." : "⏳ Creating schedule...");
 
-  try{
+  try {
     const data = await post({
-      action:"createSchedule",
-      doctorKey:getKey(),
-      course:courseV,
-      section:sectionV,
-      startDate:startDateV,
-      endDate:endDateV,
-      startHHMM:startTimeV,
-      endHHMM:endTimeV,
-      days:days
+      action: "createSchedule",
+      doctorKey: getKey(),
+      course: courseV,
+      section: sectionV,
+      startDate: startDateV,
+      endDate: endDateV,
+      startHHMM: startTimeV,
+      endHHMM: endTimeV,
+      days
     });
 
-    if(!data.ok) return msgSet(schMsg,false, data.result || "❌ Failed");
-    msgSet(schMsg,true, data.result || "✅ Done");
+    if (!data.ok) return msgSet(schMsg, false, data.result || (getLang()==="ar" ? "❌ فشل إنشاء الجدول" : "❌ Schedule failed"));
+    msgSet(schMsg, true, data.result || (getLang()==="ar" ? "✅ تم إنشاء الجدول" : "✅ Schedule created"));
     await refreshLectures();
-  }catch(e){
-    msgSet(schMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+  } catch (e) {
+    msgSet(schMsg, false, getLang()==="ar" ? "❌ فشل الاتصال" : "❌ Connection failed");
   }
 };
 
+/* ======= Lectures list ======= */
 btnRefresh.onclick=refreshLectures;
 
 let selectedLectureId=null;
@@ -419,10 +425,10 @@ function renderLectures(list){
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td>${item.lectureId}</td>
-      <td>${item.course}</td>
-      <td>${item.section}</td>
-      <td>${item.start}</td>
-      <td>${item.end}</td>
+      <td>${escapeHtml(item.course)}</td>
+      <td>${escapeHtml(item.section)}</td>
+      <td>${escapeHtml(item.start)}</td>
+      <td>${escapeHtml(item.end)}</td>
       <td>${badge(item.status)}</td>
       <td>
         <button class="btn ghost" data-act="select" data-id="${item.lectureId}">${getLang()==="ar"?"تحديد":"Select"}</button>
@@ -460,6 +466,7 @@ function renderLectures(list){
   });
 }
 
+/* ======= Code + QR (FIXED: QuickChart + fallback QRServer) ======= */
 btnRotate.onclick=rotateCode;
 
 async function rotateCode(){
@@ -469,20 +476,30 @@ async function rotateCode(){
     const data=await post({ action:"rotateCode", doctorKey:getKey(), lectureId:selectedLectureId });
     if(!data.ok) return msgSet(codeMsg,false, data.result||"❌ Failed");
 
-    curCode.textContent=data.code;
+    const code = String(data.code);
+    curCode.textContent=code;
     msgSet(codeMsg,true, getLang()==="ar"?"✅ تم توليد كود جديد":"✅ New code generated");
 
     const qrImg = document.getElementById("qrImg");
-    const qrUrl = "https://chart.googleapis.com/chart?cht=qr&chs=200x200&chld=M|0&chl=" + encodeURIComponent(String(data.code));
-    qrImg.src = qrUrl;
-    qrImg.onerror = () => msgSet(codeMsg,false, getLang()==="ar" ? "❌ فشل توليد QR (جرّب مرة ثانية)" : "❌ QR failed (try again)");
+    const url1 = "https://quickchart.io/qr?text=" + encodeURIComponent(code) + "&size=200";
+    const url2 = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(code);
+
+    qrImg.onerror = null;
+    qrImg.src = url1;
+    qrImg.onerror = () => {
+      qrImg.onerror = () => {
+        msgSet(codeMsg,false, getLang()==="ar" ? "❌ فشل توليد QR (جرّب لاحقًا)" : "❌ QR failed (try later)");
+      };
+      qrImg.src = url2;
+    };
 
   }catch(e){
     console.error(e);
-    msgSet(codeMsg,false, getLang()==="ar"?"❌ تعذر إنشاء QR":"❌ QR failed");
+    msgSet(codeMsg,false, getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
   }
 }
 
+/* ======= Students ======= */
 btnStudents.onclick=loadStudents;
 
 async function loadStudents(){
@@ -511,18 +528,18 @@ function renderStudents(list){
   list.forEach(s=>{
     const tr=document.createElement("tr");
     tr.innerHTML=`
-      <td>${s.studentId}</td>
+      <td>${escapeHtml(s.studentId)}</td>
       <td>${escapeHtml(s.name||"")}</td>
       <td>${escapeHtml(s.status||"—")}</td>
       <td>
-        <select data-sid="${s.studentId}">
+        <select data-sid="${escapeHtml(s.studentId)}">
           <option value="حضور">حضور</option>
           <option value="تأخير">تأخير</option>
           <option value="غياب">غياب</option>
           <option value="معذور">معذور</option>
         </select>
       </td>
-      <td><button class="btn" data-save="${s.studentId}">${getLang()==="ar"?"حفظ":"Save"}</button></td>
+      <td><button class="btn" data-save="${escapeHtml(s.studentId)}">${getLang()==="ar"?"حفظ":"Save"}</button></td>
     `;
     stuBody.appendChild(tr);
   });
@@ -530,7 +547,7 @@ function renderStudents(list){
   stuBody.querySelectorAll("button[data-save]").forEach(btn=>{
     btn.onclick=async ()=>{
       const sid=btn.dataset.save;
-      const sel=stuBody.querySelector(`select[data-sid="${sid}"]`);
+      const sel=stuBody.querySelector(`select[data-sid="${CSS.escape(sid)}"]`);
       const st=sel.value;
       btn.disabled=true;
       try{
@@ -543,6 +560,7 @@ function renderStudents(list){
   });
 }
 
+/* ======= utils ======= */
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
