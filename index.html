@@ -1,125 +1,96 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hather - حاضر</title>
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-body{
-  min-height:100vh;
-  background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
-  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
-}
-.card{
-  width:100%;max-width:460px;border-radius:20px;padding:24px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(10px);
-  box-shadow:0 20px 50px rgba(0,0,0,0.35);
-  border:1px solid rgba(255,255,255,0.12);
-}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.topbar span{font-weight:900;color:#eafff3}
-.icon-btn{
-  width:40px;height:40px;border-radius:12px;border:none;
-  background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px
-}
-.header{text-align:center;margin-bottom:22px}
-.title{
-  font-size:44px;font-weight:900;
-  background:linear-gradient(135deg,#c8ffe2,#4cc987);
-  -webkit-background-clip:text;color:transparent
-}
-.subtitle{font-size:20px;font-weight:800;color:#e6fff1;margin-top:6px}
-.hint{font-size:14px;color:#d2f5e3;margin-top:6px}
-
-.menu{display:flex;flex-direction:column;gap:14px;margin-top:18px}
-.btn{
-  width:100%;padding:16px 18px;border:none;border-radius:16px;cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:18px;font-weight:900;
-  background:linear-gradient(135deg,#e9fff4,#c9f5de);
-  color:#0d2c1a;
-  box-shadow:0 10px 25px rgba(0,0,0,0.25);
-  transition:transform .15s ease, box-shadow .15s ease;
-}
-.btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,0.3)}
-.meta{font-size:13px;font-weight:700;color:#2f6b4c;margin-top:3px}
-.footer{text-align:center;margin-top:18px;font-size:13px;color:#d9f7ea}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
-
 <body>
-<div class="card">
-  <div class="topbar">
-    <span>Hather</span>
-    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
+  <div class="container">
+    <div class="brand">
+      <div class="brand-left">
+        <div class="logo" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="rgba(255,255,255,.9)" stroke-width="1.8"/>
+            <path d="M8 12l2.2 2.2L16.5 8" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1 data-i18n="homeTitle">Hather</h1>
+          <p data-i18n="homeSub">نظام إدارة الحضور الأكاديمي</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="lang-chip" onclick="toggleLang()">
+          <span>AR/EN</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-center">
+      <div class="card">
+        <div class="card-title">
+          <p class="title" style="margin:0" data-i18n="homeTitle">Hather</p>
+          <p class="subtitle" data-i18n="homeSub">نظام إدارة الحضور الأكاديمي</p>
+        </div>
+        <div class="hr"></div>
+
+        <button class="btn primary" onclick="location.href='student.html'">
+          <div class="left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
+              <path d="M4 22a8 8 0 0 1 16 0" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="text">
+            <span data-i18n="toStudent">قسم الطالب</span>
+            <span class="sub" data-i18n="toStudentSub">تسجيل حضور المحاضرة</span>
+          </div>
+        </button>
+
+        <div style="height:10px"></div>
+
+        <button class="btn" onclick="location.href='student-report.html'">
+          <div class="left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 19V5" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4 19H20" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M8 15V11" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 15V7" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 15V9" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="text">
+            <span data-i18n="toReport">تقارير الطالب</span>
+            <span class="sub" data-i18n="toReportSub">نسبة الحضور والتأخير</span>
+          </div>
+        </button>
+
+        <div style="height:10px"></div>
+
+        <button class="btn dark" onclick="location.href='doctor.html'">
+          <div class="left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2a4 4 0 0 1 4 4v2h-8V6a4 4 0 0 1 4-4Z" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
+              <path d="M6 22v-8a6 6 0 0 1 12 0v8" stroke="rgba(255,255,255,.9)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="text">
+            <span data-i18n="toDoctor">لوحة عضو هيئة التدريس</span>
+            <span class="sub" data-i18n="toDoctorSub">إدارة المحاضرات والرموز</span>
+          </div>
+        </button>
+
+      </div>
+    </div>
   </div>
 
-  <div class="header">
-    <div class="title">Hather</div>
-    <div class="subtitle" id="subTitle">حاضر</div>
-    <div class="hint" id="hint">اختر الخدمة المطلوبة</div>
-  </div>
-
-  <div class="menu">
-    <button class="btn" onclick="location.href='student.html'">
-      <div>
-        <div id="b1">تسجيل الحضور</div>
-        <div class="meta" id="b1m">للطلاب داخل القاعة</div>
-      </div>
-      <div>➜</div>
-    </button>
-
-    <button class="btn" onclick="location.href='reports.html'">
-      <div>
-        <div id="b2">تقارير الحضور</div>
-        <div class="meta" id="b2m">إحصائيات ونسب الحضور</div>
-      </div>
-      <div>➜</div>
-    </button>
-
-    <button class="btn" onclick="location.href='doctor.html'">
-      <div>
-        <div id="b3">إدارة المحاضرات</div>
-        <div class="meta" id="b3m">لأعضاء هيئة التدريس</div>
-      </div>
-      <div>➜</div>
-    </button>
-  </div>
-
-  <div class="footer" id="footer">نظام إلكتروني لإدارة الحضور الأكاديمي</div>
-</div>
-
-<script>
-const STR={
-  ar:{dir:"rtl",lang:"ar",sub:"حاضر",hint:"اختر الخدمة المطلوبة",
-      b1:"تسجيل الحضور",b1m:"للطلاب داخل القاعة",
-      b2:"تقارير الحضور",b2m:"إحصائيات ونسب الحضور",
-      b3:"إدارة المحاضرات",b3m:"لأعضاء هيئة التدريس",
-      foot:"نظام إلكتروني لإدارة الحضور الأكاديمي"},
-  en:{dir:"ltr",lang:"en",sub:"Attendance",hint:"Select the required service",
-      b1:"Check-in",b1m:"For students in class",
-      b2:"Attendance Reports",b2m:"Statistics & percentages",
-      b3:"Lecture Management",b3m:"For faculty members",
-      foot:"Electronic Academic Attendance Management System"}
-};
-
-function getLang(){return localStorage.getItem("hather_lang")||"ar";}
-function setLang(l){localStorage.setItem("hather_lang",l);}
-function applyLang(){
-  const t=STR[getLang()];
-  document.documentElement.lang=t.lang;
-  document.documentElement.dir=t.dir;
-  subTitle.textContent=t.sub; hint.textContent=t.hint;
-  b1.textContent=t.b1; b1m.textContent=t.b1m;
-  b2.textContent=t.b2; b2m.textContent=t.b2m;
-  b3.textContent=t.b3; b3m.textContent=t.b3m;
-  footer.textContent=t.foot;
-}
-langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
-applyLang();
-</script>
+  <script src="assets/app.js"></script>
+  <script>applyLang();</script>
 </body>
 </html>
