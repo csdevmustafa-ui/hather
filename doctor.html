@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة عضو هيئة التدريس</title>
 
 <style>
@@ -15,7 +15,10 @@
   --white:#ffffff;
 }
 
-*{box-sizing:border-box;font-family:"Segoe UI",Tahoma}
+*{
+  box-sizing:border-box;
+  font-family:"Segoe UI",Tahoma,Arial;
+}
 
 body{
   margin:0;
@@ -47,7 +50,7 @@ body{
   background:rgba(255,255,255,.15);
   border:none;
   color:#fff;
-  padding:6px 12px;
+  padding:6px 14px;
   border-radius:10px;
   cursor:pointer;
   font-size:13px;
@@ -55,14 +58,14 @@ body{
 
 h1{
   font-size:22px;
-  margin:0;
+  margin:0 0 6px 0;
   font-weight:700;
 }
 
 .subtitle{
   font-size:14px;
   color:#dff7ec;
-  margin-bottom:20px;
+  margin-bottom:22px;
 }
 
 .field{
@@ -80,7 +83,8 @@ h1{
   align-items:center;
   background:var(--soft);
   border-radius:14px;
-  padding:8px 12px;
+  padding:6px 10px;
+  gap:8px;
 }
 
 .pass-wrap input{
@@ -89,13 +93,22 @@ h1{
   background:transparent;
   font-size:16px;
   outline:none;
+  padding:10px;
 }
 
-.eye-btn{
-  background:none;
+.toggle-btn{
   border:none;
+  background:#d9f5e6;
+  color:#145a3a;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:13px;
   cursor:pointer;
-  font-size:18px;
+  white-space:nowrap;
+}
+
+.toggle-btn:hover{
+  background:#c8eedb;
 }
 
 .btn{
@@ -110,29 +123,33 @@ h1{
   font-weight:600;
 }
 
-.btn:hover{opacity:.95}
+.btn:hover{
+  opacity:.95;
+}
 
 .note{
-  margin-top:14px;
+  margin-top:16px;
   font-size:13px;
   color:#c9f3df;
   text-align:center;
 }
 
-.error{
-  margin-top:12px;
-  background:#b93a3a;
+.message{
+  margin-top:14px;
   padding:10px;
   border-radius:12px;
   font-size:14px;
   display:none;
+  text-align:center;
+}
+
+.error{
+  background:#b93a3a;
 }
 
 .success{
   background:#1abc9c;
 }
-
-.hidden{display:none}
 </style>
 </head>
 
@@ -156,16 +173,20 @@ h1{
         placeholder="••••"
         inputmode="numeric"
         maxlength="6"
-      />
-      <button class="eye-btn" type="button"
-        onclick="togglePassword(this)"
-        aria-label="إظهار/إخفاء كلمة المرور">👁️</button>
+      >
+      <button
+        class="toggle-btn"
+        type="button"
+        onclick="togglePassword()"
+        id="toggleText">
+        إظهار
+      </button>
     </div>
   </div>
 
   <button class="btn" onclick="loginDoctor()">دخول</button>
 
-  <div id="msg" class="error"></div>
+  <div id="msg" class="message"></div>
 
   <div class="note">
     هذه الصفحة مخصصة لأعضاء هيئة التدريس فقط
@@ -175,13 +196,15 @@ h1{
 
 <script>
 const DOCTOR_PASSWORD = "1111";
+let shown = false;
 
-function togglePassword(btn){
+function togglePassword(){
   const input = document.getElementById("doctorKeyLock");
-  const hidden = input.type === "password";
+  const btn = document.getElementById("toggleText");
 
-  input.type = hidden ? "text" : "password";
-  btn.textContent = hidden ? "🙈" : "👁️";
+  shown = !shown;
+  input.type = shown ? "text" : "password";
+  btn.textContent = shown ? "إخفاء" : "إظهار";
 }
 
 function loginDoctor(){
@@ -189,17 +212,15 @@ function loginDoctor(){
   const msg = document.getElementById("msg");
 
   if(val === DOCTOR_PASSWORD){
-    msg.className = "error success";
-    msg.textContent = "تم التحقق بنجاح، يتم تحويلك...";
+    msg.className = "message success";
+    msg.textContent = "تم التحقق بنجاح، يتم التحويل...";
     msg.style.display = "block";
 
     setTimeout(()=>{
-      // غير الرابط لو تحب
       window.location.href = "dashboard.html";
-    },900);
-
+    },800);
   }else{
-    msg.className = "error";
+    msg.className = "message error";
     msg.textContent = "كلمة المرور غير صحيحة";
     msg.style.display = "block";
   }
