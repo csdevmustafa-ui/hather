@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hather - Student</title>
 
+<!-- QR Scanner -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
   body{
@@ -46,12 +49,18 @@
   }
   input:focus{outline:none;border-color:#4cc987;box-shadow:0 0 0 3px rgba(76,201,135,.20)}
   button.primary{
-    width:100%;margin-top:16px;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
+    width:100%;margin-top:12px;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
     color:#fff;font-weight:900;font-size:18px;
     background: linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
     box-shadow: 0 10px 22px rgba(0,0,0,.22);
   }
-  button.primary:disabled{opacity:.65;cursor:not-allowed}
+  button.secondary{
+    width:100%;margin-top:10px;padding:14px 14px;border:none;border-radius:14px;cursor:pointer;
+    color:#fff;font-weight:900;font-size:16px;
+    background: linear-gradient(135deg,#244b3a,#0d2c1a);
+    box-shadow: 0 10px 22px rgba(0,0,0,.18);
+  }
+  button.primary:disabled,button.secondary:disabled{opacity:.65;cursor:not-allowed}
   #spinner{
     width:26px;height:26px;border:4px solid rgba(255,255,255,.25);border-top:4px solid #4cc987;
     border-radius:50%;animation:spin 1s linear infinite;margin:14px auto 0;display:none;
@@ -60,6 +69,13 @@
   #msg{min-height:22px;margin-top:12px;text-align:center;font-weight:900}
   .links{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .links a{color:#d6ffe9;text-decoration:none;font-weight:800;opacity:.92}
+
+  #qrReaderWrap{
+    display:none;margin-top:12px;
+    background: rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:16px;padding:10px;
+  }
 </style>
 </head>
 
@@ -80,8 +96,11 @@
     <input id="studentId" maxlength="9" inputmode="numeric" placeholder="441234567" />
 
     <label id="lblCode">كود المحاضرة</label>
-    <div class="hint" id="hintCode">يجب أن يكون 6 أرقام (يعطيه الدكتور)</div>
+    <div class="hint" id="hintCode">6 أرقام — امسح QR أو اكتب الكود</div>
     <input id="lectureCode" maxlength="6" inputmode="numeric" placeholder="123456" />
+
+    <button class="secondary" type="button" id="scanBtn">📷 مسح QR</button>
+    <div id="qrReaderWrap"><div id="qrReader"></div></div>
 
     <button class="primary" id="btn">تسجيل</button>
     <div id="spinner"></div>
@@ -102,28 +121,38 @@
       backHome:"↩ الرئيسية",
       subTitle:"قسم الطالب - تسجيل الحضور",
       lblId:"الرقم الجامعي", hintId:"يجب أن يكون 9 أرقام",
-      lblCode:"كود المحاضرة", hintCode:"يجب أن يكون 6 أرقام (يعطيه الدكتور)",
+      lblCode:"كود المحاضرة", hintCode:"6 أرقام — امسح QR أو اكتب الكود",
+      scan:"📷 مسح QR",
       btn:"تسجيل",
       goReports:"تقارير الطالب",
       goDoctor:"قسم الدكتور",
       invalid_id:"❌ الرقم الجامعي لازم 9 أرقام",
       invalid_code:"❌ كود المحاضرة لازم 6 أرقام",
       wait:"⏳ جاري تسجيل الحضور...",
-      fail:"❌ فشل الاتصال"
+      fail:"❌ فشل الاتصال",
+      camFail:"❌ لم يتم فتح الكاميرا (تحقق من الصلاحيات)",
+      qrOk:"✅ تم إدخال الكود تلقائيًا",
+      qrToggleOn:"⏳ افتح الكاميرا وامسح QR",
+      qrToggleOff:"✅ تم إغلاق الكاميرا"
     },
     en:{
       dir:"ltr", lang:"en",
       backHome:"↩ Home",
       subTitle:"Student - Check-in",
       lblId:"University ID", hintId:"Must be 9 digits",
-      lblCode:"Lecture code", hintCode:"Must be 6 digits (from doctor)",
+      lblCode:"Lecture code", hintCode:"6 digits — scan QR or type code",
+      scan:"📷 Scan QR",
       btn:"Check in",
       goReports:"Student Reports",
       goDoctor:"Doctor",
       invalid_id:"❌ University ID must be 9 digits",
       invalid_code:"❌ Lecture code must be 6 digits",
       wait:"⏳ Checking in...",
-      fail:"❌ Connection failed"
+      fail:"❌ Connection failed",
+      camFail:"❌ Camera failed (check permission)",
+      qrOk:"✅ Code filled automatically",
+      qrToggleOn:"⏳ Scan the QR code",
+      qrToggleOff:"✅ Camera closed"
     }
   };
 
@@ -139,6 +168,7 @@
     hintId.textContent = t.hintId;
     lblCode.textContent = t.lblCode;
     hintCode.textContent = t.hintCode;
+    scanBtn.textContent = t.scan;
     btn.textContent = t.btn;
     goReports.textContent = t.goReports;
     goDoctor.textContent = t.goDoctor;
@@ -187,6 +217,60 @@
       spinner.style.display="none";
       btnEl.disabled=false;
     });
+  });
+
+  // QR scan
+  let qrScanner = null;
+
+  async function stopScanner(){
+    const wrap = document.getElementById("qrReaderWrap");
+    if(qrScanner){
+      try{ await qrScanner.stop(); }catch(e){}
+      try{ qrScanner.clear(); }catch(e){}
+      qrScanner = null;
+    }
+    wrap.style.display="none";
+  }
+
+  document.getElementById("scanBtn").addEventListener("click", async ()=>{
+    const t = STR[getLang()];
+    const wrap = document.getElementById("qrReaderWrap");
+
+    // toggle off
+    if(wrap.style.display === "block"){
+      await stopScanner();
+      msg.style.color="#7CFFB2";
+      msg.textContent=t.qrToggleOff;
+      return;
+    }
+
+    // toggle on
+    wrap.style.display="block";
+    msg.style.color="#d6ffe9";
+    msg.textContent=t.qrToggleOn;
+
+    document.getElementById("qrReader").innerHTML = "";
+    qrScanner = new Html5Qrcode("qrReader");
+
+    try{
+      await qrScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 220 },
+        async (decodedText)=>{
+          const code = String(decodedText).trim();
+          if(/^\d{6}$/.test(code)){
+            document.getElementById("lectureCode").value = code;
+            msg.style.color = "#7CFFB2";
+            msg.textContent = t.qrOk;
+            await stopScanner();
+          }
+        }
+      );
+    }catch(e){
+      msg.style.color="salmon";
+      msg.textContent=t.camFail;
+      await stopScanner();
+    }
   });
 </script>
 </body>
