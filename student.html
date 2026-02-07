@@ -3,275 +3,266 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hather - Student</title>
-
-<!-- QR Scanner -->
-<script src="https://unpkg.com/html5-qrcode"></script>
+<title>Hather - تسجيل الحضور</title>
 
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
-  body{
-    min-height:100vh;
-    background: linear-gradient(135deg,#0d2c1a 0%, #1a472a 45%, #2d7d46 100%);
-    display:flex;align-items:center;justify-content:center;
-    padding:20px;color:#fff;
-  }
-  .card{
-    width:100%;max-width:420px;border-radius:18px;padding:22px;
-    background: rgba(13, 44, 26, 0.78);
-    box-shadow: 0 18px 45px rgba(0,0,0,.35);
-    border: 1px solid rgba(255,255,255,.12);
-    backdrop-filter: blur(8px);
-  }
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-  .icon-btn{
-    width:42px;height:42px;border-radius:12px;border:none;cursor:pointer;
-    background: rgba(255,255,255,.12);color:#fff;font-size:18px;font-weight:900;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .back{color:#d6ffe9;text-decoration:none;font-weight:900;opacity:.9}
-  .header{text-align:center;padding-bottom:14px;margin-bottom:16px;position:relative}
-  .header::after{
-    content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;
-    background: linear-gradient(to right, transparent, rgba(76,201,135,.95), transparent);
-  }
-  .title{
-    font-size:42px;font-weight:900;
-    background: linear-gradient(135deg, #b9ffd9, #4cc987);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .subtitle{margin-top:6px;font-size:16px;font-weight:900;color:#d6ffe9;opacity:.95}
-  label{display:block;margin:14px 0 6px;font-weight:900;color: rgba(255,255,255,.92)}
-  .hint{font-size:13px;font-weight:700;color: rgba(255,255,255,.72);margin-top:2px}
-  input{
-    width:100%;padding:14px;border-radius:12px;border:2px solid rgba(255,255,255,.14);
-    background: rgba(255,255,255,.92);font-size:17px;color:#0d2c1a;direction:ltr;
-  }
-  input:focus{outline:none;border-color:#4cc987;box-shadow:0 0 0 3px rgba(76,201,135,.20)}
-  button.primary{
-    width:100%;margin-top:12px;padding:16px 14px;border:none;border-radius:14px;cursor:pointer;
-    color:#fff;font-weight:900;font-size:18px;
-    background: linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
-    box-shadow: 0 10px 22px rgba(0,0,0,.22);
-  }
-  button.secondary{
-    width:100%;margin-top:10px;padding:14px 14px;border:none;border-radius:14px;cursor:pointer;
-    color:#fff;font-weight:900;font-size:16px;
-    background: linear-gradient(135deg,#244b3a,#0d2c1a);
-    box-shadow: 0 10px 22px rgba(0,0,0,.18);
-  }
-  button.primary:disabled,button.secondary:disabled{opacity:.65;cursor:not-allowed}
-  #spinner{
-    width:26px;height:26px;border:4px solid rgba(255,255,255,.25);border-top:4px solid #4cc987;
-    border-radius:50%;animation:spin 1s linear infinite;margin:14px auto 0;display:none;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-  #msg{min-height:22px;margin-top:12px;text-align:center;font-weight:900}
-  .links{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .links a{color:#d6ffe9;text-decoration:none;font-weight:800;opacity:.92}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0d2c1a 0%,#1a472a 45%,#2d7d46 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;
+}
+.card{
+  width:100%;max-width:520px;border-radius:20px;padding:22px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(10px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,0.12);
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.topbar a{color:#eafff3;text-decoration:none;font-weight:900}
+.icon-btn{
+  width:40px;height:40px;border-radius:12px;border:none;
+  background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;font-size:18px
+}
+.h1{font-size:20px;font-weight:900;color:#eafff3;margin-top:6px}
+.h2{font-size:13px;color:#d2f5e3;margin-top:6px}
 
-  #qrReaderWrap{
-    display:none;margin-top:12px;
-    background: rgba(255,255,255,.10);
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:16px;padding:10px;
-  }
+.panel{
+  margin-top:16px;border-radius:16px;padding:16px;
+  background:linear-gradient(135deg,#e9fff4,#c9f5de);
+  color:#0d2c1a;
+  box-shadow:0 10px 25px rgba(0,0,0,0.20);
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+label{display:block;font-weight:900;margin-bottom:6px;color:#0d2c1a}
+input{
+  width:100%;padding:14px 12px;border-radius:12px;border:2px solid #bfead4;
+  font-size:16px;outline:none;background:#fff;color:#0d2c1a;
+}
+input:focus{border-color:#2d7d46;box-shadow:0 0 0 3px rgba(45,125,70,.18)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{
+  flex:1;min-width:160px;border:none;border-radius:14px;padding:14px 12px;
+  font-weight:900;font-size:16px;cursor:pointer;
+  background:linear-gradient(135deg,#1a472a,#2d7d46,#4cc987);
+  color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);
+  transition:transform .15s ease;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn.ghost{
+  background:rgba(13,44,26,.12);
+  color:#0d2c1a;border:2px solid rgba(13,44,26,.22);
+  box-shadow:none;
+}
+.msg{
+  margin-top:12px;font-weight:900;
+  min-height:22px
+}
+.small{font-size:12px;color:rgba(13,44,26,.7);margin-top:8px;font-weight:700}
+.spinner{
+  width:22px;height:22px;border-radius:50%;
+  border:3px solid rgba(255,255,255,.55);
+  border-top:3px solid #fff;
+  animation:spin 1s linear infinite;
+  display:none;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+#scanWrap{
+  display:none;margin-top:14px;
+  border-radius:14px;overflow:hidden;
+  border:2px solid rgba(255,255,255,.25);
+}
+video{width:100%;background:#000;display:block}
+.scanNote{margin-top:8px;color:#0d2c1a;font-weight:800}
 </style>
 </head>
 
 <body>
-  <div class="card">
-    <div class="topbar">
-      <a class="back" href="index.html" id="backHome">↩ الرئيسية</a>
-      <button class="icon-btn" id="langBtn" title="Language">🌐</button>
-    </div>
-
-    <div class="header">
-      <div class="title">Hather</div>
-      <div class="subtitle" id="subTitle">قسم الطالب - تسجيل الحضور</div>
-    </div>
-
-    <label id="lblId">الرقم الجامعي</label>
-    <div class="hint" id="hintId">يجب أن يكون 9 أرقام</div>
-    <input id="studentId" maxlength="9" inputmode="numeric" placeholder="441234567" />
-
-    <label id="lblCode">كود المحاضرة</label>
-    <div class="hint" id="hintCode">6 أرقام — امسح QR أو اكتب الكود</div>
-    <input id="lectureCode" maxlength="6" inputmode="numeric" placeholder="123456" />
-
-    <button class="secondary" type="button" id="scanBtn">📷 مسح QR</button>
-    <div id="qrReaderWrap"><div id="qrReader"></div></div>
-
-    <button class="primary" id="btn">تسجيل</button>
-    <div id="spinner"></div>
-    <div id="msg"></div>
-
-    <div class="links">
-      <a href="reports.html" id="goReports">تقارير الطالب</a>
-      <a href="doctor.html" id="goDoctor">قسم الدكتور</a>
-    </div>
+<div class="card">
+  <div class="topbar">
+    <a href="./index.html">⟵ <span id="backTxt">رجوع</span></a>
+    <button class="icon-btn" id="langBtn" title="Language">🌐</button>
   </div>
 
+  <div class="h1" id="titleTxt">تسجيل الحضور</div>
+  <div class="h2" id="subTxt">ادخل الرقم الجامعي وكود المحاضرة أو امسح QR</div>
+
+  <div class="panel">
+    <div class="grid">
+      <div>
+        <label id="labSid">الرقم الجامعي</label>
+        <input id="studentId" inputmode="numeric" maxlength="9" placeholder="مثال: 123456789">
+      </div>
+      <div>
+        <label id="labCode">كود المحاضرة</label>
+        <input id="lectureCode" inputmode="numeric" maxlength="6" placeholder="مثال: 123456">
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="btnSubmit">
+        <span id="btnTxt">تسجيل</span>
+        <span class="spinner" id="spin"></span>
+      </button>
+      <button class="btn ghost" id="btnScan"><span id="scanTxt">مسح QR</span></button>
+    </div>
+
+    <div id="scanWrap">
+      <video id="video" playsinline></video>
+    </div>
+
+    <div class="msg" id="msg"></div>
+    <div class="small" id="noteTxt">ملاحظة: بعد 15 دقيقة من بداية المحاضرة يتم تسجيل الحالة كتأخير.</div>
+  </div>
+</div>
+
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyojswsuqQi3sHXxNuqmED2pXMm0wRHkWEg6s8dx3tlpKvrl3hs5RDbPonj8EjdYX0/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjIB2ICWitmLIvaHb7eIUhiGPZhKWES6vnsNZUrpQR45pNQh-ZMzMLMy3mid3kFx0/exec";
 
-  const STR = {
-    ar:{
-      dir:"rtl", lang:"ar",
-      backHome:"↩ الرئيسية",
-      subTitle:"قسم الطالب - تسجيل الحضور",
-      lblId:"الرقم الجامعي", hintId:"يجب أن يكون 9 أرقام",
-      lblCode:"كود المحاضرة", hintCode:"6 أرقام — امسح QR أو اكتب الكود",
-      scan:"📷 مسح QR",
-      btn:"تسجيل",
-      goReports:"تقارير الطالب",
-      goDoctor:"قسم الدكتور",
-      invalid_id:"❌ الرقم الجامعي لازم 9 أرقام",
-      invalid_code:"❌ كود المحاضرة لازم 6 أرقام",
-      wait:"⏳ جاري تسجيل الحضور...",
-      fail:"❌ فشل الاتصال",
-      camFail:"❌ لم يتم فتح الكاميرا (تحقق من الصلاحيات)",
-      qrOk:"✅ تم إدخال الكود تلقائيًا",
-      qrToggleOn:"⏳ افتح الكاميرا وامسح QR",
-      qrToggleOff:"✅ تم إغلاق الكاميرا"
-    },
-    en:{
-      dir:"ltr", lang:"en",
-      backHome:"↩ Home",
-      subTitle:"Student - Check-in",
-      lblId:"University ID", hintId:"Must be 9 digits",
-      lblCode:"Lecture code", hintCode:"6 digits — scan QR or type code",
-      scan:"📷 Scan QR",
-      btn:"Check in",
-      goReports:"Student Reports",
-      goDoctor:"Doctor",
-      invalid_id:"❌ University ID must be 9 digits",
-      invalid_code:"❌ Lecture code must be 6 digits",
-      wait:"⏳ Checking in...",
-      fail:"❌ Connection failed",
-      camFail:"❌ Camera failed (check permission)",
-      qrOk:"✅ Code filled automatically",
-      qrToggleOn:"⏳ Scan the QR code",
-      qrToggleOff:"✅ Camera closed"
-    }
-  };
-
-  function getLang(){ return localStorage.getItem("hather_lang") || "ar"; }
-  function setLang(l){ localStorage.setItem("hather_lang", l); }
-  function applyLang(){
-    const t = STR[getLang()];
-    document.documentElement.lang = t.lang;
-    document.documentElement.dir = t.dir;
-    backHome.textContent = t.backHome;
-    subTitle.textContent = t.subTitle;
-    lblId.textContent = t.lblId;
-    hintId.textContent = t.hintId;
-    lblCode.textContent = t.lblCode;
-    hintCode.textContent = t.hintCode;
-    scanBtn.textContent = t.scan;
-    btn.textContent = t.btn;
-    goReports.textContent = t.goReports;
-    goDoctor.textContent = t.goDoctor;
+// ===== لغة =====
+const STR={
+  ar:{
+    dir:"rtl",lang:"ar",
+    back:"رجوع",
+    title:"تسجيل الحضور",
+    sub:"ادخل الرقم الجامعي وكود المحاضرة أو امسح QR",
+    sid:"الرقم الجامعي",
+    code:"كود المحاضرة",
+    submit:"تسجيل",
+    scan:"مسح QR",
+    note:"ملاحظة: بعد 15 دقيقة من بداية المحاضرة يتم تسجيل الحالة كتأخير."
+  },
+  en:{
+    dir:"ltr",lang:"en",
+    back:"Back",
+    title:"Check-in",
+    sub:"Enter your ID & lecture code or scan QR",
+    sid:"Student ID",
+    code:"Lecture Code",
+    submit:"Submit",
+    scan:"Scan QR",
+    note:"Note: After 15 minutes from lecture start, status becomes Late."
   }
-  langBtn.addEventListener("click", ()=>{
-    setLang(getLang()==="ar" ? "en" : "ar");
-    applyLang();
+};
+function getLang(){return localStorage.getItem("hather_lang")||"ar";}
+function setLang(l){localStorage.setItem("hather_lang",l);}
+function applyLang(){
+  const t=STR[getLang()];
+  document.documentElement.lang=t.lang; document.documentElement.dir=t.dir;
+  backTxt.textContent=t.back;
+  titleTxt.textContent=t.title;
+  subTxt.textContent=t.sub;
+  labSid.textContent=t.sid;
+  labCode.textContent=t.code;
+  btnTxt.textContent=t.submit;
+  scanTxt.textContent=t.scan;
+  noteTxt.textContent=t.note;
+}
+langBtn.onclick=()=>{setLang(getLang()==="ar"?"en":"ar");applyLang();};
+applyLang();
+
+// ===== Helpers =====
+function setBusy(b){
+  btnSubmit.disabled=b;
+  spin.style.display=b?"inline-block":"none";
+}
+function okMsg(t){msg.style.color="#0d2c1a"; msg.textContent=t;}
+function badMsg(t){msg.style.color="#b00020"; msg.textContent=t;}
+
+async function post(payload){
+  const res = await fetch(SCRIPT_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" }, // مهم لحل CORS
+    body: JSON.stringify(payload)
   });
-  applyLang();
+  return await res.json();
+}
 
-  const btnEl = document.getElementById("btn");
-  const spinner = document.getElementById("spinner");
-  const msg = document.getElementById("msg");
+// ===== Submit حضور =====
+btnSubmit.onclick = async ()=>{
+  const sid = studentId.value.trim();
+  const code = lectureCode.value.trim();
 
-  btnEl.addEventListener("click", ()=>{
-    const t = STR[getLang()];
-    const studentId = document.getElementById("studentId").value.trim();
-    const lectureCode = document.getElementById("lectureCode").value.trim();
+  if(!/^\d{9}$/.test(sid)) return badMsg(getLang()==="ar"?"❌ الرقم الجامعي لازم 9 أرقام":"❌ Student ID must be 9 digits");
+  if(!/^\d{6}$/.test(code)) return badMsg(getLang()==="ar"?"❌ كود المحاضرة لازم 6 أرقام":"❌ Lecture code must be 6 digits");
 
-    if(!/^\d{9}$/.test(studentId)){
-      msg.style.color="salmon"; msg.textContent=t.invalid_id; return;
-    }
-    if(!/^\d{6}$/.test(lectureCode)){
-      msg.style.color="salmon"; msg.textContent=t.invalid_code; return;
-    }
+  setBusy(true);
+  okMsg(getLang()==="ar"?"⏳ جاري تسجيل الحضور...":"⏳ Submitting...");
+  try{
+    const data = await post({ studentId:sid, lectureCode:code });
+    if(!data.ok) return badMsg(data.result || (getLang()==="ar"?"❌ فشل":"❌ Failed"));
+    okMsg(data.result || (getLang()==="ar"?"✅ تم":"✅ Done"));
+    lectureCode.value="";
+  }catch(e){
+    badMsg(getLang()==="ar"?"❌ فشل الاتصال":"❌ Connection failed");
+  }finally{
+    setBusy(false);
+  }
+};
 
-    btnEl.disabled = true;
-    spinner.style.display = "block";
-    msg.style.color = "#d6ffe9";
-    msg.textContent = t.wait;
-
-    fetch(SCRIPT_URL, {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ studentId, lectureCode })
-    })
-    .then(r=>r.json())
-    .then(d=>{
-      msg.style.color = d.ok ? "#7CFFB2" : "salmon";
-      msg.textContent = d.result || (d.ok ? "OK" : "Error");
-    })
-    .catch(()=>{
-      msg.style.color="salmon"; msg.textContent=t.fail;
-    })
-    .finally(()=>{
-      spinner.style.display="none";
-      btnEl.disabled=false;
-    });
-  });
-
-  // QR scan
-  let qrScanner = null;
-
-  async function stopScanner(){
-    const wrap = document.getElementById("qrReaderWrap");
-    if(qrScanner){
-      try{ await qrScanner.stop(); }catch(e){}
-      try{ qrScanner.clear(); }catch(e){}
-      qrScanner = null;
-    }
-    wrap.style.display="none";
+// ===== QR Scan (BarcodeDetector) =====
+let stream=null, scanning=false;
+btnScan.onclick = async ()=>{
+  if(scanning){
+    stopScan();
+    return;
+  }
+  if(!("mediaDevices" in navigator)){
+    return badMsg(getLang()==="ar"?"❌ جهازك لا يدعم الكاميرا":"❌ Camera not supported");
+  }
+  if(!("BarcodeDetector" in window)){
+    return badMsg(getLang()==="ar"
+      ?"❌ المتصفح لا يدعم مسح QR هنا. استخدم إدخال الكود."
+      :"❌ QR scan not supported here. Use code input.");
   }
 
-  document.getElementById("scanBtn").addEventListener("click", async ()=>{
-    const t = STR[getLang()];
-    const wrap = document.getElementById("qrReaderWrap");
+  const detector = new BarcodeDetector({formats:["qr_code"]});
+  scanWrap.style.display="block";
+  btnScan.textContent = getLang()==="ar"?"إيقاف المسح":"Stop Scan";
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
+    video.srcObject = stream;
+    await video.play();
+    scanning=true;
 
-    // toggle off
-    if(wrap.style.display === "block"){
-      await stopScanner();
-      msg.style.color="#7CFFB2";
-      msg.textContent=t.qrToggleOff;
-      return;
-    }
-
-    // toggle on
-    wrap.style.display="block";
-    msg.style.color="#d6ffe9";
-    msg.textContent=t.qrToggleOn;
-
-    document.getElementById("qrReader").innerHTML = "";
-    qrScanner = new Html5Qrcode("qrReader");
-
-    try{
-      await qrScanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 220 },
-        async (decodedText)=>{
-          const code = String(decodedText).trim();
-          if(/^\d{6}$/.test(code)){
-            document.getElementById("lectureCode").value = code;
-            msg.style.color = "#7CFFB2";
-            msg.textContent = t.qrOk;
-            await stopScanner();
+    const loop = async ()=>{
+      if(!scanning) return;
+      try{
+        const barcodes = await detector.detect(video);
+        if(barcodes && barcodes.length){
+          const raw = (barcodes[0].rawValue||"").trim();
+          // نتوقع النص يكون كود 6 أرقام أو رابط فيه code=
+          const m = raw.match(/(\d{6})/);
+          if(m){
+            lectureCode.value = m[1];
+            okMsg(getLang()==="ar"?"✅ تم التقاط الكود":"✅ Code captured");
+            stopScan();
+            return;
           }
         }
-      );
-    }catch(e){
-      msg.style.color="salmon";
-      msg.textContent=t.camFail;
-      await stopScanner();
-    }
-  });
+      }catch(_){}
+      requestAnimationFrame(loop);
+    };
+    loop();
+  }catch(e){
+    badMsg(getLang()==="ar"?"❌ تعذر فتح الكاميرا":"❌ Camera access denied");
+    stopScan();
+  }
+};
+
+function stopScan(){
+  scanning=false;
+  btnScan.textContent = getLang()==="ar"?"مسح QR":"Scan QR";
+  scanWrap.style.display="none";
+  if(stream){
+    stream.getTracks().forEach(t=>t.stop());
+    stream=null;
+  }
+}
 </script>
 </body>
 </html>
