@@ -7,79 +7,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-<style>
-:root{
-  --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
-  --card:rgba(255,255,255,.08);
-  --line:rgba(255,255,255,.14);
-  --text:rgba(255,255,255,.94);
-  --muted:rgba(255,255,255,.78);
-  --accent:#18c26b; --accent2:#11a85b;
-  --shadow:0 18px 60px rgba(0,0,0,.35);
-  --radius:22px;
-}
-*{box-sizing:border-box;font-family:"Cairo",sans-serif}
-body{
-  margin:0; min-height:100vh; color:var(--text);
-  background:
-    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-    radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
-    linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
-  padding:18px;
-}
-.container{width:min(980px,94vw);margin:22px auto}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
-h1{margin:0;font-size:20px;font-weight:900}
-p{margin:6px 0 0;color:var(--muted);font-size:13px}
-.btn{
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.08);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:16px;
-  cursor:pointer;
-  transition:.15s ease;
-}
-.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.10)}
-.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:16px;
-  box-shadow:var(--shadow);
-  backdrop-filter: blur(12px);
-}
-label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
-.input{
-  width:100%;padding:12px 12px;border-radius:16px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.14);color:var(--text);outline:none;
-}
-.input::placeholder{color:rgba(255,255,255,.55)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.status{
-  margin-top:10px;padding:10px 12px;border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.14);
-  display:none;font-size:13px;font-weight:900;color:#fff;
-}
-.status.show{display:block}
-.status.ok{border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12);}
-.status.bad{border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12);}
-.status.warn{border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10);}
-.qrbox{
-  background: rgba(0,0,0,.14);
-  border:1px dashed rgba(255,255,255,.18);
-  border-radius: 18px;
-  padding:12px;
-}
-.small{color:#fff;opacity:.92;font-size:12px;margin-top:8px}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=1" />
 </head>
 <body>
 <div class="container">
@@ -88,9 +17,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
       <h1>قسم الطالب — تسجيل الحضور</h1>
       <p>اكتب StudentID ثم سجّل بالكود أو امسح QR</p>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn" onclick="location.href='index.html'">رجوع</button>
-    </div>
+    <button class="btn" onclick="location.href='index.html'">رجوع</button>
   </div>
 
   <div class="grid">
@@ -98,31 +25,32 @@ label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
       <h3 style="margin:0 0 10px;font-weight:900">التسجيل بالكود</h3>
 
       <label>StudentID</label>
-      <input id="studentId" class="input" placeholder="مثال: 202311477" inputmode="numeric" maxlength="9"/>
+      <input id="studentId" class="input" placeholder="مثال: 202311644" inputmode="numeric" maxlength="12"/>
 
       <div style="height:10px"></div>
 
-      <label>Code (أو نص QR JSON)</label>
-      <input id="codeInput" class="input" placeholder="مثال: 123456" inputmode="numeric" maxlength="200"/>
+      <label>Code / QR Text</label>
+      <input id="codeInput" class="input" placeholder="مثال: 123456 أو نص QR" />
 
-      <div class="actions">
-        <button class="btn primary" onclick="checkinByCode()">تسجيل الحضور</button>
-      </div>
+      <div style="height:10px"></div>
+
+      <button class="btn primary" onclick="checkin()">تسجيل الحضور</button>
 
       <div id="status1" class="status"></div>
-      <div class="small">إذا الكود من QR قد يكون JSON — النظام يتعامل معه تلقائيًا.</div>
+      <div class="small">QR يحتوي JSON {lectureId, code} — النظام يتعامل معه تلقائيًا.</div>
     </div>
 
     <div class="card">
       <h3 style="margin:0 0 10px;font-weight:900">التسجيل بالباركود (QR)</h3>
-      <div class="qrbox">
-        <div id="qrReader"></div>
+
+      <div id="qrReader" class="card" style="margin:0; min-height:280px; display:grid; place-items:center">
+        <div class="small">اضغط تشغيل الكاميرا</div>
       </div>
 
-      <div class="actions">
-        <button class="btn primary" onclick="startScan()">تشغيل الكاميرا</button>
-        <button class="btn" onclick="stopScan()">إيقاف</button>
-      </div>
+      <div style="height:10px"></div>
+
+      <button class="btn primary" onclick="startScan()">تشغيل الكاميرا</button>
+      <button class="btn" onclick="stopScan()">إيقاف</button>
 
       <div id="status2" class="status"></div>
       <div class="small">اسمح للمتصفح باستخدام الكاميرا.</div>
@@ -130,71 +58,29 @@ label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
   </div>
 </div>
 
+<script src="assets/app.js?v=1"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
-
 <script>
-/** ✅ API URL (نفس اللي عطيتني) **/
-const API_URL = "https://script.google.com/macros/s/AKfycbyYrlS2KNKfACmTuOHhhOvSaYK-QM5M7CFqfDFZ8dgzl8Lrr-i9pSv2yxSCQL5Zrjak/exec";
-
 let qr = null;
-const $ = (id)=>document.getElementById(id);
 
-function showStatus(el, type, msg){
-  el.className = "status show " + (type||"");
-  el.textContent = msg || "";
-}
-
-async function apiCall(payload){
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-  return await res.json();
-}
-
-function parseQRorCode(txt){
-  const t = (txt||"").trim();
-  if(!t) return { code:"", lectureId:"" };
-
-  // if QR includes JSON {lectureId, code}
-  try{
-    const obj = JSON.parse(t);
-    if(obj && obj.code){
-      return {
-        code: String(obj.code||"").trim(),
-        lectureId: String(obj.lectureId||"").trim()
-      };
-    }
-  }catch(e){}
-
-  return { code: t, lectureId:"" };
-}
-
-/** ✅ أهم تعديل: action صار registerAttendance **/
-async function checkinByCode(codeOverride){
+async function checkin(codeOverride){
   const sid = ($("studentId").value||"").trim();
-  const raw = (codeOverride!=null ? codeOverride : $("codeInput").value);
+  const raw = (codeOverride!=null ? codeOverride : $("codeInput").value||"");
   const parsed = parseQRorCode(raw);
 
-  if(!/^[0-9]{9}$/.test(sid)){
-    showStatus($("status1"),"bad","❌ أدخل StudentID صحيح (9 أرقام)");
-    return;
-  }
-  if(!parsed.code){
-    showStatus($("status1"),"bad","❌ أدخل الكود");
-    return;
-  }
+  if(!sid){ showStatus($("status1"),"bad","❌ أدخل StudentID"); return; }
+  if(!parsed.code){ showStatus($("status1"),"bad","❌ أدخل الكود"); return; }
 
   showStatus($("status1"),"warn","⏳ جاري تسجيل الحضور...");
-
   const res = await apiCall({
-    action: "registerAttendance",
-    studentId: sid,
-    code: (parsed.lectureId ? JSON.stringify({lectureId: parsed.lectureId, code: parsed.code}) : parsed.code)
+    action:"studentCheckin",
+    studentId:sid,
+    code: parsed.code,
+    lectureId: parsed.lectureId
   });
 
   if(res && res.ok){
-    showStatus($("status1"),"ok",`✅ تم تسجيل حضورك — LectureID: ${res.lectureId||""}`);
+    showStatus($("status1"),"ok",`✅ تم تسجيل حضورك — LectureID: ${res.lectureId||parsed.lectureId||""}`);
     $("codeInput").value = "";
   }else{
     showStatus($("status1"),"bad","❌ " + ((res && res.error) || "Failed"));
@@ -203,10 +89,7 @@ async function checkinByCode(codeOverride){
 
 async function startScan(){
   const sid = ($("studentId").value||"").trim();
-  if(!/^[0-9]{9}$/.test(sid)){
-    showStatus($("status2"),"bad","❌ أدخل StudentID صحيح (9 أرقام) أولاً");
-    return;
-  }
+  if(!sid){ showStatus($("status2"),"bad","❌ أدخل StudentID أولاً"); return; }
 
   if(!qr) qr = new Html5Qrcode("qrReader");
   showStatus($("status2"),"warn","⏳ تشغيل الكاميرا...");
@@ -217,7 +100,7 @@ async function startScan(){
       { fps: 10, qrbox: { width: 240, height: 240 } },
       async (decodedText) => {
         showStatus($("status2"),"ok","✅ تم قراءة QR — جاري التسجيل...");
-        await checkinByCode(decodedText);
+        await checkin(decodedText);
         await stopScan();
       }
     );
@@ -231,8 +114,7 @@ async function stopScan(){
   if(qr){
     try{ await qr.stop(); await qr.clear(); }catch(e){}
   }
-  $("status2").className = "status";
-  $("status2").textContent = "";
+  showStatus($("status2"),"", "—");
 }
 </script>
 </body>
