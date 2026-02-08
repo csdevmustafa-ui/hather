@@ -88,6 +88,14 @@
 applyLang();
 let chartInstance;
 
+/** ✅ API URL **/
+const API_URL = "https://script.google.com/macros/s/AKfycbyYrlS2KNKfACmTuOHhhOvSaYK-QM5M7CFqfDFZ8dgzl8Lrr-i9pSv2yxSCQL5Zrjak/exec";
+
+async function apiCall(payload){
+  const res = await fetch(API_URL, { method:"POST", body: JSON.stringify(payload) });
+  return await res.json();
+}
+
 async function loadReport(){
   const id = (document.getElementById("studentId").value||"").trim();
   const status = document.getElementById("status");
@@ -101,7 +109,7 @@ async function loadReport(){
   sp.style.display="inline-block";
   showStatus(status,"warn",t("loading"));
 
-  const res = await apiCall({action:"studentReport", studentId:id});
+  const res = await apiCall({ action:"studentReport", studentId:id });
   sp.style.display="none";
 
   if(!res || !res.ok){
@@ -149,7 +157,7 @@ async function loadReport(){
       <td>${r.time||""}</td>
       <td>${r.status||""}</td>
     </tr>
-  `).join("");
+  `).join("") || `<tr><td colspan="3">لا توجد سجلات</td></tr>`;
 }
 </script>
 </body>
