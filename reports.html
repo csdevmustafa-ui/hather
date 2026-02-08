@@ -19,6 +19,7 @@
       --accent:#18c26b; --accent2:#11a85b;
       --shadow:0 18px 60px rgba(0,0,0,.35);
       --radius:22px;
+      --danger:#ff5d5d; --warn:#ffcc66; --ok:#52ffa2;
     }
     *{box-sizing:border-box;font-family:"Cairo",sans-serif}
     body{
@@ -29,7 +30,7 @@
         linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
       padding:18px;
     }
-    .container{width:min(980px,94vw);margin:22px auto}
+    .container{width:min(1100px,94vw);margin:22px auto}
     .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
     h1{margin:0;font-size:20px;font-weight:900}
     p{margin:6px 0 0;color:var(--muted);font-size:13px}
@@ -41,9 +42,10 @@
       border-radius:16px;
       cursor:pointer;
       transition:.15s ease;
+      font-weight:900;
     }
     .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.10)}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     @media(max-width:900px){.grid{grid-template-columns:1fr}}
     .card{
@@ -54,12 +56,16 @@
       box-shadow:var(--shadow);
       backdrop-filter: blur(12px);
     }
-    label{display:block;font-size:12px;color:#fff;opacity:.92;margin:0 0 6px}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
     .input{
       width:100%;padding:12px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.14);color:var(--text);outline:none;
     }
+    .input::placeholder{color:rgba(255,255,255,.55)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:520px){.row{grid-template-columns:1fr}}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center}
     .status{
       margin-top:10px;padding:10px 12px;border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
@@ -70,25 +76,22 @@
     .status.ok{border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12);}
     .status.bad{border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12);}
     .status.warn{border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10);}
-    .hr{height:1px;background:rgba(255,255,255,.12);margin:14px 0}
-    .small{color:#fff;opacity:.92;font-size:12px;margin-top:8px}
-    .hidden{display:none !important;}
-    .pinWrap{display:flex;gap:8px;align-items:center;}
-    .iconBtn{
-      width:44px;height:44px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      cursor:pointer;
-    }
+    .tableWrap{ overflow:auto; border-radius:18px; border:1px solid rgba(255,255,255,.12); margin-top:12px; }
+    table{ width:100%; border-collapse:collapse; min-width:880px; }
+    th,td{ padding:12px 10px; text-align:center; font-size:13px; white-space:nowrap; }
+    thead th{ position:sticky; top:0; background: rgba(0,0,0,.22); font-weight:900; z-index:1; }
+    tbody tr{ border-top:1px solid rgba(255,255,255,.10); }
+    .pinWrap{display:flex;gap:8px;align-items:center}
+    .miniBtn{padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-weight:900}
   </style>
 </head>
-<body>
 
+<body>
 <div class="container">
   <div class="top">
     <div>
       <h1>التقارير</h1>
-      <p>الطالب يشوف تقريره برقم الجامعي — الدكتور يحتاج PIN للوصول لتقارير الطلاب</p>
+      <p>الطالب: تقريره برقم الجامعي — الدكتور: تقرير مقرر برمز المقرر (مع PIN)</p>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn" onclick="location.href='index.html'">رجوع</button>
@@ -101,138 +104,133 @@
     <div class="card">
       <h3 style="margin:0 0 10px;font-weight:900">تقارير الطالب</h3>
       <label>StudentID (9 أرقام)</label>
-      <input id="studentId" class="input" placeholder="مثال: 202311477" inputmode="numeric" maxlength="9" />
-      <div style="margin-top:10px">
-        <button class="btn primary" onclick="openStudentReport()">فتح صفحة التقرير</button>
+      <input id="sid" class="input" inputmode="numeric" maxlength="9" placeholder="مثال: 202311477" />
+      <div class="actions">
+        <button class="btn primary" onclick="openStudentReport()">فتح تقرير الطالب</button>
       </div>
-      <div class="small">يفتح صفحة student-report.html</div>
+      <div id="stStudent" class="status"></div>
+      <div style="color:#fff;opacity:.9;font-size:12px;margin-top:10px">
+        سيتم فتح صفحة <b>student-report.html</b> مع رقمك الجامعي.
+      </div>
     </div>
 
     <!-- Doctor -->
     <div class="card">
-      <h3 style="margin:0 0 10px;font-weight:900">تقارير الدكتور (PIN)</h3>
+      <h3 style="margin:0 0 10px;font-weight:900">تقارير الدكتور (المقرر)</h3>
 
-      <div id="doctorLock">
-        <label>PIN</label>
-        <div class="pinWrap">
-          <input id="pinInput" class="input" type="password" inputmode="numeric" placeholder="PIN" />
-          <button class="iconBtn" onclick="togglePin()">👁️</button>
+      <div class="row">
+        <div>
+          <label>PIN</label>
+          <div class="pinWrap">
+            <input id="pin" class="input" type="password" inputmode="numeric" placeholder="PIN" />
+            <button class="miniBtn" onclick="togglePin()">إظهار/إخفاء</button>
+          </div>
         </div>
-        <div style="margin-top:10px">
-          <button class="btn primary" onclick="unlockDoctor()">دخول</button>
+        <div>
+          <label>رمز/اسم المقرر</label>
+          <input id="course" class="input" placeholder="مثال: CS111" />
         </div>
-        <div id="lockStatus" class="status"></div>
       </div>
 
-      <div id="doctorPanel" class="hidden">
-        <label>StudentID (للاطلاع على تقرير الطالب)</label>
-        <input id="doctorStudentId" class="input" placeholder="مثال: 202311477" inputmode="numeric" maxlength="9" />
-        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
-          <button class="btn primary" onclick="doctorViewReport()">عرض التقرير هنا</button>
-          <button class="btn" onclick="lockBack()">قفل</button>
+      <div class="row" style="margin-top:10px">
+        <div>
+          <label>الشعبة (اختياري)</label>
+          <input id="section" class="input" placeholder="مثال: 1" />
         </div>
-
-        <div id="doctorStatus" class="status"></div>
-        <div class="hr"></div>
-
-        <div id="doctorResult" class="small">—</div>
+        <div style="display:flex;align-items:end">
+          <button class="btn primary" onclick="loadDoctorCourseReport()">عرض تقرير المقرر</button>
+        </div>
       </div>
+
+      <div id="stDoc" class="status"></div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>StudentID</th>
+              <th>الاسم</th>
+              <th>حضور</th>
+              <th>تأخير</th>
+              <th>غياب</th>
+              <th>عدد المحاضرات</th>
+              <th>% الحضور</th>
+            </tr>
+          </thead>
+          <tbody id="docRows">
+            <tr><td colspan="7">أدخل PIN + المقرر ثم اضغط عرض.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-
   </div>
 </div>
 
+<script src="assets/app.js"></script>
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbyYrlS2KNKfACmTuOHhhOvSaYK-QM5M7CFqfDFZ8dgzl8Lrr-i9pSv2yxSCQL5Zrjak/exec";
-  const DOCTOR_PIN = "1111";
+const $ = (id)=>document.getElementById(id);
 
-  const $ = (id)=>document.getElementById(id);
+function showStatus(el, type, msg){
+  el.className = "status show " + (type||"");
+  el.textContent = msg || "";
+}
 
-  function showStatus(el,type,msg){
-    el.className = "status show " + (type||"");
-    el.textContent = msg||"";
+function togglePin(){
+  const i = $("pin");
+  i.type = (i.type === "password") ? "text" : "password";
+}
+
+function openStudentReport(){
+  const sid = ($("sid").value||"").trim();
+  if(!/^[0-9]{9}$/.test(sid)){
+    showStatus($("stStudent"),"bad","❌ رقم جامعي غير صحيح");
+    return;
   }
-  function hideStatus(el){
-    el.className = "status";
-    el.textContent = "";
-  }
+  // pass sid in query string
+  location.href = `student-report.html?sid=${encodeURIComponent(sid)}`;
+}
 
-  function togglePin(){
-    const inp = $("pinInput");
-    inp.type = (inp.type==="password") ? "text" : "password";
-  }
+async function loadDoctorCourseReport(){
+  const pin = ($("pin").value||"").trim();
+  const course = ($("course").value||"").trim();
+  const section = ($("section").value||"").trim();
 
-  function openStudentReport(){
-    const sid = ($("studentId").value||"").trim();
-    if(!/^[0-9]{9}$/.test(sid)){
-      alert("أدخل StudentID صحيح (9 أرقام)");
-      return;
-    }
-    // نمرر رقم الطالب كـ query اختياري
-    location.href = "student-report.html?studentId=" + encodeURIComponent(sid);
-  }
+  if(!pin){ showStatus($("stDoc"),"bad","❌ أدخل PIN"); return; }
+  if(!course){ showStatus($("stDoc"),"bad","❌ أدخل رمز المقرر"); return; }
 
-  function unlockDoctor(){
-    const pin = ($("pinInput").value||"").trim();
-    const st = $("lockStatus");
-    hideStatus(st);
+  showStatus($("stDoc"),"warn","⏳ جاري تحميل تقرير المقرر...");
 
-    if(pin !== DOCTOR_PIN){
-      showStatus(st,"bad","PIN غير صحيح");
-      return;
-    }
-    $("doctorLock").classList.add("hidden");
-    $("doctorPanel").classList.remove("hidden");
+  const res = await apiCall({ action:"doctorCourseReport", doctorKey: pin, course, section });
+
+  if(!res || !res.ok){
+    showStatus($("stDoc"),"bad","❌ " + ((res && res.error) || "Failed"));
+    return;
   }
 
-  function lockBack(){
-    $("pinInput").value = "";
-    $("doctorStudentId").value = "";
-    $("doctorResult").textContent = "—";
-    hideStatus($("doctorStatus"));
-    $("doctorPanel").classList.add("hidden");
-    $("doctorLock").classList.remove("hidden");
+  const data = res.data || {};
+  showStatus($("stDoc"),"ok",`✅ تم التحميل — عدد المحاضرات: ${data.totalLectures||0}`);
+
+  const rows = data.students || [];
+  const tbody = $("docRows");
+
+  if(rows.length === 0){
+    tbody.innerHTML = `<tr><td colspan="7">لا يوجد بيانات.</td></tr>`;
+    return;
   }
 
-  async function apiCall(payload){
-    const res = await fetch(API_URL,{method:"POST", body: JSON.stringify(payload)});
-    return await res.json();
-  }
-
-  async function doctorViewReport(){
-    const sid = ($("doctorStudentId").value||"").trim();
-    const st = $("doctorStatus");
-    hideStatus(st);
-
-    if(!/^[0-9]{9}$/.test(sid)){
-      showStatus(st,"bad","StudentID غير صحيح");
-      return;
-    }
-
-    showStatus(st,"warn","جاري تحميل التقرير...");
-    let res;
-    try{
-      res = await apiCall({ action:"studentReport", studentId: sid });
-    }catch(e){
-      showStatus(st,"bad","فشل الاتصال بالـ API");
-      return;
-    }
-
-    if(!res || !res.ok){
-      showStatus(st,"bad",(res && res.error) ? res.error : "Failed");
-      return;
-    }
-
-    showStatus(st,"ok","تم تحميل التقرير ✅");
-    const d = res.data || {};
-    $("doctorResult").innerHTML = `
-      <div>الحضور: <b>${d.present||0}</b></div>
-      <div>التأخير: <b>${d.late||0}</b></div>
-      <div>الغياب: <b>${d.absent||0}</b></div>
-      <div style="margin-top:8px; opacity:.9">آخر السجلات: ${(d.rows||[]).length}</div>
-    `;
-  }
+  tbody.innerHTML = rows.map(r=>`
+    <tr>
+      <td>${r.studentId||""}</td>
+      <td>${r.name||""}</td>
+      <td>${r.present||0}</td>
+      <td>${r.late||0}</td>
+      <td>${r.absent||0}</td>
+      <td>${r.totalLectures||0}</td>
+      <td>${r.attendancePercent||0}%</td>
+    </tr>
+  `).join("");
+}
 </script>
-
 </body>
 </html>
