@@ -15,18 +15,15 @@
       --bg2:#0a3a22;
       --bg3:#0f5a34;
       --card: rgba(255,255,255,.08);
-      --card2: rgba(255,255,255,.10);
       --line: rgba(255,255,255,.12);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
-      --muted2: rgba(255,255,255,.55);
       --accent:#18c26b;
       --accent2:#11a85b;
-      --danger:#ff5d5d;
-      --warn:#ffcc66;
-      --ok:#52ffa2;
       --shadow: 0 18px 60px rgba(0,0,0,.35);
       --radius: 22px;
+      --danger:#ff5d5d;
+      --danger2:#ff3f3f;
     }
 
     *{ box-sizing:border-box; font-family:"Cairo", system-ui, -apple-system, Segoe UI, Arial; }
@@ -45,9 +42,7 @@
       display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
       margin-bottom:18px;
     }
-    .brand{
-      display:flex; gap:12px; align-items:center;
-    }
+    .brand{ display:flex; gap:12px; align-items:center; }
     .logo{
       width:48px; height:48px; border-radius:16px;
       background: rgba(255,255,255,.10);
@@ -78,7 +73,12 @@
       color:#06210f;
       font-weight:900;
     }
-    .btn.primary:hover{ filter:brightness(1.03); }
+    .btn.danger{
+      background: linear-gradient(135deg, rgba(255,93,93,.95), rgba(255,63,63,.95));
+      border:1px solid rgba(255,255,255,.18);
+      color:#2b0000;
+      font-weight:900;
+    }
     .btn .sub{ font-size:12px; opacity:.9; font-weight:700; }
 
     .grid{
@@ -97,11 +97,7 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
     }
-    .card h2{
-      margin:0 0 12px;
-      font-size:16px;
-      font-weight:900;
-    }
+    .card h2{ margin:0 0 12px; font-size:16px; font-weight:900; }
     .hr{ height:1px; background: rgba(255,255,255,.12); margin:14px 0; }
 
     label{ display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
@@ -135,7 +131,7 @@
     .status.warn{ border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10); }
 
     .tableWrap{ overflow:auto; border-radius:18px; border:1px solid rgba(255,255,255,.12); }
-    table{ width:100%; border-collapse:collapse; min-width:720px; }
+    table{ width:100%; border-collapse:collapse; min-width:820px; }
     th, td{ padding:12px 10px; font-size:13px; text-align:center; }
     thead th{
       position:sticky; top:0;
@@ -143,8 +139,10 @@
       color: rgba(255,255,255,.85);
       font-weight:900;
     }
-    tbody tr{ border-top:1px solid rgba(255,255,255,.10); cursor:pointer; }
+    tbody tr{ border-top:1px solid rgba(255,255,255,.10); }
     tbody tr:hover{ background: rgba(255,255,255,.06); }
+    .rowClickable{ cursor:pointer; }
+    .rowClickable:hover{ background: rgba(255,255,255,.06); }
 
     .qrGrid{
       display:grid;
@@ -173,11 +171,7 @@
       border:1px solid rgba(255,255,255,.12);
       object-fit:contain;
     }
-    .qrHint{
-      color:#fff;
-      font-size:12px;
-      opacity:.95;
-    }
+    .qrHint{ color:#fff; font-size:12px; opacity:.95; }
 
     .pill{
       display:inline-flex;
@@ -210,9 +204,7 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
     }
-    .lockHeader{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
+    .lockHeader{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .lockTitle h3{ margin:0; font-size:18px; font-weight:900; }
     .lockTitle p{ margin:4px 0 0; font-size:12px; color:#fff; opacity:.92; }
     .pinRow{
@@ -294,6 +286,29 @@
     }
     .spin.show{ display:inline-block; }
     @keyframes sp { to { transform: rotate(360deg); } }
+
+    /* Small delete button inside table */
+    .miniBtn{
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      cursor:pointer;
+      transition:.15s ease;
+      font-weight:900;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .miniBtn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+    .miniBtn.danger{
+      background: rgba(255,93,93,.18);
+      border-color: rgba(255,93,93,.28);
+    }
+    .miniBtn.danger:hover{
+      background: rgba(255,93,93,.24);
+    }
   </style>
 </head>
 
@@ -365,10 +380,11 @@
               <th>البداية</th>
               <th>النهاية</th>
               <th>الحالة</th>
+              <th>إجراءات</th>
             </tr>
           </thead>
           <tbody id="lectureRows">
-            <tr><td colspan="6">جاري التحميل...</td></tr>
+            <tr><td colspan="7">جاري التحميل...</td></tr>
           </tbody>
         </table>
       </div>
@@ -546,7 +562,6 @@
   </div>
 </div>
 
-<!-- ✅ IMPORTANT: shared api helper -->
 <script src="assets/app.js"></script>
 
 <script>
@@ -571,7 +586,7 @@
     e.preventDefault();
     const inp = $("pinInput");
     const btn = $("togglePinBtn");
-    if (inp.type === "password") { inp.type = "text"; btn.textContent = "*"; }
+    if (inp.type === "password") { inp.type = "text"; btn.textContent = "🙈"; }
     else { inp.type = "password"; btn.textContent = "👁️"; }
   }
 
@@ -579,7 +594,6 @@
     const pin = ($("pinInput").value || "").trim();
     const st = $("lockStatus");
     hideStatus(st);
-
     setSpin("spUnlock", true);
 
     setTimeout(() => {
@@ -601,9 +615,7 @@
     $("app").classList.add("hidden");
   }
 
-  function goHome(){
-    location.href = "index.html";
-  }
+  function goHome(){ location.href = "index.html"; }
 
   function pickLecture(id){
     $("selectedLectureId").value = id;
@@ -612,43 +624,80 @@
 
   async function refreshAll(){
     await loadLectures();
-    // optional health ping
     try{ await fetch(window.HATHER_API_URL + "?action=health"); }catch(e){}
   }
 
   async function loadLectures(){
     const tbody = $("lectureRows");
-    tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7">جاري التحميل...</td></tr>`;
 
     let res;
     try{
       res = await window.apiCall({ action:"listLectures", doctorKey: DOCTOR_PIN });
     }catch(e){
-      tbody.innerHTML = `<tr><td colspan="6">فشل الاتصال بالـ API</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7">فشل الاتصال بالـ API</td></tr>`;
       return;
     }
 
     if(!res || !res.ok){
-      tbody.innerHTML = `<tr><td colspan="6">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
       return;
     }
 
     const rows = res.rows || [];
     if(rows.length === 0){
-      tbody.innerHTML = `<tr><td colspan="6">لا توجد محاضرات</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7">لا توجد محاضرات</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = rows.map(r => `
-      <tr onclick="pickLecture('${(r.lectureId||"").replace(/'/g,"\\'")}')">
-        <td><b>${r.lectureId||""}</b></td>
-        <td>${r.course||""}</td>
-        <td>${r.section||""}</td>
-        <td>${r.start||""}</td>
-        <td>${r.end||""}</td>
-        <td>${r.state||""}</td>
-      </tr>
-    `).join("");
+    tbody.innerHTML = rows.map(r => {
+      const lid = (r.lectureId||"");
+      const safeId = lid.replace(/'/g,"\\'");
+      return `
+        <tr class="rowClickable" onclick="pickLecture('${safeId}')">
+          <td><b>${lid}</b></td>
+          <td>${r.course||""}</td>
+          <td>${r.section||""}</td>
+          <td>${r.start||""}</td>
+          <td>${r.end||""}</td>
+          <td>${r.state||""}</td>
+          <td>
+            <button class="miniBtn danger" onclick="event.stopPropagation(); deleteLecture('${safeId}')">🗑️ حذف</button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function deleteLecture(lectureId){
+    if(!lectureId) return;
+    const ok = confirm("هل أنت متأكد من حذف هذه المحاضرة؟\nLectureID: " + lectureId);
+    if(!ok) return;
+
+    const st = $("createStatus"); // نستخدم status موجود يمين (أو تقدر تسوي واحد خاص)
+    showStatus(st, "warn", "⏳ جاري حذف المحاضرة...");
+
+    let res;
+    try{
+      res = await window.apiCall({ action:"deleteLecture", doctorKey: DOCTOR_PIN, lectureId });
+    }catch(e){
+      showStatus(st, "bad", "فشل الاتصال بالـ API");
+      return;
+    }
+
+    if(res && res.ok){
+      showStatus(st, "ok", "✅ تم حذف المحاضرة");
+      // إذا كانت المحاضرة المحددة هي نفسها، نظفها
+      if(($("selectedLectureId").value||"").trim() === lectureId){
+        $("selectedLectureId").value = "";
+        $("codeText").textContent = "Code: —";
+        $("qrImg").src = "";
+        $("studentRows").innerHTML = `<tr><td colspan="3">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>`;
+      }
+      await loadLectures();
+    }else{
+      showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+    }
   }
 
   async function createLecture(){
@@ -770,9 +819,7 @@
     $("qrBig").src = src;
     $("qrModal").classList.add("show");
   }
-  function closeModal(){
-    $("qrModal").classList.remove("show");
-  }
+  function closeModal(){ $("qrModal").classList.remove("show"); }
 
   async function loadStudents(){
     const tbody = $("studentRows");
@@ -811,7 +858,10 @@
       </tr>
     `).join("");
   }
+
+  // Auto boot after unlock
+  // (No auto-run here)
 </script>
 
 </body>
-</html>
+        </html>
