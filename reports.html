@@ -1,166 +1,238 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>التقارير - Hather</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>التقارير - Hather</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
-  --card:rgba(255,255,255,.08); --line:rgba(255,255,255,.14);
-  --text:rgba(255,255,255,.94); --muted:rgba(255,255,255,.78);
-  --accent:#18c26b; --accent2:#11a85b;
-  --shadow:0 18px 60px rgba(0,0,0,.35); --radius:22px;
-}
-*{box-sizing:border-box;font-family:"Cairo",sans-serif}
-body{
-  margin:0; min-height:100vh; color:var(--text);
-  background:
-    radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-    radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
-    linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
-  padding:18px;
-}
-.container{width:min(1100px,94vw);margin:22px auto}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
-h1{margin:0;font-size:20px;font-weight:900}
-p{margin:6px 0 0;color:var(--muted);font-size:13px}
-.btn{
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.08);
-  color:var(--text);
-  padding:10px 12px;border-radius:16px;cursor:pointer;
-}
-.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:16px; box-shadow:var(--shadow);
-  backdrop-filter: blur(12px);
-}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media(max-width:900px){.grid3{grid-template-columns:1fr}}
-.kpi .v{font-size:28px;font-weight:900;margin-top:6px}
-.input{
-  width:100%;padding:12px 12px;border-radius:16px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.14);color:var(--text);outline:none;
-}
-.tableWrap{overflow:auto;border-radius:18px;border:1px solid rgba(255,255,255,.12);margin-top:10px}
-table{width:100%;border-collapse:collapse;min-width:860px}
-th,td{padding:10px;text-align:center;font-size:13px}
-th{background:rgba(0,0,0,.18)}
-tbody tr{border-top:1px solid rgba(255,255,255,.10)}
-.status{margin-top:10px;color:#fff;font-weight:900}
-</style>
+  <style>
+    :root{
+      --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
+      --card:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.94);
+      --muted:rgba(255,255,255,.78);
+      --accent:#18c26b; --accent2:#11a85b;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box;font-family:"Cairo",sans-serif}
+    body{
+      margin:0; min-height:100vh; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
+      padding:18px;
+    }
+    .container{width:min(980px,94vw);margin:22px auto}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+    h1{margin:0;font-size:20px;font-weight:900}
+    p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:16px;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.10)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    label{display:block;font-size:12px;color:#fff;opacity:.92;margin:0 0 6px}
+    .input{
+      width:100%;padding:12px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.14);color:var(--text);outline:none;
+    }
+    .status{
+      margin-top:10px;padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      display:none;font-size:13px;font-weight:900;color:#fff;
+    }
+    .status.show{display:block}
+    .status.ok{border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12);}
+    .status.bad{border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12);}
+    .status.warn{border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10);}
+    .hr{height:1px;background:rgba(255,255,255,.12);margin:14px 0}
+    .small{color:#fff;opacity:.92;font-size:12px;margin-top:8px}
+    .hidden{display:none !important;}
+    .pinWrap{display:flex;gap:8px;align-items:center;}
+    .iconBtn{
+      width:44px;height:44px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      cursor:pointer;
+    }
+  </style>
 </head>
 <body>
+
 <div class="container">
   <div class="top">
     <div>
       <h1>التقارير</h1>
-      <p>ملخصات ورسوم بيانية للحضور</p>
+      <p>الطالب يشوف تقريره برقم الجامعي — الدكتور يحتاج PIN للوصول لتقارير الطلاب</p>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn" onclick="location.href='index.html'">رجوع</button>
     </div>
   </div>
 
-  <div class="card">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <input id="pin" class="input" type="password" placeholder="PIN (1111)" inputmode="numeric" />
-      <button class="btn primary" onclick="load()">تحديث</button>
+  <div class="grid">
+
+    <!-- Student -->
+    <div class="card">
+      <h3 style="margin:0 0 10px;font-weight:900">تقارير الطالب</h3>
+      <label>StudentID (9 أرقام)</label>
+      <input id="studentId" class="input" placeholder="مثال: 202311477" inputmode="numeric" maxlength="9" />
+      <div style="margin-top:10px">
+        <button class="btn primary" onclick="openStudentReport()">فتح صفحة التقرير</button>
+      </div>
+      <div class="small">يفتح صفحة student-report.html</div>
     </div>
-    <div id="st" class="status"></div>
-  </div>
 
-  <div style="height:12px"></div>
+    <!-- Doctor -->
+    <div class="card">
+      <h3 style="margin:0 0 10px;font-weight:900">تقارير الدكتور (PIN)</h3>
 
-  <div class="grid3">
-    <div class="card kpi"><div>عدد المحاضرات</div><div id="k1" class="v">—</div></div>
-    <div class="card kpi"><div>عدد الطلاب (في الشيت)</div><div id="k2" class="v">—</div></div>
-    <div class="card kpi"><div>آخر LectureID</div><div id="k3" class="v">—</div></div>
-  </div>
+      <div id="doctorLock">
+        <label>PIN</label>
+        <div class="pinWrap">
+          <input id="pinInput" class="input" type="password" inputmode="numeric" placeholder="PIN" />
+          <button class="iconBtn" onclick="togglePin()">👁️</button>
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn primary" onclick="unlockDoctor()">دخول</button>
+        </div>
+        <div id="lockStatus" class="status"></div>
+      </div>
 
-  <div style="height:12px"></div>
+      <div id="doctorPanel" class="hidden">
+        <label>StudentID (للاطلاع على تقرير الطالب)</label>
+        <input id="doctorStudentId" class="input" placeholder="مثال: 202311477" inputmode="numeric" maxlength="9" />
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn primary" onclick="doctorViewReport()">عرض التقرير هنا</button>
+          <button class="btn" onclick="lockBack()">قفل</button>
+        </div>
 
-  <div class="card">
-    <h3 style="margin:0 0 10px;font-weight:900">المحاضرات</h3>
-    <canvas id="chart" height="110"></canvas>
+        <div id="doctorStatus" class="status"></div>
+        <div class="hr"></div>
 
-    <div class="tableWrap">
-      <table>
-        <thead>
-          <tr>
-            <th>LectureID</th><th>Course</th><th>Section</th><th>Start</th><th>End</th><th>State</th>
-          </tr>
-        </thead>
-        <tbody id="rows">
-          <tr><td colspan="6">—</td></tr>
-        </tbody>
-      </table>
+        <div id="doctorResult" class="small">—</div>
+      </div>
     </div>
+
   </div>
 </div>
 
-<script src="assets/app.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const $ = (id)=>document.getElementById(id);
-let chart=null;
+  const API_URL = "https://script.google.com/macros/s/AKfycbyYrlS2KNKfACmTuOHhhOvSaYK-QM5M7CFqfDFZ8dgzl8Lrr-i9pSv2yxSCQL5Zrjak/exec";
+  const DOCTOR_PIN = "1111";
 
-async function load(){
-  const pin = ($("pin").value||"").trim();
-  $("st").textContent = "⏳ جاري التحميل...";
+  const $ = (id)=>document.getElementById(id);
 
-  const res = await apiCall({ action:"listLectures", doctorKey: pin });
-  if(!res || !res.ok){
-    $("st").textContent = "❌ " + ((res && res.error) || "Failed");
-    return;
+  function showStatus(el,type,msg){
+    el.className = "status show " + (type||"");
+    el.textContent = msg||"";
   }
-  $("st").textContent = "✅ تم التحديث";
+  function hideStatus(el){
+    el.className = "status";
+    el.textContent = "";
+  }
 
-  const rows = res.rows || [];
-  $("k1").textContent = rows.length;
-  $("k3").textContent = rows[0] ? rows[0].lectureId : "—";
+  function togglePin(){
+    const inp = $("pinInput");
+    inp.type = (inp.type==="password") ? "text" : "password";
+  }
 
-  // Table
-  $("rows").innerHTML = rows.slice(0,40).map(r=>`
-    <tr>
-      <td><b>${r.lectureId||""}</b></td>
-      <td>${r.course||""}</td>
-      <td>${r.section||""}</td>
-      <td>${r.start||""}</td>
-      <td>${r.end||""}</td>
-      <td>${r.state||""}</td>
-    </tr>
-  `).join("") || `<tr><td colspan="6">لا توجد بيانات</td></tr>`;
-
-  // Chart: last 10 lecture starts (by order from API)
-  const top = rows.slice(0,10).reverse();
-  const labels = top.map(x => (x.course||"") + "-" + (x.section||""));
-  const data = top.map((_,i)=> i+1);
-
-  const ctx = $("chart").getContext("2d");
-  if(chart) chart.destroy();
-  chart = new Chart(ctx,{
-    type:"line",
-    data:{ labels, datasets:[{ label:"آخر المحاضرات", data }] },
-    options:{
-      plugins:{ legend:{ labels:{ color:"#fff" } } },
-      scales:{
-        x:{ ticks:{ color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } },
-        y:{ ticks:{ color:"#fff" }, grid:{ color:"rgba(255,255,255,.08)" } }
-      }
+  function openStudentReport(){
+    const sid = ($("studentId").value||"").trim();
+    if(!/^[0-9]{9}$/.test(sid)){
+      alert("أدخل StudentID صحيح (9 أرقام)");
+      return;
     }
-  });
-}
+    // نمرر رقم الطالب كـ query اختياري
+    location.href = "student-report.html?studentId=" + encodeURIComponent(sid);
+  }
+
+  function unlockDoctor(){
+    const pin = ($("pinInput").value||"").trim();
+    const st = $("lockStatus");
+    hideStatus(st);
+
+    if(pin !== DOCTOR_PIN){
+      showStatus(st,"bad","PIN غير صحيح");
+      return;
+    }
+    $("doctorLock").classList.add("hidden");
+    $("doctorPanel").classList.remove("hidden");
+  }
+
+  function lockBack(){
+    $("pinInput").value = "";
+    $("doctorStudentId").value = "";
+    $("doctorResult").textContent = "—";
+    hideStatus($("doctorStatus"));
+    $("doctorPanel").classList.add("hidden");
+    $("doctorLock").classList.remove("hidden");
+  }
+
+  async function apiCall(payload){
+    const res = await fetch(API_URL,{method:"POST", body: JSON.stringify(payload)});
+    return await res.json();
+  }
+
+  async function doctorViewReport(){
+    const sid = ($("doctorStudentId").value||"").trim();
+    const st = $("doctorStatus");
+    hideStatus(st);
+
+    if(!/^[0-9]{9}$/.test(sid)){
+      showStatus(st,"bad","StudentID غير صحيح");
+      return;
+    }
+
+    showStatus(st,"warn","جاري تحميل التقرير...");
+    let res;
+    try{
+      res = await apiCall({ action:"studentReport", studentId: sid });
+    }catch(e){
+      showStatus(st,"bad","فشل الاتصال بالـ API");
+      return;
+    }
+
+    if(!res || !res.ok){
+      showStatus(st,"bad",(res && res.error) ? res.error : "Failed");
+      return;
+    }
+
+    showStatus(st,"ok","تم تحميل التقرير ✅");
+    const d = res.data || {};
+    $("doctorResult").innerHTML = `
+      <div>الحضور: <b>${d.present||0}</b></div>
+      <div>التأخير: <b>${d.late||0}</b></div>
+      <div>الغياب: <b>${d.absent||0}</b></div>
+      <div style="margin-top:8px; opacity:.9">آخر السجلات: ${(d.rows||[]).length}</div>
+    `;
+  }
 </script>
+
 </body>
 </html>
