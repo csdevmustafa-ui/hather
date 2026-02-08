@@ -98,19 +98,19 @@ label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
       <h3 style="margin:0 0 10px;font-weight:900">التسجيل بالكود</h3>
 
       <label>StudentID</label>
-      <input id="studentId" class="input" placeholder="مثال: 441234567" inputmode="numeric" maxlength="9"/>
+      <input id="studentId" class="input" placeholder="مثال: 202311477" inputmode="numeric" maxlength="9"/>
 
       <div style="height:10px"></div>
 
-      <label>Code</label>
-      <input id="codeInput" class="input" placeholder="مثال: 123456" inputmode="numeric" maxlength="12"/>
+      <label>Code (أو نص QR JSON)</label>
+      <input id="codeInput" class="input" placeholder="مثال: 123456" inputmode="numeric" maxlength="200"/>
 
       <div class="actions">
         <button class="btn primary" onclick="checkinByCode()">تسجيل الحضور</button>
       </div>
 
       <div id="status1" class="status"></div>
-      <div class="small">إذا الكود من QR قد يكون نص JSON — النظام يتعامل معه تلقائيًا.</div>
+      <div class="small">إذا الكود من QR قد يكون JSON — النظام يتعامل معه تلقائيًا.</div>
     </div>
 
     <div class="card">
@@ -130,10 +130,12 @@ label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
   </div>
 </div>
 
-<script src="assets/app.js"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
+/** ✅ API URL (نفس اللي عطيتني) **/
+const API_URL = "https://script.google.com/macros/s/AKfycbyYrlS2KNKfACmTuOHhhOvSaYK-QM5M7CFqfDFZ8dgzl8Lrr-i9pSv2yxSCQL5Zrjak/exec";
+
 let qr = null;
 const $ = (id)=>document.getElementById(id);
 
@@ -142,30 +144,54 @@ function showStatus(el, type, msg){
   el.textContent = msg || "";
 }
 
+async function apiCall(payload){
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+  return await res.json();
+}
+
 function parseQRorCode(txt){
   const t = (txt||"").trim();
   if(!t) return { code:"", lectureId:"" };
-  // QR in our system could be JSON {lectureId, code}
+
+  // if QR includes JSON {lectureId, code}
   try{
     const obj = JSON.parse(t);
     if(obj && obj.code){
-      return { code: String(obj.code||"").trim(), lectureId: String(obj.lectureId||"").trim() };
+      return {
+        code: String(obj.code||"").trim(),
+        lectureId: String(obj.lectureId||"").trim()
+      };
     }
   }catch(e){}
-  // otherwise it is a raw code
+
   return { code: t, lectureId:"" };
 }
 
+/** ✅ أهم تعديل: action صار registerAttendance **/
 async function checkinByCode(codeOverride){
   const sid = ($("studentId").value||"").trim();
   const raw = (codeOverride!=null ? codeOverride : $("codeInput").value);
   const parsed = parseQRorCode(raw);
 
-  if(!sid){ showStatus($("status1"),"bad","❌ أدخل StudentID"); return; }
-  if(!parsed.code){ showStatus($("status1"),"bad","❌ أدخل الكود"); return; }
+  if(!/^[0-9]{9}$/.test(sid)){
+    showStatus($("status1"),"bad","❌ أدخل StudentID صحيح (9 أرقام)");
+    return;
+  }
+  if(!parsed.code){
+    showStatus($("status1"),"bad","❌ أدخل الكود");
+    return;
+  }
 
   showStatus($("status1"),"warn","⏳ جاري تسجيل الحضور...");
-  const res = await apiCall({ action:"studentCheckin", studentId: sid, code: parsed.code, lectureId: parsed.lectureId });
+
+  const res = await apiCall({
+    action: "registerAttendance",
+    studentId: sid,
+    code: (parsed.lectureId ? JSON.stringify({lectureId: parsed.lectureId, code: parsed.code}) : parsed.code)
+  });
 
   if(res && res.ok){
     showStatus($("status1"),"ok",`✅ تم تسجيل حضورك — LectureID: ${res.lectureId||""}`);
@@ -177,7 +203,10 @@ async function checkinByCode(codeOverride){
 
 async function startScan(){
   const sid = ($("studentId").value||"").trim();
-  if(!sid){ showStatus($("status2"),"bad","❌ أدخل StudentID أولاً"); return; }
+  if(!/^[0-9]{9}$/.test(sid)){
+    showStatus($("status2"),"bad","❌ أدخل StudentID صحيح (9 أرقام) أولاً");
+    return;
+  }
 
   if(!qr) qr = new Html5Qrcode("qrReader");
   showStatus($("status2"),"warn","⏳ تشغيل الكاميرا...");
@@ -202,7 +231,8 @@ async function stopScan(){
   if(qr){
     try{ await qr.stop(); await qr.clear(); }catch(e){}
   }
-  showStatus($("status2"),"", "—");
+  $("status2").className = "status";
+  $("status2").textContent = "";
 }
 </script>
 </body>
