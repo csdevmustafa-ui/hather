@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwl7Y10AqmMuY3lZ-1bU3Hi7ROptugAKYCtdbQYdHeEEfV9Y9QqLO3BvYfhM7ctGfpg/exec"; // ضع رابط Web App /exec هنا
+const API_URL = "https://script.google.com/macros/s/AKfycbxta1p2m8Kh7M0mpjNqaSEVZq3uHVd-Bg9fzmxMvrrGgD7Spc4piPFverwvzfjOYkS7/exec"; // ضع رابط Web App /exec هنا
 
 const $ = (id)=>document.getElementById(id);
 
