@@ -1,226 +1,137 @@
-/***********************
- * Hather Frontend Core
- * - API URL centralized here
- * - Language persisted from index.html (localStorage)
- * - QR uses qrserver (reliable) instead of Google Chart
- ***********************/
+/* =========================
+   Hather Shared App (config + i18n + helpers)
+   Put API_URL here only.
+========================= */
 
-// ✅ ضع رابط الديبلوي (exec) هنا فقط:
-const API_URL = "https://script.google.com/macros/s/AKfycbz1iejpZ_5yFYBIbSluTHemZNpHuZH6MX1bO3iad71d8JdINv6JvNGRc_cKGFgH8dN-/exec";
+(function () {
+  const CONFIG = {
+    API_URL: "PUT_YOUR_APPS_SCRIPT_WEBAPP_URL_HERE", // <-- حط رابط الـ /exec هنا
+    DEFAULT_LANG: "ar",
+    APP_NAME: "Hather",
+  };
 
-// ✅ PIN الدكتور (لازم يطابق Script Properties)
-const DOCTOR_PIN = "1111";
+  const dict = {
+    ar: {
+      home_title: "Hather – نظام الحضور الذكي",
+      home_sub: "منصة حضور حديثة – رسمية – صارمة",
+      doctor: "واجهة الدكتور",
+      student: "واجهة الطالب",
+      reports: "التقارير",
+      open: "فتح",
+      lang: "اللغة",
+      ar: "عربي",
+      en: "English",
+      back_home: "الرئيسية",
+      logout: "خروج",
+      refresh: "تحديث",
+      done: "تم ✅",
+      error_api: "فشل الاتصال بالـ API",
+      qr_zoom: "تكبير QR",
+      scan: "فتح الكاميرا",
+      stop_scan: "إيقاف الكاميرا",
+      enter_pin: "أدخل PIN",
+      wrong_pin: "PIN غير صحيح",
+      no_qr: "لا يوجد QR للتكبير",
+      generate: "توليد رمز حضور (Code + QR)",
+      show_students: "عرض الطلاب",
+      delete_lecture: "حذف المحاضرة",
+      clear_selection: "إلغاء التحديد",
+      select_first: "اختر LectureID أولاً",
+      deleted_block: "هذه المحاضرة محذوفة ولا يمكن استخدامها.",
+      student_id: "رقم الطالب",
+      lecture_id: "LectureID (اختياري)",
+      code: "الكود",
+      checkin: "تسجيل حضور",
+      student_report: "تقرير الطالب",
+      course_report: "تقرير مقرر",
+    },
+    en: {
+      home_title: "Hather – Smart Attendance",
+      home_sub: "Modern • Formal • Strict",
+      doctor: "Doctor Panel",
+      student: "Student Panel",
+      reports: "Reports",
+      open: "Open",
+      lang: "Language",
+      ar: "Arabic",
+      en: "English",
+      back_home: "Home",
+      logout: "Logout",
+      refresh: "Refresh",
+      done: "Done ✅",
+      error_api: "API connection failed",
+      qr_zoom: "Zoom QR",
+      scan: "Open Camera",
+      stop_scan: "Stop Camera",
+      enter_pin: "Enter PIN",
+      wrong_pin: "Wrong PIN",
+      no_qr: "No QR to zoom",
+      generate: "Generate Attendance Code (Code + QR)",
+      show_students: "Show Students",
+      delete_lecture: "Delete Lecture",
+      clear_selection: "Clear Selection",
+      select_first: "Select LectureID first",
+      deleted_block: "This lecture is deleted and cannot be used.",
+      student_id: "Student ID",
+      lecture_id: "LectureID (optional)",
+      code: "Code",
+      checkin: "Check-in",
+      student_report: "Student Report",
+      course_report: "Course Report",
+    }
+  };
 
-// -------- Language --------
-const LANG_KEY = "hather_lang";
-const DEFAULT_LANG = "ar";
-
-const I18N = {
-  ar: {
-    appName: "Hather - حاضر",
-    homeTitle: "Hather Attendance",
-    homeDesc: "نظام حضور باستخدام QR",
-    goDoctor: "دخول الدكتور",
-    goStudent: "قسم الطالب",
-    goStudentReport: "تقرير الطالب",
-    goReports: "تقارير المقرر (للدكتور)",
-
-    lang: "اللغة",
-    chooseLang: "اختر اللغة",
-    arabic: "العربية",
-    english: "English",
-
-    // Doctor
-    doctorPanel: "لوحة عضو هيئة التدريس",
-    pinHint: "يرجى إدخال كلمة المرور للمتابعة",
-    pinPh: "أدخل PIN",
-    login: "دخول",
-    pinWrong: "كلمة المرور غير صحيحة",
-    logout: "تسجيل الخروج",
-    refresh: "تحديث",
-    searchPh: "مثال: CS111 أو 1 أو L177...",
-    noLectures: "لا توجد محاضرات",
-    loading: "جاري التحميل...",
-    done: "تم ✅",
-    failApi: "فشل الاتصال بالـ API",
-    selectFirst: "اختر LectureID أولاً",
-    confirmDelete: "تأكيد: هل تريد حذف هذه المحاضرة؟ لن تظهر في القائمة بعدها.",
-    deleted: "تم حذف المحاضرة ✅",
-    codeLabel: "Code: ",
-    zoom: "تكبير QR",
-    close: "إغلاق",
-
-    lectures: "المحاضرات",
-    lectureCodeQr: "الكود و QR للمحاضرة",
-    selectedLecture: "LectureID المحدد",
-    genCode: "توليد رمز حضور (Code + QR)",
-    showStudents: "عرض الطلاب",
-    deleteLecture: "حذف المحاضرة",
-    clearSelection: "إلغاء التحديد",
-    studentsOfLecture: "طلاب المحاضرة",
-
-    createLecture: "إنشاء محاضرة",
-    course: "المقرر",
-    section: "الشعبة",
-    start: "وقت البداية",
-    end: "وقت النهاية",
-    create: "إنشاء",
-
-    weekly: "إنشاء جدول أسبوعي",
-    fromDate: "من تاريخ",
-    toDate: "إلى تاريخ",
-    startTime: "وقت البداية",
-    endTime: "وقت النهاية",
-    days: "الأيام",
-    createSchedule: "إنشاء الجدول",
-
-    // Student
-    studentTitle: "قسم الطالب",
-    studentId: "رقم الطالب",
-    lectureIdOptional: "LectureID (اختياري)",
-    code: "الكود",
-    checkin: "تسجيل حضور",
-    success: "تم تسجيل الحضور ✅",
-    invalid: "بيانات غير صحيحة",
-    qrPasteHint: "الصق نص QR (اختياري) لتعبئة LectureID والكود تلقائيًا",
-    pasteQr: "لصق QR JSON",
-
-    // Student Report
-    studentReportTitle: "تقرير الطالب",
-    showReport: "عرض التقرير",
-    present: "حضور",
-    late: "تأخير",
-    absent: "غياب",
-    lastRecords: "آخر السجلات",
-
-    // Course Reports
-    reportsTitle: "تقارير المقرر (للدكتور)",
-    courseCode: "كود المقرر",
-    loadCourseReport: "عرض تقرير المقرر",
-    lecturesCount: "عدد المحاضرات",
-  },
-
-  en: {
-    appName: "Hather",
-    homeTitle: "Hather Attendance",
-    homeDesc: "QR-based attendance system",
-    goDoctor: "Doctor Panel",
-    goStudent: "Student Section",
-    goStudentReport: "Student Report",
-    goReports: "Course Reports (Doctor)",
-
-    lang: "Language",
-    chooseLang: "Choose language",
-    arabic: "Arabic",
-    english: "English",
-
-    doctorPanel: "Doctor Panel",
-    pinHint: "Enter PIN to continue",
-    pinPh: "Enter PIN",
-    login: "Login",
-    pinWrong: "Wrong PIN",
-    logout: "Logout",
-    refresh: "Refresh",
-    searchPh: "e.g. CS111 or 1 or L177...",
-    noLectures: "No lectures",
-    loading: "Loading...",
-    done: "Done ✅",
-    failApi: "API connection failed",
-    selectFirst: "Select LectureID first",
-    confirmDelete: "Confirm delete? It will disappear from the list.",
-    deleted: "Lecture deleted ✅",
-    codeLabel: "Code: ",
-    zoom: "Zoom QR",
-    close: "Close",
-
-    lectures: "Lectures",
-    lectureCodeQr: "Lecture Code & QR",
-    selectedLecture: "Selected LectureID",
-    genCode: "Generate Attendance Code (Code + QR)",
-    showStudents: "Show Students",
-    deleteLecture: "Delete Lecture",
-    clearSelection: "Clear Selection",
-    studentsOfLecture: "Students of Lecture",
-
-    createLecture: "Create Lecture",
-    course: "Course",
-    section: "Section",
-    start: "Start Time",
-    end: "End Time",
-    create: "Create",
-
-    weekly: "Create Weekly Schedule",
-    fromDate: "From Date",
-    toDate: "To Date",
-    startTime: "Start Time",
-    endTime: "End Time",
-    days: "Days",
-    createSchedule: "Create Schedule",
-
-    studentTitle: "Student Section",
-    studentId: "Student ID",
-    lectureIdOptional: "LectureID (optional)",
-    code: "Code",
-    checkin: "Check-in",
-    success: "Checked in ✅",
-    invalid: "Invalid input",
-    qrPasteHint: "Paste QR text (optional) to auto-fill LectureID and Code",
-    pasteQr: "Paste QR JSON",
-
-    studentReportTitle: "Student Report",
-    showReport: "Show Report",
-    present: "Present",
-    late: "Late",
-    absent: "Absent",
-    lastRecords: "Last Records",
-
-    reportsTitle: "Course Reports (Doctor)",
-    courseCode: "Course Code",
-    loadCourseReport: "Load Course Report",
-    lecturesCount: "Lectures Count",
+  function getLang() {
+    return localStorage.getItem("HATHER_LANG") || CONFIG.DEFAULT_LANG;
   }
-};
+  function setLang(lang) {
+    localStorage.setItem("HATHER_LANG", lang === "en" ? "en" : "ar");
+  }
+  function t(key) {
+    const lang = getLang();
+    return (dict[lang] && dict[lang][key]) ? dict[lang][key] : (dict.ar[key] || key);
+  }
 
-function getLang(){
-  return localStorage.getItem(LANG_KEY) || DEFAULT_LANG;
-}
-function setLang(l){
-  localStorage.setItem(LANG_KEY, l);
-}
-function t(key){
-  const lang = getLang();
-  return (I18N[lang] && I18N[lang][key]) ? I18N[lang][key] : (I18N[DEFAULT_LANG][key] || key);
-}
+  async function apiPost(payload) {
+    const res = await fetch(CONFIG.API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  }
 
-// ✅ زر اللغة موجود فقط في index.html لكن الدالة موجودة هنا
-function setLangAndReload(lang){
-  setLang(lang);
-  location.reload();
-}
+  async function apiHealth() {
+    const res = await fetch(CONFIG.API_URL + "?action=health");
+    return await res.json();
+  }
 
-// -------- Helpers --------
-const $ = (id) => document.getElementById(id);
+  function qs(id) { return document.getElementById(id); }
 
-async function apiCall(payload){
-  const res = await fetch(API_URL, { method:"POST", body: JSON.stringify(payload) });
-  return await res.json();
-}
+  function applyI18n() {
+    const lang = getLang();
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
 
-// ✅ QR reliable URL
-function buildQrUrl(dataText){
-  // dataText could be qrText JSON: {"lectureId":"...","code":"..."}
-  // Use reliable qrserver (HTTPS)
-  return "https://api.qrserver.com/v1/create-qr-code/?size=360x360&data=" + encodeURIComponent(dataText || "");
-}
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const k = el.getAttribute("data-i18n");
+      el.textContent = t(k);
+    });
+    document.querySelectorAll("[data-i18n-ph]").forEach(el => {
+      const k = el.getAttribute("data-i18n-ph");
+      el.setAttribute("placeholder", t(k));
+    });
+  }
 
-function safeSetImg(imgEl, url){
-  if(!imgEl) return;
-  imgEl.src = "";
-  setTimeout(()=>{ imgEl.src = url + (url.includes("?") ? "&" : "?") + "_ts=" + Date.now(); }, 20);
-}
-
-function applyDocumentLang(){
-  const lang = getLang();
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
-}
+  window.HATHER = {
+    CONFIG,
+    dict,
+    t,
+    getLang,
+    setLang,
+    apiPost,
+    apiHealth,
+    qs,
+    applyI18n,
+  };
+})();
