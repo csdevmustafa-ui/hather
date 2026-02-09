@@ -10,7 +10,7 @@ window.HATHER = (function () {
      مثال:
      https://script.google.com/macros/s/AKfycbxxxxxxx/exec
      ================================================== */
-  const API_URL = "PUT_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+  const API_URL = "https://script.google.com/macros/s/AKfycbz1iejpZ_5yFYBIbSluTHemZNpHuZH6MX1bO3iad71d8JdINv6JvNGRc_cKGFgH8dN-/exec";
 
 
   /* ==================================================
