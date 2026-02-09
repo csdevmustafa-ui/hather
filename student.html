@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
 </head>
+
 <body>
   <div class="container">
     <div class="topbar">
@@ -16,7 +17,7 @@
         <div class="logo">🎓</div>
         <div>
           <h1 id="txTitle">قسم الطالب</h1>
-          <p id="txHint">سجّل حضورك بإدخال الكود</p>
+          <p id="txHint">سجّل حضورك بإدخال الكود أو مسح QR</p>
         </div>
       </div>
       <div class="actions">
@@ -48,18 +49,40 @@
       </div>
 
       <div style="height:10px"></div>
-      <p id="txQrHint">الصق نص QR (اختياري) لتعبئة LectureID والكود تلقائيًا</p>
+
+      <div class="row">
+        <button class="btn primary" onclick="openScanner()" id="txOpenCam">فتح الكاميرا (مسح QR)</button>
+        <button class="btn danger" onclick="stopScanner()" id="txStopCam">إيقاف الكاميرا</button>
+      </div>
+
+      <div style="height:10px"></div>
+      <p id="txQrHint">الصق نص QR أو امسح QR لتعبئة LectureID والكود تلقائيًا</p>
 
       <div class="status" id="st"></div>
+
+      <div class="hr"></div>
+
+      <!-- Scanner Area -->
+      <div class="card" style="margin:0">
+        <h2 id="txScanTitle">مسح QR</h2>
+        <div id="reader" style="width:100%; max-width:420px; margin:0 auto;"></div>
+        <p style="text-align:center; color:rgba(255,255,255,.75); margin-top:10px" id="txScanHint">
+          إذا طلب إذن الكاميرا وافق.
+        </p>
+      </div>
     </div>
 
     <div class="footer">Hather Attendance System © 2026</div>
   </div>
 
+  <!-- QR Scanner library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="assets/app.js"></script>
+
   <script>
     applyDocumentLang();
 
+    // i18n basic
     document.title = t("studentTitle");
     $("txTitle").textContent = t("studentTitle");
     $("txStudentId").textContent = t("studentId");
@@ -68,6 +91,13 @@
     $("txCheckin").textContent = t("checkin");
     $("txPasteQr").textContent = t("pasteQr");
     $("txQrHint").textContent = t("qrPasteHint");
+
+    // Extra i18n (simple)
+    $("txOpenCam").textContent = (getLang()==="ar") ? "فتح الكاميرا (مسح QR)" : "Open Camera (Scan QR)";
+    $("txStopCam").textContent = (getLang()==="ar") ? "إيقاف الكاميرا" : "Stop Camera";
+    $("txScanTitle").textContent = (getLang()==="ar") ? "مسح QR" : "Scan QR";
+    $("txScanHint").textContent = (getLang()==="ar") ? "إذا طلب إذن الكاميرا وافق." : "Allow camera permission if requested.";
+    $("txHint").textContent = (getLang()==="ar") ? "سجّل حضورك بإدخال الكود أو مسح QR" : "Check in using code or scan QR";
 
     function show(type, msg){
       const el = $("st");
@@ -79,16 +109,33 @@
       try{
         const text = await navigator.clipboard.readText();
         if(!text) { show("bad", "Clipboard empty"); return; }
-        // try parse JSON
-        let obj = null;
-        try { obj = JSON.parse(text); } catch(e){}
-        if(obj && obj.lectureId) $("lectureId").value = obj.lectureId;
-        if(obj && obj.code) $("code").value = obj.code;
-        if(!obj) show("warn", "Pasted (not JSON).");
-        else show("ok", "OK ✅");
+        fillFromQrText(text);
       }catch(e){
-        show("bad", "Clipboard not allowed");
+        show("bad", (getLang()==="ar") ? "النسخ غير مسموح" : "Clipboard not allowed");
       }
+    }
+
+    function fillFromQrText(text){
+      let obj = null;
+      try { obj = JSON.parse(text); } catch(e){ obj = null; }
+
+      // If it is JSON like {"lectureId":"...","code":"..."}
+      if(obj && (obj.lectureId || obj.code)){
+        if(obj.lectureId) $("lectureId").value = obj.lectureId;
+        if(obj.code) $("code").value = obj.code;
+        show("ok", (getLang()==="ar") ? "تم تعبئة البيانات ✅" : "Filled ✅");
+        return;
+      }
+
+      // If QR is just code digits, fill code
+      const digits = String(text||"").trim();
+      if(/^\d{4,10}$/.test(digits)){
+        $("code").value = digits;
+        show("ok", (getLang()==="ar") ? "تم تعبئة الكود ✅" : "Code filled ✅");
+        return;
+      }
+
+      show("warn", (getLang()==="ar") ? "تم اللصق، لكن التنسيق غير معروف" : "Pasted, but format is unknown");
     }
 
     async function checkin(){
@@ -115,6 +162,57 @@
       }else{
         show("bad", (res && res.error) ? res.error : "Failed");
       }
+    }
+
+    // -------- Camera Scanner --------
+    let qrScanner = null;
+    let scanning = false;
+
+    async function openScanner(){
+      if(scanning) return;
+
+      try{
+        if(!qrScanner){
+          qrScanner = new Html5Qrcode("reader");
+        }
+
+        scanning = true;
+
+        // Prefer back camera
+        const config = { fps: 10, qrbox: { width: 260, height: 260 } };
+
+        await qrScanner.start(
+          { facingMode: "environment" },
+          config,
+          (decodedText) => {
+            // On success
+            fillFromQrText(decodedText);
+            // auto stop after first scan (better UX)
+            stopScanner();
+          },
+          (error) => {
+            // ignore continuous scan errors
+          }
+        );
+
+        show("ok", (getLang()==="ar") ? "الكاميرا تعمل ✅" : "Camera started ✅");
+      }catch(e){
+        scanning = false;
+        show("bad", (getLang()==="ar") ? "فشل فتح الكاميرا. تأكد من الإذن." : "Failed to open camera. Check permission.");
+      }
+    }
+
+    async function stopScanner(){
+      if(!qrScanner || !scanning) return;
+
+      try{
+        await qrScanner.stop();
+        await qrScanner.clear();
+      }catch(e){
+        // ignore
+      }
+      scanning = false;
+      show("warn", (getLang()==="ar") ? "تم إيقاف الكاميرا" : "Camera stopped");
     }
   </script>
 </body>
