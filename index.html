@@ -3,138 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام الحضور الإلكتروني</title>
-
+  <title>Hather</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
-      --card: rgba(255,255,255,.08);
-      --line: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-      --accent:#18c26b; --accent2:#11a85b;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
-      --radius: 22px;
-    }
-    *{box-sizing:border-box;font-family:"Cairo",system-ui,-apple-system,Segoe UI,Arial}
-    body{
-      margin:0; min-height:100vh; color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
-        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
-      display:flex; align-items:center; justify-content:center;
-      padding:18px;
-    }
-    .wrap{width:min(980px, 94vw)}
-    .topbar{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      margin-bottom:14px;
-    }
-    .brand{
-      display:flex; gap:12px; align-items:center;
-    }
-    .logo{
-      width:48px;height:48px;border-radius:16px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.14);
-      display:grid; place-items:center;
-      box-shadow: 0 10px 30px rgba(0,0,0,.22);
-    }
-    h1{margin:0;font-size:22px;font-weight:900;letter-spacing:.2px}
-    p{margin:6px 0 0;color:var(--muted);font-size:13px}
-    .btn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:16px;
-      cursor:pointer;
-      transition:.15s ease;
-      user-select:none;
-      display:inline-flex; align-items:center; gap:10px;
-      box-shadow: 0 10px 28px rgba(0,0,0,.16);
-      text-decoration:none;
-    }
-    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.10)}
-    .btn.primary{
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border:1px solid rgba(255,255,255,.18);
-      color:#06210f;
-      font-weight:900;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-      align-items:stretch;
-    }
-    @media(max-width:900px){.grid{grid-template-columns:1fr}}
-    .card{
-      background: var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding:16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-    }
-    .actions{display:grid; gap:10px}
-    .note{font-size:12px;color:rgba(255,255,255,.78);line-height:1.7}
-    .chip{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      padding:10px 12px;
-      border-radius:16px;
-      font-size:12px;
-      color: rgba(255,255,255,.88);
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=1">
+  <script src="assets/app.js?v=1"></script>
 </head>
+<body>
 
-<body data-i18n-title="homeTitle">
-  <div class="wrap">
-
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo">🏛️</div>
-        <div>
-          <h1 data-i18n="homeTitle">نظام الحضور الإلكتروني</h1>
-          <p data-i18n="homeSub">إدارة المحاضرات وتسجيل حضور الطلاب وإصدار التقارير</p>
-        </div>
-      </div>
-
-      <!-- ✅ زر اللغة هنا فقط -->
-      <button class="btn" id="langBtn" onclick="toggleLang()">English</button>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="actions">
-          <a class="btn primary" href="doctor.html"><span>👤</span><span data-i18n="homeDoctor">لوحة عضو هيئة التدريس</span></a>
-          <a class="btn" href="student.html"><span>🎓</span><span data-i18n="homeStudent">بوابة الطالب</span></a>
-          <a class="btn" href="student-report.html"><span>📊</span><span data-i18n="homeReports">تقارير الطالب</span></a>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="chip">
-          <div class="note">
-            <div style="font-weight:900;margin-bottom:6px">ملاحظة</div>
-            <div>• لوحة عضو هيئة التدريس محمية برمز الدخول.</div>
-            <div>• بوابة الطالب مخصصة لتسجيل الحضور بالكود أو QR.</div>
-            <div>• تقارير الطالب تعرض الحضور باستخدام الرقم الجامعي.</div>
-          </div>
-        </div>
+<div class="container">
+  <div class="glass topbar">
+    <div class="brand">
+      <div class="logo">🏛️</div>
+      <div class="brandTitle">
+        <h1 data-i18n="home_title">نظام إدارة الحضور</h1>
+        <p data-i18n="home_sub">جامعة الحدود الشمالية</p>
       </div>
     </div>
-
+    <div class="actions">
+      <button class="btn ghost" id="langBtn" data-i18n="choose_lang">اختر اللغة</button>
+    </div>
   </div>
 
-  <!-- i18n (global) -->
-  <script src="assets/i18n.js"></script>
+  <div class="homeGrid">
+    <div class="glass tile">
+      <h2 data-i18n="doctor">عضو هيئة التدريس</h2>
+      <p>لوحة إدارة المحاضرات، توليد رمز الحضور، وإدارة حالات الطلاب.</p>
+      <a class="btn primary" href="doctor.html"><span data-i18n="open">دخول</span></a>
+    </div>
+
+    <div class="glass tile">
+      <h2 data-i18n="student">الطالب</h2>
+      <p>تسجيل الحضور باستخدام الرمز أو عبر الكاميرا (QR).</p>
+      <a class="btn primary" href="student.html"><span data-i18n="open">دخول</span></a>
+    </div>
+
+    <div class="glass tile">
+      <h2 data-i18n="reports">التقارير</h2>
+      <p>تقرير المقرر لعضو هيئة التدريس وتقرير الطالب.</p>
+      <a class="btn primary" href="reports.html"><span data-i18n="open">دخول</span></a>
+    </div>
+  </div>
+
+  <div class="footer">Hather Attendance System © 2026</div>
+</div>
+
+<script>
+  function init(){
+    HATHER.applyI18n();
+    const btn = document.getElementById("langBtn");
+    btn.onclick = () => {
+      const next = (HATHER.getLang() === "ar") ? "en" : "ar";
+      HATHER.setLang(next);
+      HATHER.applyI18n();
+    };
+  }
+  init();
+</script>
+
 </body>
 </html>
