@@ -6,125 +6,99 @@
   <title>Student Report - Hather</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=3">
+  <script src="assets/app.js?v=3"></script>
 </head>
 <body>
-  <div class="container">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo">📊</div>
-        <div>
-          <h1 id="txTitle">تقرير الطالب</h1>
-          <p id="txHint">عرض حضور الطالب</p>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="location.href='index.html'">Home</button>
+
+<div class="container">
+  <div class="glass topbar">
+    <div class="brand">
+      <div class="logo">🧾</div>
+      <div class="brandTitle">
+        <h1 data-i18n="student_report">تقرير الطالب</h1>
+        <p>عرض آخر السجلات</p>
       </div>
     </div>
+    <div class="actions">
+      <a class="btn" href="index.html"><span data-i18n="back_home">الرئيسية</span></a>
+      <a class="btn" href="student.html"><span data-i18n="student">واجهة الطالب</span></a>
+    </div>
+  </div>
+
+  <div class="glass card" style="margin-top:16px;">
+    <h2>بحث</h2>
+    <div class="row">
+      <div>
+        <label data-i18n="student_id">رقم الطالب</label>
+        <input class="input" id="studentId" placeholder="Student ID" />
+      </div>
+      <div style="display:flex;align-items:end;">
+        <button class="btn primary" onclick="load()">عرض</button>
+      </div>
+    </div>
+
+    <div class="status" id="st"></div>
 
     <div class="hr"></div>
 
-    <div class="card">
-      <label id="txStudentId">رقم الطالب</label>
-      <input class="input" id="studentId" placeholder="مثال: 44123">
-
-      <div style="height:10px"></div>
-      <button class="btn primary" onclick="loadReport()" id="txShow">عرض التقرير</button>
-
-      <div class="status" id="st"></div>
-
-      <div class="hr"></div>
-
-      <div class="row">
-        <div class="card" style="margin:0">
-          <h2 id="txPresent">حضور</h2>
-          <div class="badge" id="presentNum">—</div>
-        </div>
-        <div class="card" style="margin:0">
-          <h2 id="txLate">تأخير</h2>
-          <div class="badge" id="lateNum">—</div>
-        </div>
-      </div>
-
-      <div style="height:10px"></div>
-      <div class="card" style="margin:0">
-        <h2 id="txAbsent">غياب</h2>
-        <div class="badge" id="absentNum">—</div>
-      </div>
-
-      <div class="hr"></div>
-
-      <h2 id="txLast">آخر السجلات</h2>
-      <div class="tableWrap">
-        <table style="min-width:560px">
-          <thead>
-            <tr><th>LectureID</th><th>Time</th><th>Status</th></tr>
-          </thead>
-          <tbody id="rows">
-            <tr><td colspan="3">—</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="row">
+      <div class="pill" id="p1">Present: 0</div>
+      <div class="pill" id="p2">Late: 0</div>
+      <div class="pill" id="p3">Absent: 0</div>
     </div>
 
-    <div class="footer">Hather Attendance System © 2026</div>
+    <div style="height:12px"></div>
+
+    <div class="tableWrap">
+      <table style="min-width:560px">
+        <thead>
+          <tr>
+            <th>LectureID</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="3">اكتب رقم الطالب ثم اضغط عرض.</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <script src="assets/app.js"></script>
-  <script>
-    applyDocumentLang();
+  <div class="footer">Hather Attendance System © 2026</div>
+</div>
 
-    document.title = t("studentReportTitle");
-    $("txTitle").textContent = t("studentReportTitle");
-    $("txStudentId").textContent = t("studentId");
-    $("txShow").textContent = t("showReport");
-    $("txPresent").textContent = t("present");
-    $("txLate").textContent = t("late");
-    $("txAbsent").textContent = t("absent");
-    $("txLast").textContent = t("lastRecords");
+<script>
+  HATHER.applyI18n();
+  const $ = HATHER.qs;
 
-    function show(type, msg){
-      const el = $("st");
-      el.className = "status show " + (type||"");
-      el.textContent = msg || "";
-    }
-    function hide(){
-      $("st").className = "status";
-      $("st").textContent = "";
-    }
+  function show(type,msg){
+    const st=$("st"); st.className="status show "+(type||""); st.textContent=msg||"";
+  }
+  function hide(){ const st=$("st"); st.className="status"; st.textContent=""; }
 
-    async function loadReport(){
-      hide();
-      const studentId = ($("studentId").value||"").trim();
-      if(!studentId){ show("bad", t("invalid")); return; }
+  async function load(){
+    hide();
+    const studentId = ($("studentId").value||"").trim();
+    if(!studentId){ show("bad","اكتب رقم الطالب"); return; }
 
-      show("warn", t("loading"));
-      let res;
-      try{
-        res = await apiCall({ action:"studentReport", studentId });
-      }catch(e){
-        show("bad", t("failApi"));
-        return;
-      }
-
+    try{
+      const res = await HATHER.apiPost({ action:"studentReport", studentId });
       if(!res || !res.ok){
-        show("bad", (res&&res.error)?res.error:"Failed");
+        show("bad", (res && res.error) ? res.error : "Failed");
         return;
       }
-
-      show("ok", t("done"));
-
       const d = res.data || {};
-      $("presentNum").textContent = d.present ?? 0;
-      $("lateNum").textContent = d.late ?? 0;
-      $("absentNum").textContent = d.absent ?? 0;
+      $("p1").textContent = "Present: " + (d.present||0);
+      $("p2").textContent = "Late: " + (d.late||0);
+      $("p3").textContent = "Absent: " + (d.absent||0);
 
       const rows = d.rows || [];
       const tb = $("rows");
-      if(rows.length === 0){
-        tb.innerHTML = `<tr><td colspan="3">—</td></tr>`;
+      if(rows.length===0){
+        tb.innerHTML = `<tr><td colspan="3">لا يوجد بيانات</td></tr>`;
         return;
       }
       tb.innerHTML = rows.map(r=>`
@@ -134,7 +108,12 @@
           <td>${r.status||""}</td>
         </tr>
       `).join("");
+      show("ok","تم ✅");
+    }catch(e){
+      show("bad", HATHER.t("error_api"));
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
