@@ -5,7 +5,7 @@
 
 (function () {
   const CONFIG = {
-    API_URL: "PUT_YOUR_APPS_SCRIPT_WEBAPP_URL_HERE", // <-- حط رابط الـ /exec هنا
+    API_URL: "https://script.google.com/macros/s/AKfycbz1iejpZ_5yFYBIbSluTHemZNpHuZH6MX1bO3iad71d8JdINv6JvNGRc_cKGFgH8dN-/exec", // <-- حط رابط الـ /exec هنا
     DEFAULT_LANG: "ar",
     APP_NAME: "Hather",
   };
