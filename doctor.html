@@ -4,11 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Doctor - Hather</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="assets/style.css?v=1">
   <script src="assets/app.js?v=1"></script>
+
+  <!-- ✅ QR generator داخل المتصفح (بديل Google Charts) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -34,7 +39,8 @@
     <h2 data-i18n="login">دخول</h2>
     <label data-i18n="pin">كلمة المرور (PIN)</label>
     <div class="row">
-      <input id="pinInput" class="input" type="password" inputmode="numeric" autocomplete="current-password" data-i18n-ph="pin_placeholder" placeholder="أدخل PIN" />
+      <input id="pinInput" class="input" type="password" inputmode="numeric" autocomplete="current-password"
+             data-i18n-ph="pin_placeholder" placeholder="أدخل PIN" />
       <button class="btn primary" onclick="unlock()"><span data-i18n="login">دخول</span></button>
     </div>
     <div class="status" id="lockStatus"></div>
@@ -215,6 +221,7 @@
   let DOCTOR_PIN = "";
   let ALL_LECTURES = [];
   let ACTIVE_ROW_ID = "";
+  let LAST_QR_DATAURL = ""; // ✅ نخزن QR هنا للتكبير
 
   function showStatus(el, type, msg){
     el.className = "status show " + (type || "");
@@ -257,7 +264,10 @@
     ACTIVE_ROW_ID = "";
     $("selectedLectureId").value = "";
     $("codeText").textContent = "Code: —";
+
+    LAST_QR_DATAURL = "";
     $("qrImg").removeAttribute("src");
+
     $("studentRows").innerHTML = `<tr><td colspan="4">${HATHER.t("select_first")}</td></tr>`;
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
   }
@@ -322,7 +332,7 @@
       return;
     }
 
-    // Hide Deleted
+    // ✅ لا نعرض Deleted
     ALL_LECTURES = (res.rows || []).filter(x => String(x.state||"").toLowerCase() !== "deleted");
     applyFilter();
   }
@@ -359,6 +369,19 @@
     }
   }
 
+  // ✅ QR داخلي: يولد dataURL بدل صورة من Google
+  async function generateQrDataUrl(text){
+    return await QRCode.toDataURL(text, {
+      errorCorrectionLevel: "M",
+      margin: 1,
+      width: 360,
+      color: {
+        dark: "#000000",
+        light: "#FFFFFF"
+      }
+    });
+  }
+
   async function generateCode(){
     const st = $("codeStatus");
     hideStatus(st);
@@ -379,16 +402,27 @@
       return;
     }
 
-    if(res && res.ok){
-      showStatus(st, "ok", "OK");
-      $("codeText").textContent = "Code: " + (res.code || "—");
-
-      // cache-buster
-      const url = (res.qrUrl || "");
-      const qr = $("qrImg");
-      qr.src = url ? (url + (url.includes("?") ? "&" : "?") + "_=" + Date.now()) : "";
-    }else{
+    if(!(res && res.ok)){
       showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+      return;
+    }
+
+    $("codeText").textContent = "Code: " + (res.code || "—");
+
+    // ✅ نص الـ QR (لو موجود من API استخدمه، وإلا كونّه)
+    const qrText = (res.qrText && String(res.qrText).trim())
+      ? String(res.qrText).trim()
+      : JSON.stringify({ lectureId, code: res.code });
+
+    try{
+      const dataUrl = await generateQrDataUrl(qrText);
+      LAST_QR_DATAURL = dataUrl;
+      $("qrImg").src = dataUrl;
+      showStatus(st, "ok", "OK");
+    }catch(e){
+      LAST_QR_DATAURL = "";
+      $("qrImg").removeAttribute("src");
+      showStatus(st, "bad", "QR generation failed");
     }
   }
 
@@ -502,11 +536,14 @@
     }
   }
 
-  // QR Zoom
+  // ✅ تكبير QR (يشتغل حتى لو كان DataURL)
   function zoomQR(){
-    const src = $("qrImg").getAttribute("src") || "";
-    if(!src){ alert("No QR"); return; }
-    $("qrBig").src = src;
+    if(!LAST_QR_DATAURL){
+      const src = $("qrImg").getAttribute("src") || "";
+      if(!src){ alert("No QR"); return; }
+      LAST_QR_DATAURL = src;
+    }
+    $("qrBig").src = LAST_QR_DATAURL;
     $("qrModal").classList.add("show");
   }
   function closeModal(){ $("qrModal").classList.remove("show"); }
