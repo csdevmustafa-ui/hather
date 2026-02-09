@@ -4,379 +4,272 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Doctor - Hather</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="assets/style.css">
 </head>
 
 <body>
 
-<!-- Lock Screen -->
-<div class="lock" id="lockScreen">
-  <div class="lockCard">
-    <div class="lockHeader">
-      <div class="lockTitle">
-        <h3 id="txPinTitle">لوحة عضو هيئة التدريس</h3>
-        <p id="txPinSub">يرجى إدخال كلمة المرور للمتابعة</p>
+<div class="container">
+  <div class="card" id="lockCard">
+    <h2 id="txDoctorPanel">لوحة عضو هيئة التدريس</h2>
+    <p id="txPinHint">يرجى إدخال كلمة المرور للمتابعة</p>
+    <div class="hr"></div>
+
+    <div class="row">
+      <input class="input" id="pinInput" type="password" inputmode="numeric" placeholder="أدخل PIN">
+      <button class="btn primary" onclick="unlock()" id="txLogin">دخول</button>
+    </div>
+
+    <div class="status" id="lockStatus"></div>
+  </div>
+
+  <div class="card hidden" id="appCard">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🏛️</div>
+        <div>
+          <h1 id="txTitle">لوحة التحكم – عضو هيئة التدريس</h1>
+          <p id="txSub">إدارة المحاضرات – توليد رموز الحضور – عرض الطلاب</p>
+        </div>
       </div>
-      <button class="pillBtn" onclick="toggleLang()">AR/EN</button>
+      <div class="actions">
+        <button class="btn" onclick="location.href='index.html'" id="txHome">Home</button>
+        <button class="btn" onclick="logout()" id="txLogout">Logout</button>
+        <button class="btn primary" onclick="refreshAll()" id="txRefresh">Refresh</button>
+      </div>
     </div>
 
     <div class="hr"></div>
 
-    <div class="pinRow">
-      <div class="pinWrap">
-        <span style="opacity:.9">🔒</span>
-        <input id="pinInput" type="password" inputmode="numeric" placeholder="أدخل PIN" autocomplete="current-password" />
-        <button class="iconBtn" id="togglePinBtn" title="Show/Hide" onclick="togglePin(event)">👁️</button>
-      </div>
+    <h2 id="txLectures">Lectures</h2>
+    <input class="input" id="searchBox" placeholder="..." oninput="applyFilter()">
 
-      <button class="btn primary" onclick="unlock()">
-        <span class="spin" id="spUnlock"></span>
-        <span id="txLogin">دخول</span>
-      </button>
+    <div style="height:10px"></div>
+
+    <div class="tableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>LectureID</th>
+            <th id="txCourse">Course</th>
+            <th id="txSection">Section</th>
+            <th id="txStart">Start</th>
+            <th id="txEnd">End</th>
+            <th>State</th>
+          </tr>
+        </thead>
+        <tbody id="lectureRows">
+          <tr><td colspan="6" id="txLoading">Loading...</td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="status" id="lockStatus"></div>
-    <div class="footNote" id="txDoctorOnly">هذه الصفحة مخصصة للدكتور فقط.</div>
-  </div>
-</div>
+    <div class="hr"></div>
 
-<!-- App -->
-<div class="container hidden" id="app">
+    <h2 id="txLectureCodeQr">Lecture Code & QR</h2>
 
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo">🏛️</div>
+    <label id="txSelectedLecture">Selected LectureID</label>
+    <input class="input" id="selectedLectureId" placeholder="LectureID">
+
+    <div style="height:10px"></div>
+    <div class="row">
+      <button class="btn primary" onclick="generateCode()" id="txGenCode">Generate</button>
+      <button class="btn" onclick="loadStudents()" id="txShowStudents">Show Students</button>
+    </div>
+
+    <div style="height:10px"></div>
+    <div class="row">
+      <button class="btn danger" onclick="deleteLecture()" id="txDeleteLecture">Delete Lecture</button>
+      <button class="btn" onclick="clearSelection()" id="txClearSel">Clear Selection</button>
+    </div>
+
+    <div class="status" id="codeStatus"></div>
+
+    <div class="qrBox">
+      <img id="qrImg" alt="QR">
+      <div class="badge" id="codeText">Code: —</div>
+      <button class="btn" onclick="zoomQr()" id="txZoom">Zoom</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2 id="txStudentsOfLecture">Students of Lecture</h2>
+    <div class="tableWrap">
+      <table style="min-width:560px">
+        <thead>
+          <tr><th>StudentID</th><th>Name</th><th>Status</th></tr>
+        </thead>
+        <tbody id="studentRows">
+          <tr><td colspan="3">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2 id="txCreateLecture">Create Lecture</h2>
+    <div class="row">
       <div>
-        <h1 id="txTitle">لوحة التحكم – عضو هيئة التدريس</h1>
-        <p id="txSub">إدارة المحاضرات – توليد رموز الحضور – عرض الطلاب</p>
+        <label id="txCourseLbl">Course</label>
+        <input class="input" id="course">
+      </div>
+      <div>
+        <label id="txSectionLbl">Section</label>
+        <input class="input" id="section">
       </div>
     </div>
 
-    <div class="actionsTop">
-      <button class="btn" onclick="goHome()" id="txHome">الصفحة الرئيسية</button>
-      <button class="btn" onclick="lockAgain()" id="txLogout">تسجيل الخروج</button>
-      <button class="btn primary" onclick="refreshAll()" id="txRefresh">تحديث البيانات</button>
-      <button class="btn" onclick="toggleLang()" id="txLangTop">AR/EN</button>
-    </div>
-  </div>
-
-  <div class="grid">
-
-    <!-- Left -->
-    <div class="card">
-      <h2 id="txLectures">المحاضرات</h2>
-
-      <label id="txSearchLabel">بحث (LectureID / المقرر / الشعبة)</label>
-      <input id="searchBox" class="input" placeholder="مثال: CS111 أو 1 أو L177..." oninput="applyFilter()" />
-
-      <div style="height:10px"></div>
-
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>LectureID</th>
-              <th id="txCourse">المقرر</th>
-              <th id="txSection">الشعبة</th>
-              <th id="txStart">البداية</th>
-              <th id="txEnd">النهاية</th>
-              <th id="txState">الحالة</th>
-            </tr>
-          </thead>
-          <tbody id="lectureRows">
-            <tr><td colspan="6" id="txLoading">جاري التحميل...</td></tr>
-          </tbody>
-        </table>
+    <div style="height:10px"></div>
+    <div class="row">
+      <div>
+        <label id="txStartLbl">Start</label>
+        <input class="input" id="start" type="datetime-local">
       </div>
-
-      <div class="hr"></div>
-
-      <h2 id="txCodeQr">الكود و QR للمحاضرة</h2>
-
-      <div class="qrGrid">
-        <div class="card" style="margin:0">
-          <label id="txSelectedLecture">LectureID المحدد</label>
-          <input class="input" id="selectedLectureId" placeholder="اختر من الجدول أو الصقه هنا" />
-
-          <div style="height:10px"></div>
-
-          <div class="row">
-            <button class="btn primary" onclick="generateCode()">
-              <span class="spin" id="spCode"></span>
-              <span id="txGenCode">توليد رمز حضور (Code + QR)</span>
-            </button>
-
-            <button class="btn" onclick="loadStudents()">
-              <span id="txStudents">عرض الطلاب</span>
-            </button>
-          </div>
-
-          <div class="row" style="margin-top:10px">
-            <button class="btn danger" onclick="deleteSelectedLecture()">
-              <span id="txDelete">حذف المحاضرة</span>
-            </button>
-            <button class="btn" onclick="clearSelection()">
-              <span id="txClearSel">إلغاء التحديد</span>
-            </button>
-          </div>
-
-          <div class="status" id="codeStatus"></div>
-        </div>
-
-        <div class="qrBox">
-          <img id="qrImg" alt="QR" />
-          <div class="pill" id="codeText">Code: —</div>
-          <div class="qrHint" id="txQrHint">صلاحية قصيرة لتقليل مشاركة الرمز.</div>
-          <button class="btn" onclick="zoomQR()" id="txZoom">تكبير QR</button>
-        </div>
-      </div>
-
-      <div class="hr"></div>
-
-      <h2 id="txStudentsTitle">طلاب المحاضرة</h2>
-      <div class="tableWrap">
-        <table style="min-width:560px">
-          <thead>
-            <tr>
-              <th>StudentID</th>
-              <th id="txName">الاسم</th>
-              <th id="txStatus">الحالة</th>
-            </tr>
-          </thead>
-          <tbody id="studentRows">
-            <tr><td colspan="3" id="txPickLectureMsg">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>
-          </tbody>
-        </table>
+      <div>
+        <label id="txEndLbl">End</label>
+        <input class="input" id="end" type="datetime-local">
       </div>
     </div>
 
-    <!-- Right -->
-    <div class="card">
-      <h2 id="txCreateLecture">إنشاء محاضرة</h2>
+    <div style="height:10px"></div>
+    <button class="btn primary" onclick="createLecture()" id="txCreate">Create</button>
+    <div class="status" id="createStatus"></div>
 
-      <div class="row">
-        <div>
-          <label id="txCourseLabel">المقرر</label>
-          <input class="input" id="course" placeholder="مثال: CS111" />
-        </div>
-        <div>
-          <label id="txSectionLabel">الشعبة</label>
-          <input class="input" id="section" placeholder="مثال: 1" />
-        </div>
-      </div>
+    <div class="hr"></div>
 
-      <div class="row" style="margin-top:10px">
-        <div>
-          <label id="txStartLabel">وقت البداية</label>
-          <input class="input" id="start" type="datetime-local" />
-        </div>
-        <div>
-          <label id="txEndLabel">وقت النهاية</label>
-          <input class="input" id="end" type="datetime-local" />
-        </div>
-      </div>
-
-      <div style="margin-top:10px">
-        <button class="btn primary" onclick="createLecture()">
-          <span class="spin" id="spCreate"></span>
-          <span id="txCreateBtn">إنشاء</span>
-        </button>
-      </div>
-
-      <div class="status" id="createStatus"></div>
-
-      <div class="hr"></div>
-
-      <h2 id="txWeekly">إنشاء جدول أسبوعي</h2>
-
-      <div class="row">
-        <div>
-          <label id="txCourse2">المقرر</label>
-          <input class="input" id="wCourse" placeholder="مثال: CS111" />
-        </div>
-        <div>
-          <label id="txSection2">الشعبة</label>
-          <input class="input" id="wSection" placeholder="مثال: 1" />
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:10px">
-        <div>
-          <label id="txFrom">من تاريخ</label>
-          <input class="input" id="fromDate" type="date" />
-        </div>
-        <div>
-          <label id="txTo">إلى تاريخ</label>
-          <input class="input" id="toDate" type="date" />
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:10px">
-        <div>
-          <label id="txStartTime">وقت البداية</label>
-          <input class="input" id="wStartTime" type="time" />
-        </div>
-        <div>
-          <label id="txEndTime">وقت النهاية</label>
-          <input class="input" id="wEndTime" type="time" />
-        </div>
-      </div>
-
-      <div style="margin-top:10px; color:#fff; opacity:.95; font-weight:800; font-size:13px" id="txDays">الأيام:</div>
-
-      <div class="row daysRow">
-        <label class="dayLbl"><input type="checkbox" class="day" value="0"> <span>Sun</span></label>
-        <label class="dayLbl"><input type="checkbox" class="day" value="1"> <span>Mon</span></label>
-        <label class="dayLbl"><input type="checkbox" class="day" value="2"> <span>Tue</span></label>
-        <label class="dayLbl"><input type="checkbox" class="day" value="3"> <span>Wed</span></label>
-        <label class="dayLbl"><input type="checkbox" class="day" value="4"> <span>Thu</span></label>
-      </div>
-
-      <div style="margin-top:10px">
-        <button class="btn primary" onclick="createSchedule()">
-          <span class="spin" id="spSchedule"></span>
-          <span id="txCreateSchedule">إنشاء الجدول</span>
-        </button>
-      </div>
-
-      <div class="status" id="scheduleStatus"></div>
+    <h2 id="txWeekly">Create Weekly Schedule</h2>
+    <div class="row">
+      <div><label id="txCourse2">Course</label><input class="input" id="wCourse"></div>
+      <div><label id="txSection2">Section</label><input class="input" id="wSection"></div>
     </div>
 
+    <div style="height:10px"></div>
+    <div class="row">
+      <div><label id="txFrom">From</label><input class="input" id="fromDate" type="date"></div>
+      <div><label id="txTo">To</label><input class="input" id="toDate" type="date"></div>
+    </div>
+
+    <div style="height:10px"></div>
+    <div class="row">
+      <div><label id="txStartTime">Start</label><input class="input" id="wStartTime" type="time"></div>
+      <div><label id="txEndTime">End</label><input class="input" id="wEndTime" type="time"></div>
+    </div>
+
+    <div style="height:10px"></div>
+    <label id="txDays">Days</label>
+    <div class="row" style="grid-template-columns: repeat(5, 1fr); gap:8px">
+      <label class="badge"><input type="checkbox" class="day" value="0"> Sun</label>
+      <label class="badge"><input type="checkbox" class="day" value="1"> Mon</label>
+      <label class="badge"><input type="checkbox" class="day" value="2"> Tue</label>
+      <label class="badge"><input type="checkbox" class="day" value="3"> Wed</label>
+      <label class="badge"><input type="checkbox" class="day" value="4"> Thu</label>
+    </div>
+
+    <div style="height:10px"></div>
+    <button class="btn primary" onclick="createWeekly()" id="txCreateSchedule">Create Schedule</button>
+    <div class="status" id="scheduleStatus"></div>
   </div>
 
   <div class="footer">Hather Attendance System © 2026</div>
 </div>
 
-<!-- QR Modal -->
-<div class="modal" id="qrModal" onclick="closeModal()">
-  <div class="modalCard" onclick="event.stopPropagation()">
-    <img id="qrBig" alt="QR Big">
+<!-- Modal (Zoom) -->
+<div class="hidden" id="modalBg" style="position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999">
+  <div class="card" style="width:min(560px, 95vw); text-align:center">
+    <img id="qrBig" style="width:min(420px, 84vw); border-radius:18px; border:1px solid rgba(255,255,255,.12)">
     <div style="height:12px"></div>
-    <button class="btn primary" onclick="closeModal()" id="txClose">إغلاق</button>
+    <button class="btn primary" onclick="closeModal()" id="txClose">Close</button>
   </div>
 </div>
 
 <script src="assets/app.js"></script>
 <script>
-  // i18n apply
-  function applyI18n(){
-    const lang = getLang();
-    document.documentElement.lang = lang;
-    document.documentElement.dir = (lang==="ar") ? "rtl" : "ltr";
+  applyDocumentLang();
 
-    $("searchBox").placeholder = t("searchPh");
-    $("pinInput").placeholder = t("pinPh");
+  // i18n
+  document.title = t("doctorPanel");
+  $("txDoctorPanel").textContent = t("doctorPanel");
+  $("txPinHint").textContent = t("pinHint");
+  $("pinInput").placeholder = t("pinPh");
+  $("txLogin").textContent = t("login");
 
-    $("txPinTitle").textContent = t("pinTitle");
-    $("txPinSub").textContent   = t("pinSub");
-    $("txLogin").textContent    = t("login");
-    $("txDoctorOnly").textContent = t("doctorOnly");
+  $("txHome").textContent = t("homeTitle");
+  $("txLogout").textContent = t("logout");
+  $("txRefresh").textContent = t("refresh");
+  $("searchBox").placeholder = t("searchPh");
+  $("txLectures").textContent = t("lectures");
+  $("txLectureCodeQr").textContent = t("lectureCodeQr");
+  $("txSelectedLecture").textContent = t("selectedLecture");
+  $("txGenCode").textContent = t("genCode");
+  $("txShowStudents").textContent = t("showStudents");
+  $("txDeleteLecture").textContent = t("deleteLecture");
+  $("txClearSel").textContent = t("clearSelection");
+  $("txStudentsOfLecture").textContent = t("studentsOfLecture");
+  $("txCreateLecture").textContent = t("createLecture");
+  $("txCourse").textContent = t("course");
+  $("txSection").textContent = t("section");
+  $("txStart").textContent = t("start");
+  $("txEnd").textContent = t("end");
+  $("txCourseLbl").textContent = t("course");
+  $("txSectionLbl").textContent = t("section");
+  $("txStartLbl").textContent = t("start");
+  $("txEndLbl").textContent = t("end");
+  $("txCreate").textContent = t("create");
+  $("txWeekly").textContent = t("weekly");
+  $("txCourse2").textContent = t("course");
+  $("txSection2").textContent = t("section");
+  $("txFrom").textContent = t("fromDate");
+  $("txTo").textContent = t("toDate");
+  $("txStartTime").textContent = t("startTime");
+  $("txEndTime").textContent = t("endTime");
+  $("txDays").textContent = t("days");
+  $("txCreateSchedule").textContent = t("createSchedule");
+  $("txZoom").textContent = t("zoom");
+  $("txClose").textContent = t("close");
 
-    $("txHome").textContent = t("home");
-    $("txLogout").textContent = t("logout");
-    $("txRefresh").textContent = t("refresh");
-    $("txLectures").textContent = t("lectures");
-    $("txSearchLabel").textContent = t("searchLabel");
-    $("txCodeQr").textContent = t("codeQr");
-    $("txSelectedLecture").textContent = t("selectedLecture");
-    $("txGenCode").textContent = t("genCode");
-    $("txStudents").textContent = t("students");
-    $("txDelete").textContent = t("deleteLecture");
-    $("txClearSel").textContent = t("clearSel");
-    $("txQrHint").textContent = t("qrHint");
-    $("txZoom").textContent = t("zoom");
-    $("txClose").textContent = t("close");
-    $("txCreateLecture").textContent = t("createLecture");
-    $("txCreateBtn").textContent = t("create");
-    $("txWeekly").textContent = t("weekly");
-    $("txDays").textContent = t("days");
-  }
-  applyI18n();
-
-  // UI helpers
-  let ALL_LECTURES = [];
-  let ACTIVE_ROW_ID = "";
+  // state
+  let LECTURES = [];
+  let ACTIVE_ID = "";
+  let LAST_QR_TEXT = "";
 
   function showStatus(el, type, msg){
-    el.className = "status show " + (type || "");
+    el.className = "status show " + (type||"");
     el.textContent = msg || "";
   }
   function hideStatus(el){
     el.className = "status";
     el.textContent = "";
   }
-  function setSpin(id, on){
-    const sp = $(id);
-    if (!sp) return;
-    sp.classList.toggle("show", !!on);
-  }
-
-  function togglePin(e){
-    e.preventDefault();
-    const inp = $("pinInput");
-    const btn = $("togglePinBtn");
-    if (inp.type === "password") { inp.type = "text"; btn.textContent = "***"; }
-    else { inp.type = "password"; btn.textContent = "👁️"; }
-  }
 
   function unlock(){
-    const pin = ($("pinInput").value || "").trim();
+    const pin = ($("pinInput").value||"").trim();
     const st = $("lockStatus");
     hideStatus(st);
-    setSpin("spUnlock", true);
 
-    setTimeout(() => {
-      setSpin("spUnlock", false);
-      if(pin !== DOCTOR_PIN){
-        showStatus(st, "bad", t("pinWrong"));
-        return;
-      }
-      $("lockScreen").classList.add("hidden");
-      $("app").classList.remove("hidden");
-      refreshAll();
-    }, 120);
+    if(pin !== DOCTOR_PIN){
+      showStatus(st, "bad", t("pinWrong"));
+      return;
+    }
+    $("lockCard").classList.add("hidden");
+    $("appCard").classList.remove("hidden");
+    refreshAll();
   }
 
-  function lockAgain(){
+  function logout(){
     $("pinInput").value = "";
-    $("lockScreen").classList.remove("hidden");
-    $("app").classList.add("hidden");
-  }
-
-  function goHome(){ location.href = "index.html"; }
-
-  function clearSelection(){
-    ACTIVE_ROW_ID = "";
-    $("selectedLectureId").value = "";
-    $("codeText").textContent = t("codeLabel") + "—";
-    $("qrImg").src = "";
-    $("studentRows").innerHTML = `<tr><td colspan="3">${t("selectFirst")}</td></tr>`;
-    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
+    $("appCard").classList.add("hidden");
+    $("lockCard").classList.remove("hidden");
   }
 
   function pickLecture(id){
-    ACTIVE_ROW_ID = id;
+    ACTIVE_ID = id;
     $("selectedLectureId").value = id;
-    $("studentRows").innerHTML = `<tr><td colspan="3">${t("students")}</td></tr>`;
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
     const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
     if(tr) tr.classList.add("active");
-  }
-
-  function applyFilter(){
-    const q = ($("searchBox").value || "").trim().toLowerCase();
-    const filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r=>{
-      const a = (r.lectureId||"").toLowerCase();
-      const b = (r.course||"").toLowerCase();
-      const c = (r.section||"").toLowerCase();
-      return a.includes(q) || b.includes(q) || c.includes(q);
-    });
-    renderLectures(filtered);
   }
 
   function renderLectures(rows){
@@ -385,9 +278,9 @@
       tbody.innerHTML = `<tr><td colspan="6">${t("noLectures")}</td></tr>`;
       return;
     }
-    tbody.innerHTML = rows.map(r => `
-      <tr data-id="${(r.lectureId||"")}" onclick="pickLecture('${(r.lectureId||"").replace(/'/g,"\\'")}')">
-        <td><b>${r.lectureId||""}</b></td>
+    tbody.innerHTML = rows.map(r=>`
+      <tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId.replace(/'/g,"\\'")}')">
+        <td><b>${r.lectureId}</b></td>
         <td>${r.course||""}</td>
         <td>${r.section||""}</td>
         <td>${r.start||""}</td>
@@ -397,109 +290,41 @@
     `).join("");
   }
 
-  async function refreshAll(){
-    await loadLectures();
-    try{ await fetch(API_URL + "?action=health").then(r=>r.json()); }catch(e){}
+  function applyFilter(){
+    const q = ($("searchBox").value||"").trim().toLowerCase();
+    const rows = !q ? LECTURES : LECTURES.filter(r=>{
+      return (r.lectureId||"").toLowerCase().includes(q)
+        || (r.course||"").toLowerCase().includes(q)
+        || (r.section||"").toLowerCase().includes(q);
+    });
+    renderLectures(rows);
   }
 
-  async function loadLectures(){
-    const tbody = $("lectureRows");
-    tbody.innerHTML = `<tr><td colspan="6">${t("loading")}</td></tr>`;
-
+  async function refreshAll(){
+    $("lectureRows").innerHTML = `<tr><td colspan="6">${t("loading")}</td></tr>`;
     let res;
     try{
       res = await apiCall({ action:"listLectures", doctorKey: DOCTOR_PIN });
     }catch(e){
-      tbody.innerHTML = `<tr><td colspan="6">${t("failApi")}</td></tr>`;
+      $("lectureRows").innerHTML = `<tr><td colspan="6">${t("failApi")}</td></tr>`;
       return;
     }
-
     if(!res || !res.ok){
-      tbody.innerHTML = `<tr><td colspan="6">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
+      $("lectureRows").innerHTML = `<tr><td colspan="6">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
       return;
     }
-
-    ALL_LECTURES = res.rows || [];
+    LECTURES = res.rows || [];
     applyFilter();
   }
 
-  async function createLecture(){
-    const st = $("createStatus");
-    hideStatus(st);
-
-    const course = ($("course").value||"").trim();
-    const section = ($("section").value||"").trim();
-    const start = ($("start").value||"").trim();
-    const end = ($("end").value||"").trim();
-
-    if(!course || !section || !start || !end){
-      showStatus(st, "bad", "Missing fields");
-      return;
-    }
-
-    setSpin("spCreate", true);
-    showStatus(st, "warn", t("loading"));
-
-    let res;
-    try{
-      res = await apiCall({ action:"createLecture", doctorKey: DOCTOR_PIN, course, section, start, end });
-    }catch(e){
-      setSpin("spCreate", false);
-      showStatus(st, "bad", t("failApi"));
-      return;
-    }
-
-    setSpin("spCreate", false);
-
-    if(res && res.ok){
-      showStatus(st, "ok", t("done"));
-      await loadLectures();
-    }else{
-      showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
-    }
-  }
-
-  async function createSchedule(){
-    const st = $("scheduleStatus");
-    hideStatus(st);
-
-    const course = ($("wCourse").value||"").trim();
-    const section = ($("wSection").value||"").trim();
-    const fromDate = ($("fromDate").value||"").trim();
-    const toDate = ($("toDate").value||"").trim();
-    const startTime = ($("wStartTime").value||"").trim();
-    const endTime = ($("wEndTime").value||"").trim();
-    const days = Array.from(document.querySelectorAll(".day:checked")).map(x=>Number(x.value));
-
-    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length===0){
-      showStatus(st, "bad", "Missing fields");
-      return;
-    }
-
-    setSpin("spSchedule", true);
-    showStatus(st, "warn", t("loading"));
-
-    let res;
-    try{
-      res = await apiCall({
-        action:"createWeeklySchedule",
-        doctorKey: DOCTOR_PIN,
-        course, section, fromDate, toDate, startTime, endTime, days
-      });
-    }catch(e){
-      setSpin("spSchedule", false);
-      showStatus(st, "bad", t("failApi"));
-      return;
-    }
-
-    setSpin("spSchedule", false);
-
-    if(res && res.ok){
-      showStatus(st, "ok", `Done ✅ (${res.created||0})`);
-      await loadLectures();
-    }else{
-      showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
-    }
+  function clearSelection(){
+    ACTIVE_ID = "";
+    LAST_QR_TEXT = "";
+    $("selectedLectureId").value = "";
+    $("qrImg").src = "";
+    $("codeText").textContent = t("codeLabel") + "—";
+    $("studentRows").innerHTML = `<tr><td colspan="3">—</td></tr>`;
+    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
   }
 
   async function generateCode(){
@@ -512,43 +337,40 @@
       return;
     }
 
-    setSpin("spCode", true);
     showStatus(st, "warn", t("loading"));
 
     let res;
     try{
       res = await apiCall({ action:"generateCode", doctorKey: DOCTOR_PIN, lectureId });
     }catch(e){
-      setSpin("spCode", false);
       showStatus(st, "bad", t("failApi"));
       return;
     }
-
-    setSpin("spCode", false);
-
-    if(res && res.ok){
-      showStatus(st, "ok", t("done"));
-      $("codeText").textContent = t("codeLabel") + (res.code || "—");
-
-      // ✅ يظهر دائما + بدون كاش
-      safeSetImg($("qrImg"), res.qrUrl || "");
-    }else{
-      showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+    if(!res || !res.ok){
+      showStatus(st, "bad", (res&&res.error)?res.error:"Failed");
+      return;
     }
+
+    showStatus(st, "ok", t("done"));
+    $("codeText").textContent = t("codeLabel") + (res.code || "—");
+
+    // ✅ QR: use qrText from API (most stable)
+    LAST_QR_TEXT = res.qrText || JSON.stringify({ lectureId, code: res.code||"" });
+    const qrUrl = buildQrUrl(LAST_QR_TEXT);
+    safeSetImg($("qrImg"), qrUrl);
   }
 
-  async function deleteSelectedLecture(){
-    const lectureId = ($("selectedLectureId").value||"").trim();
+  async function deleteLecture(){
     const st = $("codeStatus");
     hideStatus(st);
 
+    const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId){
       showStatus(st, "bad", t("selectFirst"));
       return;
     }
 
-    const ok = confirm(t("confirmDelete"));
-    if(!ok) return;
+    if(!confirm(t("confirmDelete"))) return;
 
     showStatus(st, "warn", t("loading"));
 
@@ -563,42 +385,39 @@
     if(res && res.ok){
       showStatus(st, "ok", t("deleted"));
       clearSelection();
-      await loadLectures(); // ✅ يحذفها من الجدول
+      refreshAll();
     }else{
-      showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+      showStatus(st, "bad", (res&&res.error)?res.error:"Failed");
     }
   }
 
   async function loadStudents(){
-    const tbody = $("studentRows");
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId){
-      tbody.innerHTML = `<tr><td colspan="3">${t("selectFirst")}</td></tr>`;
+      $("studentRows").innerHTML = `<tr><td colspan="3">${t("selectFirst")}</td></tr>`;
       return;
     }
-
-    tbody.innerHTML = `<tr><td colspan="3">${t("loading")}</td></tr>`;
+    $("studentRows").innerHTML = `<tr><td colspan="3">${t("loading")}</td></tr>`;
 
     let res;
     try{
       res = await apiCall({ action:"listStudentsForLecture", doctorKey: DOCTOR_PIN, lectureId });
     }catch(e){
-      tbody.innerHTML = `<tr><td colspan="3">${t("failApi")}</td></tr>`;
+      $("studentRows").innerHTML = `<tr><td colspan="3">${t("failApi")}</td></tr>`;
       return;
     }
-
     if(!res || !res.ok){
-      tbody.innerHTML = `<tr><td colspan="3">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
+      $("studentRows").innerHTML = `<tr><td colspan="3">${(res&&res.error)?res.error:"Failed"}</td></tr>`;
       return;
     }
 
     const rows = res.rows || [];
     if(rows.length === 0){
-      tbody.innerHTML = `<tr><td colspan="3">—</td></tr>`;
+      $("studentRows").innerHTML = `<tr><td colspan="3">—</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = rows.map(r => `
+    $("studentRows").innerHTML = rows.map(r=>`
       <tr>
         <td>${r.studentId||""}</td>
         <td>${r.name||""}</td>
@@ -607,16 +426,82 @@
     `).join("");
   }
 
-  function zoomQR(){
+  async function createLecture(){
+    const st = $("createStatus");
+    hideStatus(st);
+
+    const course = ($("course").value||"").trim();
+    const section = ($("section").value||"").trim();
+    const start = ($("start").value||"").trim();
+    const end = ($("end").value||"").trim();
+
+    if(!course||!section||!start||!end){
+      showStatus(st, "bad", t("invalid"));
+      return;
+    }
+
+    showStatus(st, "warn", t("loading"));
+    let res;
+    try{
+      res = await apiCall({ action:"createLecture", doctorKey: DOCTOR_PIN, course, section, start, end });
+    }catch(e){
+      showStatus(st, "bad", t("failApi"));
+      return;
+    }
+
+    if(res && res.ok){
+      showStatus(st, "ok", t("done"));
+      refreshAll();
+    }else{
+      showStatus(st, "bad", (res&&res.error)?res.error:"Failed");
+    }
+  }
+
+  async function createWeekly(){
+    const st = $("scheduleStatus");
+    hideStatus(st);
+
+    const course = ($("wCourse").value||"").trim();
+    const section = ($("wSection").value||"").trim();
+    const fromDate = ($("fromDate").value||"").trim();
+    const toDate = ($("toDate").value||"").trim();
+    const startTime = ($("wStartTime").value||"").trim();
+    const endTime = ($("wEndTime").value||"").trim();
+    const days = Array.from(document.querySelectorAll(".day:checked")).map(x=>Number(x.value));
+
+    if(!course||!section||!fromDate||!toDate||!startTime||!endTime||days.length===0){
+      showStatus(st, "bad", t("invalid"));
+      return;
+    }
+
+    showStatus(st, "warn", t("loading"));
+    let res;
+    try{
+      res = await apiCall({ action:"createWeeklySchedule", doctorKey: DOCTOR_PIN, course, section, fromDate, toDate, startTime, endTime, days });
+    }catch(e){
+      showStatus(st, "bad", t("failApi"));
+      return;
+    }
+
+    if(res && res.ok){
+      showStatus(st, "ok", t("done"));
+      refreshAll();
+    }else{
+      showStatus(st, "bad", (res&&res.error)?res.error:"Failed");
+    }
+  }
+
+  function zoomQr(){
     const src = $("qrImg").src;
     if(!src) return;
     $("qrBig").src = src;
-    $("qrModal").classList.add("show");
+    const bg = $("modalBg");
+    bg.style.display = "flex";
   }
   function closeModal(){
-    $("qrModal").classList.remove("show");
+    const bg = $("modalBg");
+    bg.style.display = "none";
   }
 </script>
-
 </body>
 </html>
