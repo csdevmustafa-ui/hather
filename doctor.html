@@ -108,6 +108,29 @@
       </table>
     </div>
 
+    <!-- ✅ تعديل حالة الطالب -->
+    <div class="hr"></div>
+    <h2 id="txEditStatusTitle">تعديل حالة طالب</h2>
+
+    <div class="row">
+      <div>
+        <label id="txSelectedStudent">StudentID المحدد</label>
+        <input class="input" id="selectedStudentId" placeholder="اضغط على طالب من الجدول" readonly>
+      </div>
+      <div>
+        <label id="txNewStatus">الحالة الجديدة</label>
+        <select class="input" id="newStatus">
+          <option value="حضور">حضور</option>
+          <option value="تأخير">تأخير</option>
+          <option value="غياب">غياب</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="height:10px"></div>
+    <button class="btn primary" onclick="updateStatus()" id="txUpdateStatusBtn">تحديث الحالة</button>
+    <div class="status" id="statusEditMsg"></div>
+
     <div class="hr"></div>
 
     <h2 id="txCreateLecture">Create Lecture</h2>
@@ -230,6 +253,22 @@
   $("txZoom").textContent = t("zoom");
   $("txClose").textContent = t("close");
 
+  // Status editor labels
+  $("txEditStatusTitle").textContent = (getLang()==="ar") ? "تعديل حالة طالب" : "Edit Student Status";
+  $("txSelectedStudent").textContent = (getLang()==="ar") ? "StudentID المحدد" : "Selected StudentID";
+  $("txNewStatus").textContent = (getLang()==="ar") ? "الحالة الجديدة" : "New Status";
+  $("txUpdateStatusBtn").textContent = (getLang()==="ar") ? "تحديث الحالة" : "Update Status";
+
+  if(getLang()==="en"){
+    // translate select options quickly
+    // Keep values Arabic because backend uses Arabic statuses in your system
+    // Only change visible text:
+    const sel = $("newStatus");
+    sel.options[0].text = "Present";
+    sel.options[1].text = "Late";
+    sel.options[2].text = "Absent";
+  }
+
   // state
   let LECTURES = [];
   let ACTIVE_ID = "";
@@ -324,6 +363,7 @@
     $("qrImg").src = "";
     $("codeText").textContent = t("codeLabel") + "—";
     $("studentRows").innerHTML = `<tr><td colspan="3">—</td></tr>`;
+    $("selectedStudentId").value = "";
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
   }
 
@@ -354,7 +394,6 @@
     showStatus(st, "ok", t("done"));
     $("codeText").textContent = t("codeLabel") + (res.code || "—");
 
-    // ✅ QR: use qrText from API (most stable)
     LAST_QR_TEXT = res.qrText || JSON.stringify({ lectureId, code: res.code||"" });
     const qrUrl = buildQrUrl(LAST_QR_TEXT);
     safeSetImg($("qrImg"), qrUrl);
@@ -391,6 +430,7 @@
     }
   }
 
+  // ✅ تحميل الطلاب + اختيار طالب بالضغط
   async function loadStudents(){
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId){
@@ -412,18 +452,73 @@
     }
 
     const rows = res.rows || [];
+    const tb = $("studentRows");
     if(rows.length === 0){
-      $("studentRows").innerHTML = `<tr><td colspan="3">—</td></tr>`;
+      tb.innerHTML = `<tr><td colspan="3">—</td></tr>`;
       return;
     }
 
-    $("studentRows").innerHTML = rows.map(r=>`
-      <tr>
+    tb.innerHTML = rows.map(r=>`
+      <tr onclick="pickStudent('${String(r.studentId||"").replace(/'/g,"\\'")}', '${String(r.status||"").replace(/'/g,"\\'")}')">
         <td>${r.studentId||""}</td>
         <td>${r.name||""}</td>
         <td>${r.status||""}</td>
       </tr>
     `).join("");
+  }
+
+  // ✅ اختيار طالب
+  function pickStudent(studentId, statusText){
+    $("selectedStudentId").value = studentId || "";
+    // set dropdown based on Arabic value
+    const sel = $("newStatus");
+    const val = (statusText||"").trim();
+    if(val === "حضور" || val === "تأخير" || val === "غياب") sel.value = val;
+    else sel.value = "حضور";
+
+    const m = $("statusEditMsg");
+    m.className = "status show warn";
+    m.textContent = (getLang()==="ar")
+      ? `تم تحديد الطالب: ${studentId}`
+      : `Selected: ${studentId}`;
+  }
+
+  // ✅ تحديث حالة طالب
+  async function updateStatus(){
+    const msg = $("statusEditMsg");
+    msg.className = "status";
+    msg.textContent = "";
+
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    const studentId = ($("selectedStudentId").value||"").trim();
+    const status = ($("newStatus").value||"").trim();
+
+    if(!lectureId){
+      showStatus(msg, "bad", t("selectFirst"));
+      return;
+    }
+    if(!studentId){
+      showStatus(msg, "bad", (getLang()==="ar") ? "اختر طالب من الجدول أولاً" : "Select a student first");
+      return;
+    }
+
+    showStatus(msg, "warn", t("loading"));
+
+    let res;
+    try{
+      res = await apiCall({ action:"updateAttendanceStatus", doctorKey: DOCTOR_PIN, lectureId, studentId, status });
+    }catch(e){
+      showStatus(msg, "bad", t("failApi"));
+      return;
+    }
+
+    if(res && res.ok){
+      showStatus(msg, "ok", (getLang()==="ar") ? "تم تحديث الحالة ✅" : "Updated ✅");
+      // refresh student list to show new status
+      loadStudents();
+    }else{
+      showStatus(msg, "bad", (res&&res.error)?res.error:"Failed");
+    }
   }
 
   async function createLecture(){
