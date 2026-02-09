@@ -6,40 +6,62 @@
   <title>Hather</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <div class="container">
-    <div class="top">
-      <div>
-        <h1>Hather - نظام الحضور</h1>
-        <p>اختر القسم</p>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">✅</div>
+        <div>
+          <h1 id="txHomeTitle">Hather Attendance</h1>
+          <p id="txHomeDesc">نظام حضور باستخدام QR</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <!-- ✅ زر اللغة هنا فقط -->
+        <span class="badge" id="txLang">اللغة</span>
+        <button class="btn" onclick="setLangAndReload('ar')" id="btnAr">العربية</button>
+        <button class="btn" onclick="setLangAndReload('en')" id="btnEn">English</button>
       </div>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h2 style="margin:0 0 10px">قسم الطالب</h2>
-        <p class="small">تسجيل حضور بالكود أو QR</p>
-        <div style="height:10px"></div>
-        <button class="btn primary" onclick="location.href='student.html'">فتح</button>
+    <div class="hr"></div>
+
+    <div class="card">
+      <div class="row">
+        <button class="btn primary" onclick="location.href='doctor.html'" id="txGoDoctor">دخول الدكتور</button>
+        <button class="btn primary" onclick="location.href='student.html'" id="txGoStudent">قسم الطالب</button>
       </div>
 
-      <div class="card">
-        <h2 style="margin:0 0 10px">لوحة عضو هيئة التدريس</h2>
-        <p class="small">إدارة المحاضرات + توليد رموز + عرض الطلاب</p>
-        <div style="height:10px"></div>
-        <button class="btn primary" onclick="location.href='doctor.html'">فتح</button>
-      </div>
+      <div style="height:10px"></div>
 
-      <div class="card">
-        <h2 style="margin:0 0 10px">التقارير</h2>
-        <p class="small">الطالب: تقريره — الدكتور: تقرير مقرر بالـ PIN</p>
-        <div style="height:10px"></div>
-        <button class="btn primary" onclick="location.href='reports.html'">فتح</button>
+      <div class="row">
+        <button class="btn" onclick="location.href='student-report.html'" id="txGoStudentReport">تقرير الطالب</button>
+        <button class="btn" onclick="location.href='reports.html'" id="txGoReports">تقارير المقرر (للدكتور)</button>
       </div>
     </div>
+
+    <div class="footer">Hather Attendance System © 2026</div>
   </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    applyDocumentLang();
+
+    // i18n
+    document.title = t("appName");
+    $("txHomeTitle").textContent = t("homeTitle");
+    $("txHomeDesc").textContent  = t("homeDesc");
+    $("txGoDoctor").textContent  = t("goDoctor");
+    $("txGoStudent").textContent = t("goStudent");
+    $("txGoStudentReport").textContent = t("goStudentReport");
+    $("txGoReports").textContent = t("goReports");
+    $("txLang").textContent = t("lang");
+    $("btnAr").textContent = t("arabic");
+    $("btnEn").textContent = t("english");
+  </script>
 </body>
 </html>
