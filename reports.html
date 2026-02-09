@@ -1,124 +1,225 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>التقارير - Hather</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=1" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reports - Hather</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=3">
-  <script src="assets/app.js?v=3"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-
 <div class="container">
-  <div class="glass topbar">
-    <div class="brand">
-      <div class="logo">📊</div>
-      <div class="brandTitle">
-        <h1 data-i18n="reports">التقارير</h1>
-        <p>طالب + مقرر (للدكتور)</p>
+  <div class="top">
+    <div>
+      <h1>التقارير</h1>
+      <p>الطالب: تقريره بالرقم الجامعي — الدكتور: تقرير مقرر بالـ PIN</p>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">📈</div>
+        <div>
+          <h1 id="txTitle">تقارير المقرر (للدكتور)</h1>
+          <p id="txHint">ملخص حضور لكل طالب</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="location.href='index.html'">Home</button>
       </div>
     </div>
-    <div class="actions">
-      <a class="btn" href="index.html"><span data-i18n="back_home">الرئيسية</span></a>
-      <a class="btn" href="student-report.html"><span data-i18n="student_report">تقرير الطالب</span></a>
-    </div>
+    <button class="btn" onclick="location.href='index.html'">رجوع</button>
   </div>
 
   <div class="grid">
-    <div class="glass card" style="margin-top:16px;">
-      <h2 data-i18n="course_report">تقرير مقرر</h2>
-      <label>PIN (Doctor)</label>
-      <input class="input" id="pin" placeholder="PIN" type="password" />
+
+    <div class="card">
+      <h2 style="margin:0 0 10px">تقارير الطالب</h2>
+      <label>StudentID</label>
+      <input id="sid" class="input" placeholder="مثال: 202311644" inputmode="numeric" />
+      <div style="height:10px"></div>
+      <button class="btn primary" onclick="openStudentReport()">فتح التقرير</button>
+      <div class="small">يفتح صفحة student-report.html</div>
+    </div>
+    <div class="hr"></div>
+
+    <div class="card">
+      <h2 style="margin:0 0 10px">تقارير الدكتور</h2>
+
+      <label>PIN</label>
+      <div style="display:flex; gap:8px">
+        <input id="pin" class="input" type="password" placeholder="PIN" />
+        <button class="btn" onclick="togglePin()">👁️</button>
+      <div class="row">
+        <div>
+          <label>PIN</label>
+          <input class="input" id="pin" type="password" inputmode="numeric" placeholder="PIN">
+        </div>
+        <div>
+          <label id="txCourse">كود المقرر</label>
+          <input class="input" id="course" placeholder="مثال: CS111">
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+      <button class="btn primary" onclick="loadCourse()" id="txLoad">عرض تقرير المقرر</button>
+
+      <label>رمز المقرر (Course)</label>
+      <input id="course" class="input" placeholder="مثال: CS111" />
+
       <div style="height:10px"></div>
 
-      <label>Course</label>
-      <input class="input" id="course" placeholder="مثال: CS111" />
-      <div style="height:10px"></div>
+      <button class="btn primary" onclick="loadCourseReport()">عرض تقرير المقرر</button>
 
-      <button class="btn primary" onclick="loadCourse()">عرض</button>
+      <div id="st" class="status"></div>
       <div class="status" id="st"></div>
 
       <div class="hr"></div>
 
+      <div class="table-wrap">
+        <table class="table" style="min-width:720px">
+      <div class="badge" id="meta">—</div>
+
+      <div style="height:12px"></div>
       <div class="tableWrap">
-        <table style="min-width:700px">
+        <table>
           <thead>
             <tr>
               <th>StudentID</th>
+              <th>الاسم</th>
+              <th>حضور</th>
+              <th>تأخير</th>
+              <th>غياب</th>
               <th>Name</th>
-              <th>Present</th>
-              <th>Late</th>
-              <th>Absent</th>
+              <th id="txPresent">حضور</th>
+              <th id="txLate">تأخير</th>
+              <th id="txAbsent">غياب</th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="5">اكتب PIN + Course ثم اضغط عرض.</td></tr>
+            <tr><td colspan="5">—</td></tr>
           </tbody>
         </table>
       </div>
+
     </div>
 
-    <div class="glass card" style="margin-top:16px;">
-      <h2>روابط سريعة</h2>
-      <a class="btn primary" href="student-report.html">تقرير الطالب</a>
-      <a class="btn" href="doctor.html">واجهة الدكتور</a>
-      <a class="btn" href="student.html">واجهة الطالب</a>
-      <div class="hr"></div>
-      <p style="margin:0;color:rgba(255,255,255,.72);font-size:12px;line-height:1.7;">
-        اللغة تُحدد من الصفحة الرئيسية فقط.
-      </p>
-    </div>
+    <div class="footer">Hather Attendance System © 2026</div>
   </div>
-
-  <div class="footer">Hather Attendance System © 2026</div>
 </div>
 
+<script src="assets/app.js?v=1"></script>
 <script>
-  HATHER.applyI18n();
-  const $ = HATHER.qs;
+function openStudentReport(){
+  const sid = ($("sid").value||"").trim();
+  if(!sid) return alert("أدخل StudentID");
+  location.href = "student-report.html?sid=" + encodeURIComponent(sid);
+}
 
-  function show(type,msg){
-    const st=$("st"); st.className="status show "+(type||""); st.textContent=msg||"";
+function togglePin(){
+  const inp = $("pin");
+  inp.type = (inp.type === "password") ? "text" : "password";
+}
+
+async function loadCourseReport(){
+  const pin = ($("pin").value||"").trim();
+  const course = ($("course").value||"").trim().toUpperCase();
+  const st = $("st");
+
+  if(!pin){ showStatus(st,"bad","أدخل PIN"); return; }
+  if(!course){ showStatus(st,"bad","أدخل رمز المقرر"); return; }
+
+  showStatus(st,"warn","جاري التحميل...");
+
+  const res = await apiCall({ action:"doctorCourseReport", doctorKey: pin, course });
+
+  if(!res || !res.ok){
+    showStatus(st,"bad",(res&&res.error)?res.error:"Failed");
+    return;
   }
-  function hide(){ const st=$("st"); st.className="status"; st.textContent=""; }
 
-  async function loadCourse(){
-    hide();
-    const doctorKey = ($("pin").value||"").trim();
-    const course = ($("course").value||"").trim();
-    if(!doctorKey){ show("bad","اكتب PIN"); return; }
-    if(!course){ show("bad","اكتب Course"); return; }
+  showStatus(st,"ok","تم ✅");
 
-    try{
-      const res = await HATHER.apiPost({ action:"courseReport", doctorKey, course });
-      if(!res || !res.ok){
-        show("bad", (res && res.error) ? res.error : "Failed");
+  const rows = res.rows || [];
+  $("rows").innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td>${r.studentId||""}</td>
+      <td>${r.name||""}</td>
+      <td>${r.present||0}</td>
+      <td>${r.late||0}</td>
+      <td>${r.absent||0}</td>
+    </tr>
+  `).join("") : `<tr><td colspan="5">لا يوجد بيانات</td></tr>`;
+}
+</script>
+
+  <script src="assets/app.js"></script>
+  <script>
+    applyDocumentLang();
+
+    document.title = t("reportsTitle");
+    $("txTitle").textContent = t("reportsTitle");
+    $("txCourse").textContent = t("courseCode");
+    $("txLoad").textContent = t("loadCourseReport");
+    $("txPresent").textContent = t("present");
+    $("txLate").textContent = t("late");
+    $("txAbsent").textContent = t("absent");
+
+    function show(type, msg){
+      const el = $("st");
+      el.className = "status show " + (type||"");
+      el.textContent = msg || "";
+    }
+
+    async function loadCourse(){
+      const pin = ($("pin").value||"").trim();
+      const course = ($("course").value||"").trim();
+      if(!pin || !course){ show("bad", t("invalid")); return; }
+      if(pin !== DOCTOR_PIN){ show("bad", t("pinWrong")); return; }
+
+      show("warn", t("loading"));
+
+      let res;
+      try{
+        res = await apiCall({ action:"courseReport", doctorKey: pin, course });
+      }catch(e){
+        show("bad", t("failApi"));
         return;
       }
+
+      if(!res || !res.ok){
+        show("bad", (res&&res.error)?res.error:"Failed");
+        return;
+      }
+
+      show("ok", t("done"));
+      $("meta").textContent = `${t("courseCode")}: ${res.course} — ${t("lecturesCount")}: ${res.lectures}`;
+
       const rows = res.rows || [];
       const tb = $("rows");
-      if(rows.length===0){
-        tb.innerHTML = `<tr><td colspan="5">لا توجد بيانات</td></tr>`;
+      if(rows.length === 0){
+        tb.innerHTML = `<tr><td colspan="5">—</td></tr>`;
         return;
       }
+
       tb.innerHTML = rows.map(r=>`
         <tr>
           <td>${r.studentId||""}</td>
           <td>${r.name||""}</td>
-          <td>${r.present||0}</td>
-          <td>${r.late||0}</td>
-          <td>${r.absent||0}</td>
+          <td>${r.present ?? 0}</td>
+          <td>${r.late ?? 0}</td>
+          <td>${r.absent ?? 0}</td>
         </tr>
       `).join("");
-      show("ok","تم ✅");
-    }catch(e){
-      show("bad", HATHER.t("error_api"));
     }
-  }
-</script>
-
+  </script>
 </body>
 </html>
