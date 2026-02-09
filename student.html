@@ -1,121 +1,121 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>قسم الطالب - Hather</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student - Hather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<div class="container">
-  <div class="top">
-    <div>
-      <h1>قسم الطالب — تسجيل الحضور</h1>
-      <p>اكتب StudentID ثم سجّل بالكود أو امسح QR</p>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🎓</div>
+        <div>
+          <h1 id="txTitle">قسم الطالب</h1>
+          <p id="txHint">سجّل حضورك بإدخال الكود</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="location.href='index.html'">Home</button>
+      </div>
     </div>
-    <button class="btn" onclick="location.href='index.html'">رجوع</button>
-  </div>
 
-  <div class="grid">
+    <div class="hr"></div>
+
     <div class="card">
-      <h3 style="margin:0 0 10px;font-weight:900">التسجيل بالكود</h3>
-
-      <label>StudentID</label>
-      <input id="studentId" class="input" placeholder="مثال: 202311644" inputmode="numeric" maxlength="12"/>
+      <label id="txStudentId">رقم الطالب</label>
+      <input class="input" id="studentId" placeholder="مثال: 44123">
 
       <div style="height:10px"></div>
 
-      <label>Code / QR Text</label>
-      <input id="codeInput" class="input" placeholder="مثال: 123456 أو نص QR" />
+      <label id="txLectureId">LectureID (اختياري)</label>
+      <input class="input" id="lectureId" placeholder="مثال: L177...">
 
       <div style="height:10px"></div>
 
-      <button class="btn primary" onclick="checkin()">تسجيل الحضور</button>
+      <label id="txCode">الكود</label>
+      <input class="input" id="code" placeholder="مثال: 123456">
 
-      <div id="status1" class="status"></div>
-      <div class="small">QR يحتوي JSON {lectureId, code} — النظام يتعامل معه تلقائيًا.</div>
-    </div>
+      <div style="height:12px"></div>
 
-    <div class="card">
-      <h3 style="margin:0 0 10px;font-weight:900">التسجيل بالباركود (QR)</h3>
-
-      <div id="qrReader" class="card" style="margin:0; min-height:280px; display:grid; place-items:center">
-        <div class="small">اضغط تشغيل الكاميرا</div>
+      <div class="row">
+        <button class="btn primary" onclick="checkin()" id="txCheckin">تسجيل حضور</button>
+        <button class="btn" onclick="pasteQrJson()" id="txPasteQr">لصق QR JSON</button>
       </div>
 
       <div style="height:10px"></div>
+      <p id="txQrHint">الصق نص QR (اختياري) لتعبئة LectureID والكود تلقائيًا</p>
 
-      <button class="btn primary" onclick="startScan()">تشغيل الكاميرا</button>
-      <button class="btn" onclick="stopScan()">إيقاف</button>
-
-      <div id="status2" class="status"></div>
-      <div class="small">اسمح للمتصفح باستخدام الكاميرا.</div>
+      <div class="status" id="st"></div>
     </div>
+
+    <div class="footer">Hather Attendance System © 2026</div>
   </div>
-</div>
 
-<script src="assets/app.js?v=1"></script>
-<script src="https://unpkg.com/html5-qrcode"></script>
-<script>
-let qr = null;
+  <script src="assets/app.js"></script>
+  <script>
+    applyDocumentLang();
 
-async function checkin(codeOverride){
-  const sid = ($("studentId").value||"").trim();
-  const raw = (codeOverride!=null ? codeOverride : $("codeInput").value||"");
-  const parsed = parseQRorCode(raw);
+    document.title = t("studentTitle");
+    $("txTitle").textContent = t("studentTitle");
+    $("txStudentId").textContent = t("studentId");
+    $("txLectureId").textContent = t("lectureIdOptional");
+    $("txCode").textContent = t("code");
+    $("txCheckin").textContent = t("checkin");
+    $("txPasteQr").textContent = t("pasteQr");
+    $("txQrHint").textContent = t("qrPasteHint");
 
-  if(!sid){ showStatus($("status1"),"bad","❌ أدخل StudentID"); return; }
-  if(!parsed.code){ showStatus($("status1"),"bad","❌ أدخل الكود"); return; }
+    function show(type, msg){
+      const el = $("st");
+      el.className = "status show " + (type||"");
+      el.textContent = msg || "";
+    }
 
-  showStatus($("status1"),"warn","⏳ جاري تسجيل الحضور...");
-  const res = await apiCall({
-    action:"studentCheckin",
-    studentId:sid,
-    code: parsed.code,
-    lectureId: parsed.lectureId
-  });
-
-  if(res && res.ok){
-    showStatus($("status1"),"ok",`✅ تم تسجيل حضورك — LectureID: ${res.lectureId||parsed.lectureId||""}`);
-    $("codeInput").value = "";
-  }else{
-    showStatus($("status1"),"bad","❌ " + ((res && res.error) || "Failed"));
-  }
-}
-
-async function startScan(){
-  const sid = ($("studentId").value||"").trim();
-  if(!sid){ showStatus($("status2"),"bad","❌ أدخل StudentID أولاً"); return; }
-
-  if(!qr) qr = new Html5Qrcode("qrReader");
-  showStatus($("status2"),"warn","⏳ تشغيل الكاميرا...");
-
-  try{
-    await qr.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 240, height: 240 } },
-      async (decodedText) => {
-        showStatus($("status2"),"ok","✅ تم قراءة QR — جاري التسجيل...");
-        await checkin(decodedText);
-        await stopScan();
+    async function pasteQrJson(){
+      try{
+        const text = await navigator.clipboard.readText();
+        if(!text) { show("bad", "Clipboard empty"); return; }
+        // try parse JSON
+        let obj = null;
+        try { obj = JSON.parse(text); } catch(e){}
+        if(obj && obj.lectureId) $("lectureId").value = obj.lectureId;
+        if(obj && obj.code) $("code").value = obj.code;
+        if(!obj) show("warn", "Pasted (not JSON).");
+        else show("ok", "OK ✅");
+      }catch(e){
+        show("bad", "Clipboard not allowed");
       }
-    );
-    showStatus($("status2"),"ok","📷 الكاميرا تعمل — وجّهها على QR");
-  }catch(e){
-    showStatus($("status2"),"bad","❌ فشل تشغيل الكاميرا — تأكد من السماح");
-  }
-}
+    }
 
-async function stopScan(){
-  if(qr){
-    try{ await qr.stop(); await qr.clear(); }catch(e){}
-  }
-  showStatus($("status2"),"", "—");
-}
-</script>
+    async function checkin(){
+      const studentId = ($("studentId").value||"").trim();
+      const lectureId = ($("lectureId").value||"").trim();
+      const code = ($("code").value||"").trim();
+
+      if(!studentId || !code){
+        show("bad", t("invalid"));
+        return;
+      }
+
+      show("warn", t("loading"));
+      let res;
+      try{
+        res = await apiCall({ action:"studentCheckin", studentId, lectureId, code });
+      }catch(e){
+        show("bad", t("failApi"));
+        return;
+      }
+
+      if(res && res.ok){
+        show("ok", t("success"));
+      }else{
+        show("bad", (res && res.error) ? res.error : "Failed");
+      }
+    }
+  </script>
 </body>
 </html>
