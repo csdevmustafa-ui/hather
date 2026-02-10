@@ -1,18 +1,27 @@
 /***********************
  * assets/qr.js
- * Client-side QR generator (no external QR API)
- * Requires: https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js
+ * Robust QR renderer with fallback (always shows an image)
+ * Primary: local QRCode library (qrcode.min.js)
+ * Fallback: remote QR image service
  ***********************/
 
-async function makeQrDataUrl(text, size = 360) {
-  if (typeof QRCode === "undefined") {
-    throw new Error("مكتبة QRCode غير محمّلة. تأكد أنك أضفت رابط qrcode.min.js");
-  }
+function qrFallbackUrl_(text, size = 360) {
+  const t = String(text || "").trim();
+  const s = Math.max(120, Number(size) || 360);
+  // خدمة QR عامة (تشتغل كصورة مباشرة)
+  return "https://api.qrserver.com/v1/create-qr-code/?size=" + s + "x" + s + "&data=" + encodeURIComponent(t);
+}
 
+async function makeQrDataUrl(text, size = 360) {
   const t = String(text || "").trim();
   if (!t) throw new Error("qr text فارغ");
 
-  // QRCode.toDataURL from qrcode library
+  // إذا مكتبة QRCode مو موجودة → ارجع رابط صورة جاهز
+  if (typeof QRCode === "undefined" || !QRCode || typeof QRCode.toDataURL !== "function") {
+    return qrFallbackUrl_(t, size);
+  }
+
+  // توليد محلي
   return await QRCode.toDataURL(t, {
     width: size,
     margin: 1,
@@ -20,11 +29,15 @@ async function makeQrDataUrl(text, size = 360) {
   });
 }
 
-/**
- * Render QR into <img> and return dataURL
- */
 async function renderQrToImg(imgEl, text, size = 360) {
-  const dataUrl = await makeQrDataUrl(text, size);
-  imgEl.src = dataUrl;
-  return dataUrl;
+  const t = String(text || "").trim();
+  if (!t) throw new Error("qr text فارغ");
+
+  const urlOrData = await makeQrDataUrl(t, size);
+
+  // لو dataURL أو رابط خدمة: الاثنين ينحطون في src
+  imgEl.src = urlOrData;
+
+  // لو خدمة خارجية، أحيانًا المتصفح يحتاج وقت — نرجع نفس القيمة
+  return urlOrData;
 }
