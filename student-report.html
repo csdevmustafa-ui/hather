@@ -2,117 +2,201 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Report - Hather</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تقرير الطالب - Hather</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=1">
-  <script src="assets/app.js?v=1"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"Cairo", sans-serif;
+      background:linear-gradient(135deg,#062716,#0f5a34);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .card{
+      width:min(520px,92vw);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:22px;
+      padding:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      backdrop-filter:blur(12px);
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:20px;
+      font-weight:800;
+      text-align:center;
+    }
+    p{
+      margin:0 0 18px;
+      text-align:center;
+      opacity:.85;
+      font-size:14px;
+    }
+    label{
+      font-size:13px;
+      margin-bottom:6px;
+      display:block;
+    }
+    input{
+      width:100%;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.2);
+      background:rgba(0,0,0,.25);
+      color:#fff;
+      font-size:15px;
+      outline:none;
+    }
+    button{
+      width:100%;
+      margin-top:14px;
+      padding:14px;
+      border-radius:16px;
+      border:none;
+      background:linear-gradient(135deg,#18c26b,#11a85b);
+      color:#06210f;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+    }
+    button:hover{ opacity:.9; }
+
+    .status{
+      margin-top:12px;
+      padding:10px;
+      border-radius:14px;
+      font-size:13px;
+      display:none;
+    }
+    .status.show{ display:block; }
+    .status.ok{ background:rgba(82,255,162,.15); border:1px solid rgba(82,255,162,.4); }
+    .status.bad{ background:rgba(255,93,93,.15); border:1px solid rgba(255,93,93,.4); }
+
+    table{
+      width:100%;
+      margin-top:16px;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+    th,td{
+      padding:10px;
+      border-bottom:1px solid rgba(255,255,255,.15);
+      text-align:center;
+    }
+    th{ font-weight:800; opacity:.9; }
+
+    .summary{
+      display:flex;
+      gap:10px;
+      margin-top:16px;
+      justify-content:space-between;
+      font-size:13px;
+    }
+    .pill{
+      flex:1;
+      padding:10px;
+      border-radius:14px;
+      text-align:center;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.15);
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container">
-  <div class="glass topbar">
-    <div class="brand">
-      <div class="logo">🧾</div>
-      <div class="brandTitle">
-        <h1 data-i18n="student_report">تقرير الطالب</h1>
-        <p data-i18n="app_name">Hather</p>
-      </div>
-    </div>
-    <div class="actions">
-      <a class="btn" href="index.html"><span data-i18n="back_home">الرئيسية</span></a>
-      <a class="btn" href="student.html"><span data-i18n="student">الطالب</span></a>
-    </div>
+<div class="card">
+  <h1>تقرير الحضور</h1>
+  <p>أدخل رقمك الجامعي لعرض سجل حضورك</p>
+
+  <label>الرقم الجامعي</label>
+  <input id="studentId" placeholder="مثال: 441012345"/>
+
+  <button onclick="loadReport()">عرض التقرير</button>
+
+  <div id="status" class="status"></div>
+
+  <div id="summary" class="summary" style="display:none">
+    <div class="pill">حضور: <b id="sPresent">0</b></div>
+    <div class="pill">تأخير: <b id="sLate">0</b></div>
+    <div class="pill">غياب: <b id="sAbsent">0</b></div>
   </div>
 
-  <div class="glass card" style="margin-top:16px;">
-    <h2 data-i18n="student_report">تقرير الطالب</h2>
-
-    <div class="row">
-      <div>
-        <label data-i18n="student_id">الرقم الجامعي</label>
-        <input class="input" id="studentId" placeholder="Student ID" />
-      </div>
-      <div style="display:flex; align-items:end;">
-        <button class="btn primary" onclick="load()"><span data-i18n="view">عرض</span></button>
-      </div>
-    </div>
-
-    <div class="status" id="st"></div>
-
-    <div class="hr"></div>
-
-    <div class="row">
-      <div class="pill" id="p1">Present: 0</div>
-      <div class="pill" id="p2">Late: 0</div>
-      <div class="pill" id="p3">Absent: 0</div>
-    </div>
-
-    <div style="height:12px"></div>
-
-    <div class="tableWrap">
-      <table style="min-width:560px">
-        <thead>
-          <tr>
-            <th>LectureID</th>
-            <th>Time</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="rows">
-          <tr><td colspan="3" data-i18n="no_data">لا توجد بيانات</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="footer">Hather Attendance System © 2026</div>
+  <table id="table" style="display:none">
+    <thead>
+      <tr>
+        <th>LectureID</th>
+        <th>الوقت</th>
+        <th>الحالة</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
 </div>
 
+<script src="assets/app.js"></script>
 <script>
-  HATHER.applyI18n();
-  const $ = HATHER.qs;
+  const $ = (id)=>document.getElementById(id);
 
-  function show(type,msg){
-    const s=$("st"); s.className="status show "+(type||""); s.textContent=msg||"";
+  function showStatus(type,msg){
+    const s = $("status");
+    s.className = "status show " + type;
+    s.textContent = msg;
   }
-  function hide(){ const s=$("st"); s.className="status"; s.textContent=""; }
 
-  async function load(){
-    hide();
-    const studentId = ($("studentId").value||"").trim();
-    if(!studentId){ show("bad","Student ID"); return; }
+  async function loadReport(){
+    const studentId = $("studentId").value.trim();
+    if(!studentId){
+      showStatus("bad","أدخل الرقم الجامعي");
+      return;
+    }
+
+    showStatus("ok","جاري تحميل التقرير...");
+    $("table").style.display="none";
+    $("summary").style.display="none";
 
     try{
-      const res = await HATHER.apiPost({ action:"studentReport", studentId });
+      const res = await fetch(API_URL,{
+        method:"POST",
+        body:JSON.stringify({
+          action:"studentReport",
+          studentId
+        })
+      }).then(r=>r.json());
+
       if(!res || !res.ok){
-        show("bad", (res && res.error) ? res.error : "Failed");
-        return;
+        throw new Error(res?.error || "فشل جلب البيانات");
       }
 
-      const d = res.data || {};
-      $("p1").textContent = "Present: " + (d.present||0);
-      $("p2").textContent = "Late: " + (d.late||0);
-      $("p3").textContent = "Absent: " + (d.absent||0);
+      const d = res.data;
+      $("sPresent").textContent = d.present;
+      $("sLate").textContent = d.late;
+      $("sAbsent").textContent = d.absent;
+
+      $("summary").style.display="flex";
 
       const rows = d.rows || [];
-      const tb = $("rows");
-      if(rows.length===0){
-        tb.innerHTML = `<tr><td colspan="3">${HATHER.t("no_data")}</td></tr>`;
-        return;
-      }
-      tb.innerHTML = rows.map(r=>`
+      $("rows").innerHTML = rows.map(r=>`
         <tr>
-          <td>${r.lectureId||""}</td>
-          <td>${r.time||""}</td>
-          <td>${r.status||""}</td>
+          <td>${r.lectureId}</td>
+          <td>${r.time}</td>
+          <td>${r.status}</td>
         </tr>
       `).join("");
-      show("ok","OK");
+
+      $("table").style.display = rows.length ? "table" : "none";
+      showStatus("ok","تم تحميل التقرير بنجاح");
     }catch(e){
-      show("bad", HATHER.t("api_error"));
+      showStatus("bad",e.message);
     }
   }
 </script>
