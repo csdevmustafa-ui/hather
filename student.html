@@ -3,165 +3,231 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student - Hather</title>
+  <title>قسم الطالب - Hather</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=1">
-  <script src="assets/app.js?v=1"></script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
+      --card:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.94);
+      --muted:rgba(255,255,255,.78);
+      --accent:#18c26b; --accent2:#11a85b;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius:22px;
+      --danger:#ff5d5d; --warn:#ffcc66; --ok:#52ffa2;
+    }
+    *{box-sizing:border-box;font-family:"Cairo",sans-serif}
+    body{
+      margin:0; min-height:100vh; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
+      padding:18px;
+    }
+    .container{width:min(980px,94vw);margin:22px auto}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+    h1{margin:0;font-size:20px;font-weight:900}
+    p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:16px;
+      cursor:pointer;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.10)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    .input{
+      width:100%;padding:12px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.14);color:var(--text);outline:none;
+    }
+    .input::placeholder{color:rgba(255,255,255,.55)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .status{
+      margin-top:10px;padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      display:none;font-size:13px;font-weight:800;color:#fff;
+    }
+    .status.show{display:block}
+    .status.ok{border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12);}
+    .status.bad{border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12);}
+    .status.warn{border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10);}
+    .qrbox{
+      background: rgba(0,0,0,.14);
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius: 18px;
+      padding:12px;
+    }
+    .small{color:#fff;opacity:.92;font-size:12px;margin-top:8px}
+  </style>
 </head>
 <body>
-
 <div class="container">
-  <div class="glass topbar">
-    <div class="brand">
-      <div class="logo">🎓</div>
-      <div class="brandTitle">
-        <h1 data-i18n="student">الطالب</h1>
-        <p data-i18n="app_name">Hather</p>
-      </div>
+  <div class="top">
+    <div>
+      <h1 data-i18n="studentTitle">قسم الطالب</h1>
+      <p data-i18n="studentSub">تسجيل الحضور بالكود أو QR</p>
     </div>
-    <div class="actions">
-      <a class="btn" href="index.html"><span data-i18n="back_home">الرئيسية</span></a>
-      <a class="btn" href="student-report.html"><span data-i18n="student_report">تقرير الطالب</span></a>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button type="button" class="btn" onclick="location.href='index.html'" data-i18n="back">رجوع</button>
     </div>
   </div>
 
-  <div class="glass card" style="margin-top:16px;">
-    <h2 data-i18n="checkin">تسجيل حضور</h2>
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin:0 0 10px;font-weight:900">التسجيل بالكود</h3>
 
-    <div class="row">
-      <div>
-        <label data-i18n="student_id">الرقم الجامعي</label>
-        <input class="input" id="studentId" data-i18n-ph="student_id" placeholder="Student ID" />
+      <label>StudentID (9 أرقام)</label>
+      <input id="studentId" class="input" placeholder="مثال: 202311644" inputmode="numeric" maxlength="9"/>
+
+      <div style="height:10px"></div>
+
+      <label>Code</label>
+      <input id="codeInput" class="input" placeholder="مثال: 123456" inputmode="numeric" maxlength="60"/>
+
+      <div class="actions">
+        <button type="button" class="btn primary" id="btnCheckin" data-i18n="checkin">تسجيل الحضور</button>
       </div>
-      <div>
-        <label data-i18n="lecture_id_optional">LectureID (اختياري)</label>
-        <input class="input" id="lectureId" data-i18n-ph="lecture_id_optional" placeholder="LectureID (optional)" />
-      </div>
+
+      <div id="status1" class="status"></div>
+      <div class="small">إذا كان الكود من QR قد يكون نص JSON — سيتم التعامل معه تلقائيًا.</div>
     </div>
 
-    <div style="height:10px"></div>
+    <div class="card">
+      <h3 style="margin:0 0 10px;font-weight:900">التسجيل عبر QR</h3>
+      <div class="qrbox">
+        <div id="qrReader"></div>
+      </div>
 
-    <label data-i18n="code">الرمز</label>
-    <input class="input" id="code" data-i18n-ph="code" placeholder="Code" />
+      <div class="actions">
+        <button type="button" class="btn primary" id="btnStartCam" data-i18n="startCam">فتح الكاميرا</button>
+        <button type="button" class="btn" id="btnStopCam" data-i18n="stopCam">إيقاف</button>
+      </div>
 
-    <div style="height:12px"></div>
-
-    <div class="row">
-      <button class="btn primary" onclick="checkin()"><span data-i18n="checkin">تسجيل حضور</span></button>
-      <button class="btn" id="camBtn" onclick="toggleCam()"><span data-i18n="open_camera">فتح الكاميرا</span></button>
-    </div>
-
-    <div class="status" id="st"></div>
-
-    <div class="hr"></div>
-
-    <h2 data-i18n="camera">الكاميرا</h2>
-    <div class="glass card" style="margin:0; padding:12px;">
-      <div id="qrReader" style="width:100%; max-width:520px; margin:auto;"></div>
+      <div id="status2" class="status"></div>
+      <div class="small">قد تحتاج للسماح للمتصفح باستخدام الكاميرا.</div>
     </div>
   </div>
-
-  <div class="footer">Hather Attendance System © 2026</div>
 </div>
 
+<script src="assets/app.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+
 <script>
-  HATHER.applyI18n();
-  const $ = HATHER.qs;
-  const st = $("st");
+  applyLang();
 
-  function show(type,msg){ st.className="status show "+(type||""); st.textContent=msg||""; }
-  function hide(){ st.className="status"; st.textContent=""; }
+  const $ = (id) => document.getElementById(id);
+  let qr = null;
 
-  async function checkin(){
-    hide();
-    const studentId = ($("studentId").value||"").trim();
-    const lectureId = ($("lectureId").value||"").trim();
-    const code = ($("code").value||"").trim();
-
-    if(!studentId){ show("bad","Student ID"); return; }
-    if(!code){ show("bad","Code"); return; }
-
+  function parseQRorCode(txt){
+    const t = (txt||"").trim();
+    if(!t) return { code:"", lectureId:"" };
     try{
-      const payload = { action:"studentCheckin", studentId, code };
-      if(lectureId) payload.lectureId = lectureId;
-      const res = await HATHER.apiPost(payload);
-      if(res && res.ok){
-        show("ok","OK");
-      }else{
-        show("bad", (res && res.error) ? res.error : "Failed");
-      }
-    }catch(e){
-      show("bad", HATHER.t("api_error"));
-    }
-  }
-
-  let scanner = null;
-  let camOn = false;
-
-  function fillFromQr(text){
-    try{
-      const obj = JSON.parse(text);
-      if(obj && obj.code) $("code").value = String(obj.code);
-      if(obj && obj.lectureId) $("lectureId").value = String(obj.lectureId);
-      show("ok","OK");
-    }catch(e){
-      $("code").value = text;
-      show("warn","OK");
-    }
-  }
-
-  async function toggleCam(){
-    const btn = $("camBtn");
-    if(camOn){
-      await stopCam();
-      camOn = false;
-      btn.textContent = HATHER.t("open_camera");
-      return;
-    }
-    await startCam();
-    camOn = true;
-    btn.textContent = HATHER.t("stop_camera");
-  }
-
-  async function startCam(){
-    hide();
-    if(!scanner) scanner = new Html5Qrcode("qrReader");
-
-    try{
-      const cams = await Html5Qrcode.getCameras();
-      if(!cams || cams.length === 0){
-        show("bad","No Camera");
-        return;
-      }
-      const camId = cams[cams.length-1].id;
-      await scanner.start(
-        camId,
-        { fps: 10, qrbox: { width: 260, height: 260 } },
-        (decodedText) => {
-          fillFromQr(decodedText);
-          stopCam();
-          camOn = false;
-          $("camBtn").textContent = HATHER.t("open_camera");
-        }
-      );
-      show("warn","...");
-    }catch(e){
-      show("bad","Camera permission");
-    }
-  }
-
-  async function stopCam(){
-    try{
-      if(scanner && scanner.isScanning){
-        await scanner.stop();
-        await scanner.clear();
+      const obj = JSON.parse(t);
+      if(obj && obj.code){
+        return {
+          code: String(obj.code||"").trim(),
+          lectureId: String(obj.lectureId||"").trim()
+        };
       }
     }catch(e){}
+    return { code: t, lectureId:"" };
   }
-</script>
 
+  async function doCheckin(rawCode){
+    const sid = ($("studentId").value||"").trim();
+    if(!/^[0-9]{9}$/.test(sid)){
+      showStatus($("status1"),"bad", t("badId"));
+      return;
+    }
+
+    const parsed = parseQRorCode(rawCode);
+    if(!parsed.code){
+      showStatus($("status1"),"bad","يرجى إدخال الكود");
+      return;
+    }
+
+    showStatus($("status1"),"warn", t("loading"));
+
+    try{
+      const res = await studentCall({
+        action:"studentCheckin",
+        studentId: sid,
+        code: parsed.code,
+        lectureId: parsed.lectureId
+      });
+
+      if(res && res.ok){
+        showStatus($("status1"),"ok", "تم تسجيل الحضور ✅");
+        $("codeInput").value = "";
+      }else{
+        showStatus($("status1"),"bad", "❌ " + ((res && res.error) || t("failed")));
+      }
+    }catch(e){
+      showStatus($("status1"),"bad","❌ فشل الاتصال بالـ API");
+    }
+  }
+
+  async function startScan(){
+    const sid = ($("studentId").value||"").trim();
+    if(!/^[0-9]{9}$/.test(sid)){
+      showStatus($("status2"),"bad", t("badId"));
+      return;
+    }
+
+    if(!qr) qr = new Html5Qrcode("qrReader");
+    showStatus($("status2"),"warn", t("loading"));
+
+    try{
+      await qr.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 240, height: 240 } },
+        async (decodedText) => {
+          showStatus($("status2"),"ok","تمت قراءة QR ✅");
+          await doCheckin(decodedText);
+          await stopScan();
+        }
+      );
+      showStatus($("status2"),"ok","الكاميرا تعمل — وجّهها على QR");
+    }catch(e){
+      showStatus($("status2"),"bad","فشل تشغيل الكاميرا — تحقق من السماح");
+    }
+  }
+
+  async function stopScan(){
+    if(qr){
+      try{ await qr.stop(); await qr.clear(); }catch(e){}
+    }
+    hideStatus($("status2"));
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    $("btnCheckin").addEventListener("click", () => doCheckin($("codeInput").value));
+    $("btnStartCam").addEventListener("click", startScan);
+    $("btnStopCam").addEventListener("click", stopScan);
+  });
+</script>
 </body>
 </html>
