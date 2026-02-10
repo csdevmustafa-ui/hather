@@ -239,8 +239,8 @@
     <div class="pinRow">
       <div class="pinWrap">
         <span style="opacity:.9">🔒</span>
-        <input id="pinInput" type="password" inputmode="numeric" placeholder="أدخل PIN" autocomplete="current-password" />
-        <button class="iconBtn" id="togglePinBtn" title="إظهار/إخفاء" onclick="togglePin(event)">👁️</button>
+        <input id="pinInput" type="password" inputmode="numeric" placeholder="أدخل الرقم السري" autocomplete="current-password" />
+        <button class="iconBtn" id="togglePinBtn" title="إظهار/إخفاء" onclick="togglePin(event)">عرض</button>
       </div>
 
       <button class="btn primary" onclick="unlock()">
@@ -259,15 +259,15 @@
 
   <div class="topbar">
     <div class="brand">
-      <div class="logo">🏛️</div>
+      <div class="logo">H</div>
       <div>
         <h1>لوحة التحكم — عضو هيئة التدريس</h1>
-        <p>إدارة المحاضرات — توليد رمز الحضور — عرض الطلاب</p>
+        <p>إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p>
       </div>
     </div>
 
     <div class="actionsTop">
-      <button class="btn" onclick="goHome()">الصفحة الرئيسية</button>
+      <button class="btn" onclick="goHome()">الرئيسية</button>
       <button class="btn" onclick="logout()">تسجيل الخروج</button>
       <button class="btn primary" onclick="refreshAll()">تحديث</button>
     </div>
@@ -280,7 +280,7 @@
       <h2>المحاضرات</h2>
 
       <label>بحث (LectureID / المقرر / الشعبة)</label>
-      <input id="searchBox" class="input" placeholder="مثال: CS111 أو 1 أو L..." oninput="applyFilter()" />
+      <input id="searchBox" class="input" placeholder="ابحث هنا..." oninput="applyFilter()" />
 
       <div style="height:10px"></div>
 
@@ -304,7 +304,7 @@
 
       <div class="hr"></div>
 
-      <h2>الكود و QR للمحاضرة</h2>
+      <h2>رمز الحضور و QR</h2>
 
       <div class="qrGrid">
         <div class="card" style="margin:0">
@@ -339,8 +339,8 @@
         <div class="qrBox">
           <img id="qrImg" alt="QR" />
           <div class="pill" id="codeText">Code: —</div>
-          <div class="qrHint">الباركود يتم توليده محليًا داخل المتصفح.</div>
-          <button class="btn" onclick="zoomQR()">تكبير QR</button>
+          <div class="qrHint">يتم إنشاء رمز QR داخل المتصفح.</div>
+          <button class="btn" onclick="zoomQR()">تكبير</button>
         </div>
       </div>
 
@@ -480,11 +480,8 @@
   </div>
 </div>
 
-<!-- ✅ scripts -->
+<!-- ✅ scripts (ترتيب مهم) -->
 <script src="assets/app.js"></script>
-
-<!-- QR library + helper -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="assets/qr.js"></script>
 
 <script>
@@ -512,8 +509,9 @@
     e.preventDefault();
     const inp = $("pinInput");
     const btn = $("togglePinBtn");
-    if (inp.type === "password") { inp.type = "text"; btn.textContent = "🙈"; }
-    else { inp.type = "password"; btn.textContent = "👁️"; }
+    const isHidden = inp.type === "password";
+    inp.type = isHidden ? "text" : "password";
+    btn.textContent = isHidden ? "إخفاء" : "عرض";
   }
 
   async function unlock(){
@@ -530,10 +528,7 @@
     showStatus(st, "warn", "جاري التحقق...");
 
     try{
-      // خزّن الـ PIN
       setDoctorKey(pin);
-
-      // اختبار بسيط: نجرب listLectures (يتطلب PIN صحيح)
       const res = await doctorCall({ action:"listLectures" });
 
       if(!res || !res.ok){
@@ -575,7 +570,6 @@
   function pickLecture(id){
     ACTIVE_LECTURE = id;
     $("selectedLectureId").value = id;
-
     $("studentRows").innerHTML = `<tr><td colspan="4">اضغط "عرض الطلاب" لعرض الحضور.</td></tr>`;
 
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
@@ -635,11 +629,9 @@
       return;
     }
 
-    // ✅ لا نعرض Deleted
     ALL_LECTURES = (res.rows || []).filter(x => String(x.state||"").toLowerCase() !== "deleted");
     applyFilter();
 
-    // إذا كان المحدد محذوف/غير موجود، امسح التحديد
     if(ACTIVE_LECTURE){
       const exists = ALL_LECTURES.some(x => x.lectureId === ACTIVE_LECTURE);
       if(!exists) clearSelection();
@@ -666,7 +658,7 @@
     try{
       const res = await doctorCall({ action:"createLecture", course, section, start, end });
       if(res && res.ok){
-        showStatus(st, "ok", "تم إنشاء المحاضرة ✅");
+        showStatus(st, "ok", "تم إنشاء المحاضرة");
         await loadLectures();
       }else{
         showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
@@ -705,7 +697,7 @@
       });
 
       if(res && res.ok){
-        showStatus(st, "ok", `تم إنشاء الجدول ✅ (تم توليد ${res.created||0} محاضرة)`);
+        showStatus(st, "ok", `تم إنشاء الجدول (تم توليد ${res.created||0} محاضرة)`);
         await loadLectures();
       }else{
         showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
@@ -736,13 +728,12 @@
       if(res && res.ok){
         $("codeText").textContent = "Code: " + (res.code || "—");
 
-        // ✅ توليد QR محليًا باستخدام qrText
         const qrText = res.qrText || JSON.stringify({ lectureId, code: res.code || "" });
         const img = $("qrImg");
         img.src = "";
         LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420);
 
-        showStatus(st, "ok", "تم توليد الكود و QR ✅");
+        showStatus(st, "ok", "تم توليد الكود و QR");
       }else{
         showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
       }
@@ -771,7 +762,7 @@
     try{
       const res = await doctorCall({ action:"deleteLecture", lectureId });
       if(res && res.ok){
-        showStatus(st, "ok", "تم حذف المحاضرة ✅");
+        showStatus(st, "ok", "تم حذف المحاضرة");
         clearSelection();
         await loadLectures();
       }else{
@@ -826,7 +817,7 @@
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId) return;
 
-    const next = prompt("اكتب الحالة الجديدة:\n- حضور\n- تأخير\n- غياب", "حضور");
+    const next = prompt("اكتب الحالة الجديدة:\nحضور\nتأخير\nغياب", "حضور");
     if(!next) return;
 
     const st = $("codeStatus");
@@ -835,7 +826,7 @@
     try{
       const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
       if(res && res.ok){
-        showStatus(st, "ok", "تم تحديث الحالة ✅");
+        showStatus(st, "ok", "تم تحديث الحالة");
         await loadStudents();
       }else{
         showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
@@ -846,7 +837,6 @@
   }
 
   function zoomQR(){
-    // ✅ إصلاح التكبير: يستخدم dataURL المخزّن
     const src = LAST_QR_DATAURL || $("qrImg").src;
     if(!src) return;
     $("qrBig").src = src;
