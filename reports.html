@@ -3,124 +3,194 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reports - Hather</title>
+  <title>تقارير الطالب - Hather</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=1">
-  <script src="assets/app.js?v=1"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
+      --card:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.94);
+      --muted:rgba(255,255,255,.78);
+      --accent:#18c26b; --accent2:#11a85b;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box;font-family:"Cairo",sans-serif}
+    body{
+      margin:0; min-height:100vh; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
+      padding:18px;
+    }
+    .container{width:min(980px,94vw);margin:22px auto}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+    h1{margin:0;font-size:20px;font-weight:900}
+    p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:16px;
+      cursor:pointer;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.10)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    .input{
+      width:100%;padding:12px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.14);color:var(--text);outline:none;
+    }
+    .row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+    @media(max-width:680px){.row{grid-template-columns:1fr}}
+    .status{
+      margin-top:10px;padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      display:none;font-size:13px;font-weight:800;color:#fff;
+    }
+    .status.show{display:block}
+    .status.ok{border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12);}
+    .status.bad{border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12);}
+    .status.warn{border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10);}
+    table{width:100%;border-collapse:collapse;min-width:520px}
+    th,td{padding:10px;border-top:1px solid rgba(255,255,255,.12);text-align:center;font-size:13px}
+    thead th{background:rgba(0,0,0,.18);position:sticky;top:0}
+    .tableWrap{overflow:auto;border-radius:18px;border:1px solid rgba(255,255,255,.12)}
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    @media(max-width:680px){.summary{grid-template-columns:1fr}}
+    .box{background:rgba(0,0,0,.14);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:12px}
+    .num{font-size:22px;font-weight:900;margin-top:6px}
+    .muted{color:var(--muted);font-size:12px}
+  </style>
 </head>
 <body>
-
 <div class="container">
-  <div class="glass topbar">
-    <div class="brand">
-      <div class="logo">📊</div>
-      <div class="brandTitle">
-        <h1 data-i18n="reports">التقارير</h1>
-        <p data-i18n="app_name">Hather</p>
-      </div>
+  <div class="top">
+    <div>
+      <h1 data-i18n="reportsTitle">تقارير الطالب</h1>
+      <p data-i18n="reportsSub">عرض الحضور والغياب والتأخير</p>
     </div>
-    <div class="actions">
-      <a class="btn" href="index.html"><span data-i18n="back_home">الرئيسية</span></a>
-      <a class="btn" href="student-report.html"><span data-i18n="student_report">تقرير الطالب</span></a>
-      <a class="btn" href="doctor.html"><span data-i18n="doctor">عضو هيئة التدريس</span></a>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button type="button" class="btn" onclick="location.href='index.html'" data-i18n="back">رجوع</button>
     </div>
   </div>
 
-  <div class="grid">
-    <div class="glass card" style="margin-top:16px;">
-      <h2 data-i18n="course_report">تقرير المقرر</h2>
-
-      <label data-i18n="pin">كلمة المرور (PIN)</label>
-      <input class="input" id="pin" type="password" data-i18n-ph="pin_placeholder" placeholder="أدخل PIN" />
-      <div style="height:10px"></div>
-
-      <label data-i18n="course">المقرر</label>
-      <input class="input" id="course" placeholder="CS111" />
-
-      <div style="height:12px"></div>
-      <button class="btn primary" onclick="loadCourse()"><span data-i18n="view">عرض</span></button>
-      <div class="status" id="st"></div>
-
-      <div class="hr"></div>
-
-      <div class="tableWrap">
-        <table style="min-width:700px">
-          <thead>
-            <tr>
-              <th data-i18n="student_id">الرقم الجامعي</th>
-              <th>Name</th>
-              <th data-i18n="present">حضور</th>
-              <th data-i18n="late">تأخير</th>
-              <th data-i18n="absent">غياب</th>
-            </tr>
-          </thead>
-          <tbody id="rows">
-            <tr><td colspan="5" data-i18n="no_data">لا توجد بيانات</td></tr>
-          </tbody>
-        </table>
+  <div class="card">
+    <div class="row">
+      <div>
+        <label>الرقم الجامعي (9 أرقام)</label>
+        <input id="studentId" class="input" inputmode="numeric" maxlength="9" placeholder="مثال: 202311644">
+      </div>
+      <div>
+        <button type="button" class="btn primary" id="btnReport" data-i18n="showReport">عرض التقرير</button>
       </div>
     </div>
 
-    <div class="glass card" style="margin-top:16px;">
-      <h2>روابط</h2>
-      <a class="btn primary" href="student.html"><span data-i18n="student">الطالب</span></a>
-      <a class="btn" href="student-report.html"><span data-i18n="student_report">تقرير الطالب</span></a>
-      <a class="btn" href="doctor.html"><span data-i18n="doctor">عضو هيئة التدريس</span></a>
-      <div class="hr"></div>
-      <p style="margin:0;color:rgba(255,255,255,.72);font-size:12px;line-height:1.7;">
-        يتم تحديد اللغة من الصفحة الرئيسية.
-      </p>
+    <div class="status" id="status"></div>
+
+    <div style="height:14px"></div>
+
+    <div class="summary">
+      <div class="box">
+        <div class="muted">حضور</div>
+        <div class="num" id="repPresent">—</div>
+      </div>
+      <div class="box">
+        <div class="muted">تأخير</div>
+        <div class="num" id="repLate">—</div>
+      </div>
+      <div class="box">
+        <div class="muted">غياب</div>
+        <div class="num" id="repAbsent">—</div>
+      </div>
+    </div>
+
+    <div style="height:14px"></div>
+
+    <div class="tableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>LectureID</th>
+            <th>الوقت</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody id="repRows">
+          <tr><td colspan="3">—</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <div class="footer">Hather Attendance System © 2026</div>
 </div>
 
+<script src="assets/app.js"></script>
 <script>
-  HATHER.applyI18n();
-  const $ = HATHER.qs;
+  applyLang();
+  const $ = (id) => document.getElementById(id);
 
-  function show(type,msg){
-    const s=$("st"); s.className="status show "+(type||""); s.textContent=msg||"";
-  }
-  function hide(){ const s=$("st"); s.className="status"; s.textContent=""; }
+  async function loadReport(){
+    const id = ($("studentId").value || "").trim();
+    const st = $("status");
 
-  async function loadCourse(){
-    hide();
-    const doctorKey = ($("pin").value||"").trim();
-    const course = ($("course").value||"").trim();
-    if(!doctorKey){ show("bad","PIN"); return; }
-    if(!course){ show("bad","Course"); return; }
+    if(!/^[0-9]{9}$/.test(id)){
+      showStatus(st, "bad", t("badId"));
+      return;
+    }
+
+    showStatus(st, "warn", t("loading"));
 
     try{
-      const res = await HATHER.apiPost({ action:"courseReport", doctorKey, course });
+      const res = await studentCall({ action:"studentReport", studentId: id });
+
       if(!res || !res.ok){
-        show("bad", (res && res.error) ? res.error : "Failed");
+        showStatus(st, "bad", (res && res.error) ? res.error : t("failed"));
         return;
       }
-      const rows = res.rows || [];
-      const tb = $("rows");
-      if(rows.length===0){
-        tb.innerHTML = `<tr><td colspan="5">${HATHER.t("no_data")}</td></tr>`;
-        return;
-      }
-      tb.innerHTML = rows.map(r=>`
+
+      const d = res.data || {};
+      $("repPresent").textContent = (d.present ?? 0);
+      $("repLate").textContent    = (d.late ?? 0);
+      $("repAbsent").textContent  = (d.absent ?? 0);
+
+      const rows = d.rows || [];
+      const tbody = $("repRows");
+      tbody.innerHTML = (rows.length ? rows.map(r => `
         <tr>
-          <td>${r.studentId||""}</td>
-          <td>${r.name||""}</td>
-          <td>${r.present||0}</td>
-          <td>${r.late||0}</td>
-          <td>${r.absent||0}</td>
+          <td>${r.lectureId || ""}</td>
+          <td>${r.time || ""}</td>
+          <td>${r.status || ""}</td>
         </tr>
-      `).join("");
-      show("ok","OK");
+      `).join("") : `<tr><td colspan="3">لا توجد سجلات</td></tr>`);
+
+      showStatus(st, "ok", "تم تحميل التقرير ✅");
     }catch(e){
-      show("bad", HATHER.t("api_error"));
+      showStatus(st, "bad", "فشل الاتصال بالـ API");
     }
   }
-</script>
 
+  window.addEventListener("DOMContentLoaded", () => {
+    $("btnReport").addEventListener("click", loadReport);
+  });
+</script>
 </body>
 </html>
