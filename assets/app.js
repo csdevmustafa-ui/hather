@@ -7,7 +7,7 @@
  ****************************/
 
 // ✅ ضع رابط الـ Apps Script Web App هنا فقط
-const API_URL = "https://script.google.com/macros/s/AKfycbz1iejpZ_5yFYBIbSluTHemZNpHuZH6MX1bO3iad71d8JdINv6JvNGRc_cKGFgH8dN-/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzOvQNQSDRwiNqr04MEOcp0Hmkywc651SZYqpo3a-T2cx47EmLIp02TLUgf19oC8u04/exec";
 
 // Storage keys
 const LS_LANG = "hather_lang";
