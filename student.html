@@ -46,6 +46,7 @@
     }
     .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.10)}
     .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06210f;font-weight:900}
+    .btn[disabled]{opacity:.55;cursor:not-allowed;transform:none !important;}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     @media(max-width:900px){.grid{grid-template-columns:1fr}}
     .card{
@@ -105,7 +106,7 @@
       <div style="height:10px"></div>
 
       <label>Code</label>
-      <input id="codeInput" class="input" placeholder="مثال: 123456" inputmode="numeric" maxlength="60"/>
+      <input id="codeInput" class="input" placeholder="مثال: 123456" inputmode="numeric" maxlength="120"/>
 
       <div class="actions">
         <button type="button" class="btn primary" id="btnCheckin" data-i18n="checkin">تسجيل الحضور</button>
@@ -141,6 +142,16 @@
   const $ = (id) => document.getElementById(id);
   let qr = null;
 
+  // ✅ Locks to prevent double submit + QR multi-fire
+  let SUBMIT_LOCK = false;
+  let QR_LOCK = false;
+
+  function setDisabled(on){
+    $("btnCheckin").disabled = !!on;
+    $("btnStartCam").disabled = !!on;
+    $("btnStopCam").disabled = !!on;
+  }
+
   function parseQRorCode(txt){
     const t = (txt||"").trim();
     if(!t) return { code:"", lectureId:"" };
@@ -156,22 +167,29 @@
     return { code: t, lectureId:"" };
   }
 
-  async function doCheckin(rawCode){
-    const sid = ($("studentId").value||"").trim();
-    if(!/^[0-9]{9}$/.test(sid)){
-      showStatus($("status1"),"bad", t("badId"));
-      return;
-    }
+  async function doCheckin(rawCode, statusEl){
+    const el = statusEl || $("status1");
 
-    const parsed = parseQRorCode(rawCode);
-    if(!parsed.code){
-      showStatus($("status1"),"bad","يرجى إدخال الكود");
-      return;
-    }
-
-    showStatus($("status1"),"warn", t("loading"));
+    // ✅ anti double click / multi fire
+    if (SUBMIT_LOCK) return;
+    SUBMIT_LOCK = true;
+    setDisabled(true);
 
     try{
+      const sid = ($("studentId").value||"").trim();
+      if(!/^[0-9]{9}$/.test(sid)){
+        showStatus(el,"bad", t("badId"));
+        return;
+      }
+
+      const parsed = parseQRorCode(rawCode);
+      if(!parsed.code){
+        showStatus(el,"bad","يرجى إدخال الكود");
+        return;
+      }
+
+      showStatus(el,"warn", t("loading"));
+
       const res = await studentCall({
         action:"studentCheckin",
         studentId: sid,
@@ -180,13 +198,22 @@
       });
 
       if(res && res.ok){
-        showStatus($("status1"),"ok", "تم تسجيل الحضور ✅");
+        showStatus(el,"ok", "تم تسجيل الحضور ✅");
         $("codeInput").value = "";
       }else{
-        showStatus($("status1"),"bad", "❌ " + ((res && res.error) || t("failed")));
+        const msg = (res && res.error) ? String(res.error) : t("failed");
+        // تحسين عرض رسالة التكرار
+        if (msg.includes("مسبقاً")) showStatus(el,"warn", "تم تسجيل حضورك مسبقاً لهذه المحاضرة");
+        else showStatus(el,"bad", "❌ " + msg);
       }
     }catch(e){
-      showStatus($("status1"),"bad","❌ فشل الاتصال بالـ API");
+      showStatus(el,"bad","❌ فشل الاتصال بالـ API");
+    }finally{
+      // ✅ short cooldown to prevent spamming
+      setTimeout(()=>{
+        SUBMIT_LOCK = false;
+        setDisabled(false);
+      }, 900);
     }
   }
 
@@ -197,36 +224,49 @@
       return;
     }
 
+    // ✅ prevent starting while busy
+    if (SUBMIT_LOCK) return;
+
     if(!qr) qr = new Html5Qrcode("qrReader");
     showStatus($("status2"),"warn", t("loading"));
 
     try{
+      QR_LOCK = false;
+
       await qr.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 240, height: 240 } },
         async (decodedText) => {
+          // ✅ IMPORTANT: html5-qrcode can fire multiple times per second
+          if (QR_LOCK) return;
+          QR_LOCK = true;
+
+          // وقف الكاميرا مباشرة قبل إرسال الطلب
+          try{ await stopScan(true); }catch(e){}
+
           showStatus($("status2"),"ok","تمت قراءة QR ✅");
-          await doCheckin(decodedText);
-          await stopScan();
+          await doCheckin(decodedText, $("status2"));
         }
       );
+
       showStatus($("status2"),"ok","الكاميرا تعمل — وجّهها على QR");
     }catch(e){
       showStatus($("status2"),"bad","فشل تشغيل الكاميرا — تحقق من السماح");
     }
   }
 
-  async function stopScan(){
+  async function stopScan(keepStatus){
     if(qr){
-      try{ await qr.stop(); await qr.clear(); }catch(e){}
+      try{ await qr.stop(); }catch(e){}
+      try{ await qr.clear(); }catch(e){}
     }
-    hideStatus($("status2"));
+    if(!keepStatus) hideStatus($("status2"));
   }
 
   window.addEventListener("DOMContentLoaded", () => {
-    $("btnCheckin").addEventListener("click", () => doCheckin($("codeInput").value));
+    $("btnCheckin").addEventListener("click", () => doCheckin($("codeInput").value, $("status1")));
     $("btnStartCam").addEventListener("click", startScan);
-    $("btnStopCam").addEventListener("click", stopScan);
+    $("btnStopCam").addEventListener("click", () => stopScan(false));
   });
 </script>
 </body>
