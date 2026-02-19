@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تقارير الطالب - Hather</title>
+  <title data-i18n="pageTitleReports">تقارير الطالب - Hather</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -91,14 +91,15 @@
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button type="button" class="btn" onclick="location.href='index.html'" data-i18n="back">رجوع</button>
+      <button type="button" class="btn" id="langBtn" onclick="toggleLang()">English</button>
     </div>
   </div>
 
   <div class="card">
     <div class="row">
       <div>
-        <label>الرقم الجامعي (9 أرقام)</label>
-        <input id="studentId" class="input" inputmode="numeric" maxlength="9" placeholder="مثال: 202311644">
+        <label data-i18n="uniIdLabel2">الرقم الجامعي (9 أرقام)</label>
+        <input id="studentId" class="input" inputmode="numeric" maxlength="9" data-i18n-placeholder="studentIdPh" placeholder="مثال: 202311644">
       </div>
       <div>
         <button type="button" class="btn primary" id="btnReport" data-i18n="showReport">عرض التقرير</button>
@@ -111,15 +112,15 @@
 
     <div class="summary">
       <div class="box">
-        <div class="muted">حضور</div>
+        <div class="muted" data-i18n="present">حضور</div>
         <div class="num" id="repPresent">—</div>
       </div>
       <div class="box">
-        <div class="muted">تأخير</div>
+        <div class="muted" data-i18n="late">تأخير</div>
         <div class="num" id="repLate">—</div>
       </div>
       <div class="box">
-        <div class="muted">غياب</div>
+        <div class="muted" data-i18n="absent">غياب</div>
         <div class="num" id="repAbsent">—</div>
       </div>
     </div>
@@ -131,8 +132,8 @@
         <thead>
           <tr>
             <th>LectureID</th>
-            <th>الوقت</th>
-            <th>الحالة</th>
+            <th data-i18n="time">الوقت</th>
+            <th data-i18n="status">الحالة</th>
           </tr>
         </thead>
         <tbody id="repRows">
@@ -143,6 +144,7 @@
   </div>
 </div>
 
+<script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script>
   applyLang();
@@ -180,11 +182,11 @@
           <td>${r.time || ""}</td>
           <td>${r.status || ""}</td>
         </tr>
-      `).join("") : `<tr><td colspan="3">لا توجد سجلات</td></tr>`);
+      `).join("") : `<tr><td colspan="3">${t("noRecords")}</td></tr>`);
 
-      showStatus(st, "ok", "تم تحميل التقرير ✅");
+      showStatus(st, "ok", t("reportOkMini"));
     }catch(e){
-      showStatus(st, "bad", "فشل الاتصال بالـ API");
+      showStatus(st, "bad", t("apiFail"));
     }
   }
 
