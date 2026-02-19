@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>قسم الطالب - Hather</title>
+  <title data-i18n="pageTitleStudent">قسم الطالب - Hather</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,31 +93,32 @@
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button type="button" class="btn" onclick="location.href='index.html'" data-i18n="back">رجوع</button>
+      <button type="button" class="btn" id="langBtn" onclick="toggleLang()">English</button>
     </div>
   </div>
 
   <div class="grid">
     <div class="card">
-      <h3 style="margin:0 0 10px;font-weight:900">التسجيل بالكود</h3>
+      <h3 style="margin:0 0 10px;font-weight:900" data-i18n="studentByCodeTitle">التسجيل بالكود</h3>
 
-      <label>StudentID (9 أرقام)</label>
-      <input id="studentId" class="input" placeholder="مثال: 202311644" inputmode="numeric" maxlength="9"/>
+      <label data-i18n="studentIdLabel">StudentID (9 أرقام)</label>
+      <input id="studentId" class="input" data-i18n-placeholder="studentIdPh" placeholder="مثال: 202311644" inputmode="numeric" maxlength="9"/>
 
       <div style="height:10px"></div>
 
-      <label>Code</label>
-      <input id="codeInput" class="input" placeholder="مثال: 123456" inputmode="numeric" maxlength="120"/>
+      <label data-i18n="codeLabel">Code</label>
+      <input id="codeInput" class="input" data-i18n-placeholder="codePh" placeholder="مثال: 123456" inputmode="numeric" maxlength="120"/>
 
       <div class="actions">
         <button type="button" class="btn primary" id="btnCheckin" data-i18n="checkin">تسجيل الحضور</button>
       </div>
 
       <div id="status1" class="status"></div>
-      <div class="small">إذا كان الكود من QR قد يكون نص JSON — سيتم التعامل معه تلقائيًا.</div>
+      <div class="small" data-i18n="studentHintJson">إذا كان الكود من QR قد يكون نص JSON — سيتم التعامل معه تلقائيًا.</div>
     </div>
 
     <div class="card">
-      <h3 style="margin:0 0 10px;font-weight:900">التسجيل عبر QR</h3>
+      <h3 style="margin:0 0 10px;font-weight:900" data-i18n="studentByQrTitle">التسجيل عبر QR</h3>
       <div class="qrbox">
         <div id="qrReader"></div>
       </div>
@@ -128,11 +129,12 @@
       </div>
 
       <div id="status2" class="status"></div>
-      <div class="small">قد تحتاج للسماح للمتصفح باستخدام الكاميرا.</div>
+      <div class="small" data-i18n="qrHintPerm">قد تحتاج للسماح للمتصفح باستخدام الكاميرا.</div>
     </div>
   </div>
 </div>
 
+<script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script src="https://unpkg.com/html5-qrcode"></script>
 
@@ -153,10 +155,10 @@
   }
 
   function parseQRorCode(txt){
-    const t = (txt||"").trim();
-    if(!t) return { code:"", lectureId:"" };
+    const ttxt = (txt||"").trim();
+    if(!ttxt) return { code:"", lectureId:"" };
     try{
-      const obj = JSON.parse(t);
+      const obj = JSON.parse(ttxt);
       if(obj && obj.code){
         return {
           code: String(obj.code||"").trim(),
@@ -164,7 +166,7 @@
         };
       }
     }catch(e){}
-    return { code: t, lectureId:"" };
+    return { code: ttxt, lectureId:"" };
   }
 
   async function doCheckin(rawCode, statusEl){
@@ -184,7 +186,7 @@
 
       const parsed = parseQRorCode(rawCode);
       if(!parsed.code){
-        showStatus(el,"bad","يرجى إدخال الكود");
+        showStatus(el,"bad", t("needCode"));
         return;
       }
 
@@ -198,16 +200,18 @@
       });
 
       if(res && res.ok){
-        showStatus(el,"ok", "تم تسجيل الحضور ✅");
+        showStatus(el,"ok", "✅ " + t("okDone"));
         $("codeInput").value = "";
       }else{
         const msg = (res && res.error) ? String(res.error) : t("failed");
-        // تحسين عرض رسالة التكرار
-        if (msg.includes("مسبقاً")) showStatus(el,"warn", "تم تسجيل حضورك مسبقاً لهذه المحاضرة");
-        else showStatus(el,"bad", "❌ " + msg);
+        if (msg.includes("مسبقاً") || msg.toLowerCase().includes("already")) {
+          showStatus(el,"warn", t("alreadyChecked"));
+        } else {
+          showStatus(el,"bad", "❌ " + msg);
+        }
       }
     }catch(e){
-      showStatus(el,"bad","❌ فشل الاتصال بالـ API");
+      showStatus(el,"bad", t("apiFail"));
     }finally{
       // ✅ short cooldown to prevent spamming
       setTimeout(()=>{
@@ -224,7 +228,6 @@
       return;
     }
 
-    // ✅ prevent starting while busy
     if (SUBMIT_LOCK) return;
 
     if(!qr) qr = new Html5Qrcode("qrReader");
@@ -237,21 +240,19 @@
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 240, height: 240 } },
         async (decodedText) => {
-          // ✅ IMPORTANT: html5-qrcode can fire multiple times per second
           if (QR_LOCK) return;
           QR_LOCK = true;
 
-          // وقف الكاميرا مباشرة قبل إرسال الطلب
           try{ await stopScan(true); }catch(e){}
 
-          showStatus($("status2"),"ok","تمت قراءة QR ✅");
+          showStatus($("status2"),"ok", t("qrReadOk"));
           await doCheckin(decodedText, $("status2"));
         }
       );
 
-      showStatus($("status2"),"ok","الكاميرا تعمل — وجّهها على QR");
+      showStatus($("status2"),"ok", t("camRunning"));
     }catch(e){
-      showStatus($("status2"),"bad","فشل تشغيل الكاميرا — تحقق من السماح");
+      showStatus($("status2"),"bad", t("camFail"));
     }
   }
 
