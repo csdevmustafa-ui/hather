@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>تقرير الطالب - Hather</title>
+  <title data-i18n="pageTitleStudentReport">تقرير الطالب - Hather</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -115,36 +115,38 @@
 <body>
 
 <div class="card">
-  <h1>تقرير الحضور</h1>
-  <p>أدخل رقمك الجامعي لعرض سجل حضورك</p>
+  <h1 data-i18n="reportTitle">تقرير الحضور</h1>
+  <p data-i18n="reportSub">أدخل رقمك الجامعي لعرض سجل حضورك</p>
 
-  <label>الرقم الجامعي</label>
-  <input id="studentId" placeholder="مثال: 441012345"/>
+  <label data-i18n="uniIdLabel">الرقم الجامعي</label>
+  <input id="studentId" data-i18n-placeholder="uniIdPh" placeholder="مثال: 441012345"/>
 
-  <button onclick="loadReport()">عرض التقرير</button>
+  <button onclick="loadReport()" data-i18n="showReport">عرض التقرير</button>
 
   <div id="status" class="status"></div>
 
   <div id="summary" class="summary" style="display:none">
-    <div class="pill">حضور: <b id="sPresent">0</b></div>
-    <div class="pill">تأخير: <b id="sLate">0</b></div>
-    <div class="pill">غياب: <b id="sAbsent">0</b></div>
+    <div class="pill"><span data-i18n="present">حضور</span>: <b id="sPresent">0</b></div>
+    <div class="pill"><span data-i18n="late">تأخير</span>: <b id="sLate">0</b></div>
+    <div class="pill"><span data-i18n="absent">غياب</span>: <b id="sAbsent">0</b></div>
   </div>
 
   <table id="table" style="display:none">
     <thead>
       <tr>
         <th>LectureID</th>
-        <th>الوقت</th>
-        <th>الحالة</th>
+        <th data-i18n="time">الوقت</th>
+        <th data-i18n="status">الحالة</th>
       </tr>
     </thead>
     <tbody id="rows"></tbody>
   </table>
 </div>
 
+<script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script>
+  applyLang();
   const $ = (id)=>document.getElementById(id);
 
   function showStatus(type,msg){
@@ -156,11 +158,11 @@
   async function loadReport(){
     const studentId = $("studentId").value.trim();
     if(!studentId){
-      showStatus("bad","أدخل الرقم الجامعي");
+      showStatus("bad", t("enterUniId"));
       return;
     }
 
-    showStatus("ok","جاري تحميل التقرير...");
+    showStatus("ok", t("reportLoading"));
     $("table").style.display="none";
     $("summary").style.display="none";
 
@@ -174,7 +176,7 @@
       }).then(r=>r.json());
 
       if(!res || !res.ok){
-        throw new Error(res?.error || "فشل جلب البيانات");
+        throw new Error(res?.error || t("reportFailFetch"));
       }
 
       const d = res.data;
@@ -194,9 +196,9 @@
       `).join("");
 
       $("table").style.display = rows.length ? "table" : "none";
-      showStatus("ok","تم تحميل التقرير بنجاح");
+      showStatus("ok", t("reportLoaded"));
     }catch(e){
-      showStatus("bad",e.message);
+      showStatus("bad", e.message);
     }
   }
 </script>
