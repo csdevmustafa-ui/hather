@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام الحضور الإلكتروني</title>
+  <title data-i18n="pageTitleHome">نظام الحضور الإلكتروني</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,7 +95,7 @@
   </style>
 </head>
 
-<body data-i18n-title="homeTitle">
+<body>
   <div class="wrap">
 
     <div class="topbar">
@@ -103,11 +103,11 @@
         <div class="logo">🏛️</div>
         <div>
           <h1 data-i18n="homeTitle">نظام الحضور الإلكتروني</h1>
-          <p data-i18n="homeSub">إدارة المحاضرات وتسجيل حضور الطلاب وإصدار التقارير</p>
+          <p data-i18n="homeSub">إدارة المحاضرات، تسجيل الحضور، وإنشاء التقارير</p>
         </div>
       </div>
 
-      <!-- ✅ زر اللغة هنا فقط -->
+      <!-- زر اللغة -->
       <button class="btn" id="langBtn" onclick="toggleLang()">English</button>
     </div>
 
@@ -123,10 +123,10 @@
       <div class="card">
         <div class="chip">
           <div class="note">
-            <div style="font-weight:900;margin-bottom:6px">ملاحظة</div>
-            <div>• لوحة عضو هيئة التدريس محمية برمز الدخول.</div>
-            <div>• بوابة الطالب مخصصة لتسجيل الحضور بالكود أو QR.</div>
-            <div>• تقارير الطالب تعرض الحضور باستخدام الرقم الجامعي.</div>
+            <div style="font-weight:900;margin-bottom:6px" data-i18n="noteTitle">ملاحظة</div>
+            <div data-i18n="note1">• لوحة عضو هيئة التدريس محمية برمز الدخول.</div>
+            <div data-i18n="note2">• بوابة الطالب مخصصة لتسجيل الحضور بالكود أو QR.</div>
+            <div data-i18n="note3">• تقارير الطالب تعرض الحضور باستخدام الرقم الجامعي.</div>
           </div>
         </div>
       </div>
@@ -134,7 +134,10 @@
 
   </div>
 
-  <!-- i18n (global) -->
   <script src="assets/i18n.js"></script>
+  <script>
+    // تطبيق اللغة مباشرة
+    applyLang();
+  </script>
 </body>
 </html>
