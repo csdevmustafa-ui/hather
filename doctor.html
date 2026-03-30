@@ -220,20 +220,8 @@
     @keyframes sp { to { transform: rotate(360deg); } }
   </style>
   
-  <!-- تم إضافة ملف i18n.js هنا -->
   <script src="assets/i18n.js"></script>
-  <script>
-    // استدعاء دالة الترجمة بعد تحميل الصفحة
-    document.addEventListener('DOMContentLoaded', function() {
-        // التحقق من وجود الدالة قبل استدعائها
-        if (typeof applyLang === 'function') {
-            applyLang();
-            console.log('تم تطبيق اللغة بنجاح.');
-        } else {
-            console.warn('الدالة applyLang غير موجودة. تأكد من تحميل assets/i18n.js بشكل صحيح.');
-        }
-    });
-  </script>
+  
 </head>
 
 <body>
@@ -300,21 +288,21 @@
       <div style="height:10px"></div>
 
       <div class="tableWrap">
-        <table>
+         <table>
           <thead>
-            <tr>
+             <tr>
               <th>LectureID</th>
               <th>المقرر</th>
               <th>الشعبة</th>
               <th>البداية</th>
               <th>النهاية</th>
               <th>الحالة</th>
-            </tr>
+             </tr>
           </thead>
           <tbody id="lectureRows">
-            <tr><td colspan="6">جاري التحميل...</td></tr>
+             <tr><td colspan="6">جاري التحميل...</td></tr>
           </tbody>
-        </table>
+         </table>
       </div>
 
       <div class="hr"></div>
@@ -365,15 +353,15 @@
       <div class="tableWrap">
         <table style="min-width:560px">
           <thead>
-            <tr>
+             <tr>
               <th>StudentID</th>
               <th>الاسم</th>
               <th>الحالة</th>
               <th>تعديل</th>
-            </tr>
+             </tr>
           </thead>
           <tbody id="studentRows">
-            <tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>
+             <tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>
           </tbody>
         </table>
       </div>
@@ -494,6 +482,10 @@
     <button class="btn primary" onclick="closeModal()">إغلاق</button>
   </div>
 </div>
+
+<script>
+applyLang();
+</script>
 
 <!-- ✅ scripts (ترتيب مهم) -->
 <script src="assets/app.js"></script>
@@ -618,7 +610,7 @@
         <td>${r.start||""}</td>
         <td>${r.end||""}</td>
         <td>${r.state||""}</td>
-      </tr>
+       </tr>
     `).join("");
   }
 
@@ -801,4 +793,27 @@
     try{
       const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
       if(!res || !res.ok){
-        tbody.innerHTML = `<tr><td colspan="4">${(res
+        tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
+        return;
+      }
+
+      const rows = res.rows || [];
+      if(rows.length === 0){
+        tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.studentId||""}</td>
+          <td>${r.name||""}</td>
+          <td>${r.status||""}</td>
+          <td>
+            <button class="btn" style="padding:8px 10px; border-radius:12px" onclick="editStatus('${(r.studentId||"").replace(/'/g,"\\'")}')">
+              تعديل
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }catch(e){
+      tbody.innerHTML = `<tr><td colspan="4">فشل الاتصال: ${(e
