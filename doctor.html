@@ -219,6 +219,21 @@
     .spin.show{ display:inline-block; }
     @keyframes sp { to { transform: rotate(360deg); } }
   </style>
+  
+  <!-- تم إضافة ملف i18n.js هنا -->
+  <script src="assets/i18n.js"></script>
+  <script>
+    // استدعاء دالة الترجمة بعد تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        // التحقق من وجود الدالة قبل استدعائها
+        if (typeof applyLang === 'function') {
+            applyLang();
+            console.log('تم تطبيق اللغة بنجاح.');
+        } else {
+            console.warn('الدالة applyLang غير موجودة. تأكد من تحميل assets/i18n.js بشكل صحيح.');
+        }
+    });
+  </script>
 </head>
 
 <body>
@@ -786,66 +801,4 @@
     try{
       const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
       if(!res || !res.ok){
-        tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
-        return;
-      }
-
-      const rows = res.rows || [];
-      if(rows.length === 0){
-        tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = rows.map(r => `
-        <tr>
-          <td>${r.studentId||""}</td>
-          <td>${r.name||""}</td>
-          <td>${r.status||""}</td>
-          <td>
-            <button class="btn" style="padding:8px 10px; border-radius:12px" onclick="editStatus('${(r.studentId||"").replace(/'/g,"\\'")}')">
-              تعديل
-            </button>
-          </td>
-        </tr>
-      `).join("");
-    }catch(e){
-      tbody.innerHTML = `<tr><td colspan="4">فشل الاتصال: ${(e?.message||e)}</td></tr>`;
-    }
-  }
-
-  async function editStatus(studentId){
-    const lectureId = ($("selectedLectureId").value||"").trim();
-    if(!lectureId) return;
-
-    const next = prompt("اكتب الحالة الجديدة:\nحضور\nتأخير\nغياب", "حضور");
-    if(!next) return;
-
-    const st = $("codeStatus");
-    showStatus(st, "warn", "جاري تحديث الحالة...");
-
-    try{
-      const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
-      if(res && res.ok){
-        showStatus(st, "ok", "تم تحديث الحالة");
-        await loadStudents();
-      }else{
-        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
-      }
-    }catch(e){
-      showStatus(st, "bad", "فشل: " + (e?.message||e));
-    }
-  }
-
-  function zoomQR(){
-    const src = LAST_QR_DATAURL || $("qrImg").src;
-    if(!src) return;
-    $("qrBig").src = src;
-    $("qrModal").classList.add("show");
-  }
-  function closeModal(){
-    $("qrModal").classList.remove("show");
-  }
-</script>
-
-</body>
-</html>
+        tbody.innerHTML = `<tr><td colspan="4">${(res
