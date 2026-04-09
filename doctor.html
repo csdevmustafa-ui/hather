@@ -216,6 +216,9 @@
     .spin.show{ display:inline-block; }
     @keyframes sp { to { transform: rotate(360deg); } }
   </style>
+  
+  <!-- ربط ملف الترجمة -->
+  <script src="assets/i18n.js"></script>
 </head>
 
 <body>
@@ -224,8 +227,8 @@
   <div class="lockCard">
     <div class="lockHeader">
       <div class="lockTitle">
-        <h3>لوحة عضو هيئة التدريس</h3>
-        <p>الرجاء إدخال الرقم السري للمتابعة</p>
+        <h3 data-i18n="lockTitle">لوحة عضو هيئة التدريس</h3>
+        <p data-i18n="lockSub">الرجاء إدخال الرقم السري للمتابعة</p>
       </div>
       <span class="pill">PIN</span>
     </div>
@@ -233,13 +236,13 @@
     <div class="pinRow">
       <div class="pinWrap">
         <span>🔒</span>
-        <input id="pinInput" type="password" placeholder="أدخل الرقم السري" />
-        <button class="iconBtn" id="togglePinBtn" onclick="togglePin()">عرض</button>
+        <input id="pinInput" type="password" data-i18n-placeholder="pinPlaceholder" placeholder="أدخل الرقم السري" />
+        <button class="iconBtn" id="togglePinBtn" onclick="togglePin()" data-i18n="showBtn">عرض</button>
       </div>
-      <button class="btn primary" onclick="unlock()">دخول</button>
+      <button class="btn primary" onclick="unlock()"><span class="spin" id="spUnlock"></span><span data-i18n="loginBtn">دخول</span></button>
     </div>
     <div class="status" id="lockStatus"></div>
-    <div class="footNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
+    <div class="footNote" data-i18n="lockNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
   </div>
 </div>
 
@@ -247,121 +250,124 @@
   <div class="topbar">
     <div class="brand">
       <div class="logo">H</div>
-      <div><h1>لوحة التحكم — عضو هيئة التدريس</h1><p>إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p></div>
+      <div>
+        <h1 data-i18n="dashboardTitle">لوحة التحكم — عضو هيئة التدريس</h1>
+        <p data-i18n="dashboardSub">إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p>
+      </div>
     </div>
     <div class="actionsTop">
-      <button class="btn" onclick="goHome()">الرئيسية</button>
-      <button class="btn" onclick="logout()">تسجيل الخروج</button>
-      <button class="btn primary" onclick="refreshAll()">تحديث</button>
+      <button class="btn" onclick="goHome()" data-i18n="homeBtn">الرئيسية</button>
+      <button class="btn" onclick="logout()" data-i18n="logoutBtn">تسجيل الخروج</button>
+      <button class="btn primary" onclick="refreshAll()" data-i18n="refreshBtn">تحديث</button>
     </div>
   </div>
   <div class="grid">
     <div class="card">
-      <h2>المحاضرات</h2>
-      <label>بحث (LectureID / المقرر / الشعبة)</label>
-      <input id="searchBox" class="input" placeholder="ابحث هنا..." oninput="applyFilter()" />
+      <h2 data-i18n="lecturesTitle">المحاضرات</h2>
+      <label data-i18n="searchLabel">بحث (LectureID / المقرر / الشعبة)</label>
+      <input id="searchBox" class="input" data-i18n-placeholder="searchPlaceholder" placeholder="ابحث هنا..." oninput="applyFilter()" />
       <div class="tableWrap">
         <table id="lectureTable">
           <thead>
             <tr>
               <th>LectureID</th>
-              <th>المقرر</th>
-              <th>الشعبة</th>
-              <th>البداية</th>
-              <th>النهاية</th>
-              <th>الحالة</th>
+              <th data-i18n="thCourse">المقرر</th>
+              <th data-i18n="thSection">الشعبة</th>
+              <th data-i18n="thStart">البداية</th>
+              <th data-i18n="thEnd">النهاية</th>
+              <th data-i18n="thState">الحالة</th>
             </tr>
           </thead>
-          <tbody id="lectureRows"><tr><td colspan="6">جاري التحميل...</td></tr></tbody>
-        </table>
-      </div>
-      <div class="hr"></div>
-      <h2>رمز الحضور و QR</h2>
+          <tbody id="lectureRows"><tr><td colspan="6" data-i18n="loading">جاري التحميل...<\/td><\/tr><\/tbody>
+        <\/table>
+      <\/div>
+      <div class="hr"><\/div>
+      <h2 data-i18n="qrTitle">رمز الحضور و QR<\/h2>
       <div class="qrGrid">
         <div class="card" style="margin:0">
-          <label>LectureID المحدد</label>
-          <input class="input" id="selectedLectureId" placeholder="اختر من الجدول أو الصقه هنا" />
+          <label data-i18n="selectedLectureLabel">LectureID المحدد<\/label>
+          <input class="input" id="selectedLectureId" data-i18n-placeholder="selectedLecturePlaceholder" placeholder="اختر من الجدول أو الصقه هنا" />
           <div class="row">
-            <button class="btn primary" onclick="generateCode()">توليد (Code + QR)</button>
-            <button class="btn" onclick="loadStudents()">عرض الطلاب</button>
-          </div>
+            <button class="btn primary" onclick="generateCode()"><span class="spin" id="spCode"><\/span><span data-i18n="generateBtn">توليد (Code + QR)<\/span><\/button>
+            <button class="btn" onclick="loadStudents()" data-i18n="showStudentsBtn">عرض الطلاب<\/button>
+          <\/div>
           <div class="row" style="margin-top:10px">
-            <button class="btn danger" onclick="deleteSelectedLecture()">حذف المحاضرة</button>
-            <button class="btn" onclick="clearSelection()">إلغاء التحديد</button>
-          </div>
-          <div class="status" id="codeStatus"></div>
-        </div>
+            <button class="btn danger" onclick="deleteSelectedLecture()" data-i18n="deleteLectureBtn">حذف المحاضرة<\/button>
+            <button class="btn" onclick="clearSelection()" data-i18n="clearBtn">إلغاء التحديد<\/button>
+          <\/div>
+          <div class="status" id="codeStatus"><\/div>
+        <\/div>
         <div class="qrBox">
           <img id="qrImg" alt="QR" />
-          <div class="pill" id="codeText">Code: —</div>
-          <div class="qrHint">يتم إنشاء رمز QR داخل المتصفح.</div>
-          <button class="btn" onclick="zoomQR()">تكبير</button>
-        </div>
-      </div>
-      <div class="hr"></div>
-      <h2>طلاب المحاضرة</h2>
+          <div class="pill" id="codeText">Code: —<\/div>
+          <div class="qrHint" data-i18n="qrHint">يتم إنشاء رمز QR داخل المتصفح.<\/div>
+          <button class="btn" onclick="zoomQR()" data-i18n="zoomBtn">تكبير<\/button>
+        <\/div>
+      <\/div>
+      <div class="hr"><\/div>
+      <h2 data-i18n="studentsTitle">طلاب المحاضرة<\/h2>
       <div class="tableWrap">
         <table id="studentTable">
           <thead>
             <tr>
-              <th>StudentID</th>
-              <th>الاسم</th>
-              <th>الحالة</th>
-              <th>تعديل</th>
+              <th data-i18n="thStudentId">StudentID<\/th>
+              <th data-i18n="thName">الاسم<\/th>
+              <th data-i18n="thStatus">الحالة<\/th>
+              <th data-i18n="thEdit">تعديل<\/th>
             </tr>
-          </thead>
-          <tbody id="studentRows"><tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+          <\/thead>
+          <tbody id="studentRows"><tr><td colspan="4" data-i18n="noLectureSelected">اختر محاضرة ثم اضغط "عرض الطلاب".<\/td><\/tr><\/tbody>
+        <\/table>
+      <\/div>
+    <\/div>
     <div class="card">
-      <h2>إنشاء محاضرة</h2>
+      <h2 data-i18n="createLectureTitle">إنشاء محاضرة<\/h2>
       <div class="row">
-        <div><label>المقرر</label><input class="input" id="course" placeholder="مثال: CS111" /></div>
-        <div><label>الشعبة</label><input class="input" id="section" placeholder="مثال: 1" /></div>
-      </div>
-      <div class="row"><div><label>وقت البداية</label><input class="input" id="start" type="datetime-local" /></div>
-      <div><label>وقت النهاية</label><input class="input" id="end" type="datetime-local" /></div></div>
-      <button class="btn primary" onclick="createLecture()">إنشاء</button>
-      <div class="status" id="createStatus"></div>
-      <div class="hr"></div>
-      <h2>إنشاء جدول أسبوعي</h2>
+        <div><label data-i18n="courseLabel">المقرر<\/label><input class="input" id="course" data-i18n-placeholder="coursePlaceholder" placeholder="مثال: CS111" /><\/div>
+        <div><label data-i18n="sectionLabel">الشعبة<\/label><input class="input" id="section" data-i18n-placeholder="sectionPlaceholder" placeholder="مثال: 1" /><\/div>
+      <\/div>
+      <div class="row"><div><label data-i18n="startLabel">وقت البداية<\/label><input class="input" id="start" type="datetime-local" /><\/div>
+      <div><label data-i18n="endLabel">وقت النهاية<\/label><input class="input" id="end" type="datetime-local" /><\/div><\/div>
+      <button class="btn primary" onclick="createLecture()"><span class="spin" id="spCreate"><\/span><span data-i18n="createBtn">إنشاء<\/span><\/button>
+      <div class="status" id="createStatus"><\/div>
+      <div class="hr"><\/div>
+      <h2 data-i18n="weeklyTitle">إنشاء جدول أسبوعي<\/h2>
       <div class="row">
-        <div><label>المقرر</label><input class="input" id="wCourse" placeholder="مثال: CS111" /></div>
-        <div><label>الشعبة</label><input class="input" id="wSection" placeholder="مثال: 1" /></div>
-      </div>
+        <div><label data-i18n="courseLabel">المقرر<\/label><input class="input" id="wCourse" data-i18n-placeholder="coursePlaceholder" placeholder="مثال: CS111" /><\/div>
+        <div><label data-i18n="sectionLabel">الشعبة<\/label><input class="input" id="wSection" data-i18n-placeholder="sectionPlaceholder" placeholder="مثال: 1" /><\/div>
+      <\/div>
       <div class="row">
-        <div><label>من تاريخ</label><input class="input" id="fromDate" type="date" /></div>
-        <div><label>إلى تاريخ</label><input class="input" id="toDate" type="date" /></div>
-      </div>
+        <div><label data-i18n="fromDateLabel">من تاريخ<\/label><input class="input" id="fromDate" type="date" /><\/div>
+        <div><label data-i18n="toDateLabel">إلى تاريخ<\/label><input class="input" id="toDate" type="date" /><\/div>
+      <\/div>
       <div class="row">
-        <div><label>وقت البداية</label><input class="input" id="wStartTime" type="time" /></div>
-        <div><label>وقت النهاية</label><input class="input" id="wEndTime" type="time" /></div>
-      </div>
-      <div>الأيام:</div>
+        <div><label data-i18n="startTimeLabel">وقت البداية<\/label><input class="input" id="wStartTime" type="time" /><\/div>
+        <div><label data-i18n="endTimeLabel">وقت النهاية<\/label><input class="input" id="wEndTime" type="time" /><\/div>
+      <\/div>
+      <div data-i18n="daysLabel">الأيام:<\/div>
       <div class="row" style="grid-template-columns:repeat(5,1fr)">
-        <label><input type="checkbox" class="day" value="0"> الأحد</label>
-        <label><input type="checkbox" class="day" value="1"> الاثنين</label>
-        <label><input type="checkbox" class="day" value="2"> الثلاثاء</label>
-        <label><input type="checkbox" class="day" value="3"> الأربعاء</label>
-        <label><input type="checkbox" class="day" value="4"> الخميس</label>
-      </div>
-      <button class="btn primary" onclick="createSchedule()">إنشاء الجدول</button>
-      <div class="status" id="scheduleStatus"></div>
-    </div>
-  </div>
-  <div class="footer">Hather Attendance System © 2026</div>
-</div>
+        <label><input type="checkbox" class="day" value="0"> <span data-i18n="sun">الأحد<\/span><\/label>
+        <label><input type="checkbox" class="day" value="1"> <span data-i18n="mon">الاثنين<\/span><\/label>
+        <label><input type="checkbox" class="day" value="2"> <span data-i18n="tue">الثلاثاء<\/span><\/label>
+        <label><input type="checkbox" class="day" value="3"> <span data-i18n="wed">الأربعاء<\/span><\/label>
+        <label><input type="checkbox" class="day" value="4"> <span data-i18n="thu">الخميس<\/span><\/label>
+      <\/div>
+      <button class="btn primary" onclick="createSchedule()"><span class="spin" id="spSchedule"><\/span><span data-i18n="createScheduleBtn">إنشاء الجدول<\/span><\/button>
+      <div class="status" id="scheduleStatus"><\/div>
+    <\/div>
+  <\/div>
+  <div class="footer" data-i18n="footer">Hather Attendance System © 2026<\/div>
+<\/div>
 
 <div class="modal" id="qrModal" onclick="closeModal()">
   <div class="modalCard" onclick="event.stopPropagation()">
     <img id="qrBig" alt="QR Big">
-    <button class="btn primary" onclick="closeModal()">إغلاق</button>
-  </div>
-</div>
+    <button class="btn primary" onclick="closeModal()" data-i18n="closeBtn">إغلاق<\/button>
+  <\/div>
+<\/div>
 
-<script src="assets/app.js"></script>
-<script src="assets/qr.js"></script>
+<script src="assets/app.js"><\/script>
+<script src="assets/qr.js"><\/script>
 
 <script>
   const $ = (id) => document.getElementById(id);
@@ -374,17 +380,17 @@
   function togglePin(){
     const inp = $("pinInput");
     const btn = $("togglePinBtn");
-    if(inp.type === "password"){ inp.type = "text"; btn.textContent = "إخفاء"; }
-    else { inp.type = "password"; btn.textContent = "عرض"; }
+    if(inp.type === "password"){ inp.type = "text"; btn.textContent = t("hideBtn"); }
+    else { inp.type = "password"; btn.textContent = t("showBtn"); }
   }
 
   async function unlock(){
     const pin = ($("pinInput").value || "").trim();
     const st = $("lockStatus");
     hideStatus(st);
-    if(!pin){ showStatus(st, "bad", "أدخل الرقم السري"); return; }
+    if(!pin){ showStatus(st, "bad", t("enterPin")); return; }
     setSpin("spUnlock", true);
-    showStatus(st, "warn", "جاري التحقق...");
+    showStatus(st, "warn", t("verifying"));
     try{
       setDoctorKey(pin);
       const res = await doctorCall({ action:"listLectures" });
@@ -395,7 +401,7 @@
       await refreshAll();
     }catch(e){
       clearDoctorKey();
-      showStatus(st, "bad", "فشل الدخول: " + (e?.message || e));
+      showStatus(st, "bad", t("loginFail") + ": " + (e?.message || e));
     }finally{ setSpin("spUnlock", false); }
   }
 
@@ -408,14 +414,14 @@
     $("codeText").textContent = "Code: —";
     $("qrImg").src = "";
     LAST_QR_DATAURL = "";
-    $("studentRows").innerHTML = `<tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>`;
+    $("studentRows").innerHTML = `<tr><td colspan="4">${t("noLectureSelected")}<\/td><\/tr>`;
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
   }
 
   function pickLecture(id){
     ACTIVE_LECTURE = id;
     $("selectedLectureId").value = id;
-    $("studentRows").innerHTML = `<tr><td colspan="4">اضغط "عرض الطلاب" لعرض الحضور.</td></tr>`;
+    $("studentRows").innerHTML = `<tr><td colspan="4">${t("pressShow")}<\/td><\/tr>`;
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
     const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
     if(tr) tr.classList.add("active");
@@ -429,17 +435,17 @@
 
   function renderLectures(rows){
     const tbody = $("lectureRows");
-    if(!rows || rows.length===0){ tbody.innerHTML = `<tr><td colspan="6">لا توجد محاضرات</td></tr>`; return; }
-    tbody.innerHTML = rows.map(r => `<tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId.replace(/'/g,"\\'")}')"><td><b>${r.lectureId}</b></td><td>${r.course}</td><td>${r.section}</td><td>${r.start}</td><td>${r.end}</td><td>${r.state}</td></tr>`).join("");
+    if(!rows || rows.length===0){ tbody.innerHTML = `<tr><td colspan="6">${t("noLectures")}<\/td><\/tr>`; return; }
+    tbody.innerHTML = rows.map(r => `<tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId.replace(/'/g,"\\'")}')"><td><b>${r.lectureId}<\/b><\/td><td>${r.course}<\/td><td>${r.section}<\/td><td>${r.start}<\/td><td>${r.end}<\/td><td>${r.state}<\/td><\/tr>`).join("");
   }
 
   async function refreshAll(){ await loadLectures(); try{ await apiHealth(); }catch(e){} }
   async function loadLectures(){
     const tbody = $("lectureRows");
-    tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6">${t("loading")}<\/td><\/tr>`;
     let res;
-    try{ res = await doctorCall({ action:"listLectures" }); }catch(e){ tbody.innerHTML = `<tr><td colspan="6">فشل الاتصال: ${e?.message||e}</td></tr>`; return; }
-    if(!res || !res.ok){ tbody.innerHTML = `<tr><td colspan="6">${res?.error||"Failed"}</td></tr>`; return; }
+    try{ res = await doctorCall({ action:"listLectures" }); }catch(e){ tbody.innerHTML = `<tr><td colspan="6">${t("apiFail")}: ${e?.message||e}<\/td><\/tr>`; return; }
+    if(!res || !res.ok){ tbody.innerHTML = `<tr><td colspan="6">${res?.error||"Failed"}<\/td><\/tr>`; return; }
     ALL_LECTURES = (res.rows || []).filter(x => String(x.state||"").toLowerCase() !== "deleted");
     applyFilter();
     if(ACTIVE_LECTURE && !ALL_LECTURES.some(x=>x.lectureId===ACTIVE_LECTURE)) clearSelection();
@@ -449,14 +455,14 @@
     const st = $("createStatus");
     hideStatus(st);
     const course = ($("course").value||"").trim(), section = ($("section").value||"").trim(), start = ($("start").value||"").trim(), end = ($("end").value||"").trim();
-    if(!course || !section || !start || !end){ showStatus(st,"bad","أكمل جميع الحقول"); return; }
+    if(!course || !section || !start || !end){ showStatus(st,"bad", t("fillAll")); return; }
     setSpin("spCreate",true);
-    showStatus(st,"warn","جاري التنفيذ...");
+    showStatus(st,"warn", t("creating"));
     try{
       const res = await doctorCall({ action:"createLecture", course, section, start, end });
-      if(res?.ok){ showStatus(st,"ok","تم إنشاء المحاضرة"); await loadLectures(); }
+      if(res?.ok){ showStatus(st,"ok", t("createdOk")); await loadLectures(); }
       else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
+    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
     finally{ setSpin("spCreate",false); }
   }
 
@@ -464,14 +470,14 @@
     const st = $("scheduleStatus");
     hideStatus(st);
     const course = ($("wCourse").value||"").trim(), section = ($("wSection").value||"").trim(), fromDate = ($("fromDate").value||"").trim(), toDate = ($("toDate").value||"").trim(), startTime = ($("wStartTime").value||"").trim(), endTime = ($("wEndTime").value||"").trim(), days = Array.from(document.querySelectorAll(".day:checked")).map(x=>Number(x.value));
-    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length===0){ showStatus(st,"bad","أكمل الحقول وحدد الأيام"); return; }
+    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length===0){ showStatus(st,"bad", t("completeAndDays")); return; }
     setSpin("spSchedule",true);
-    showStatus(st,"warn","جاري إنشاء الجدول...");
+    showStatus(st,"warn", t("creatingSchedule"));
     try{
       const res = await doctorCall({ action:"createWeeklySchedule", course, section, fromDate, toDate, startTime, endTime, days });
-      if(res?.ok){ showStatus(st,"ok",`تم إنشاء الجدول (تم توليد ${res.created||0} محاضرة)`); await loadLectures(); }
+      if(res?.ok){ showStatus(st,"ok", t("scheduleOk") + ` (${res.created||0} ${t("lecturesCreated")})`); await loadLectures(); }
       else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
+    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
     finally{ setSpin("spSchedule",false); }
   }
 
@@ -479,9 +485,9 @@
     const st = $("codeStatus");
     hideStatus(st);
     const lectureId = ($("selectedLectureId").value||"").trim();
-    if(!lectureId){ showStatus(st,"bad","اختر LectureID أولاً"); return; }
+    if(!lectureId){ showStatus(st,"bad", t("pickFirst")); return; }
     setSpin("spCode",true);
-    showStatus(st,"warn","جاري توليد الرمز...");
+    showStatus(st,"warn", t("generating"));
     try{
       const res = await doctorCall({ action:"generateCode", lectureId });
       if(res?.ok){
@@ -490,4 +496,35 @@
         const img = $("qrImg");
         img.src = "";
         LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420);
-        showStatus(st,"
+        showStatus(st,"ok", t("codeGenerated"));
+      } else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
+    finally{ setSpin("spCode",false); }
+  }
+
+  async function deleteSelectedLecture(){
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    const st = $("codeStatus");
+    hideStatus(st);
+    if(!lectureId){ showStatus(st,"bad", t("pickFirst")); return; }
+    if(!confirm(t("deleteConfirm"))) return;
+    showStatus(st,"warn", t("deleting"));
+    try{
+      const res = await doctorCall({ action:"deleteLecture", lectureId });
+      if(res?.ok){ showStatus(st,"ok", t("deletedOk")); clearSelection(); await loadLectures(); }
+      else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
+  }
+
+  async function loadStudents(){
+    const tbody = $("studentRows");
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    if(!lectureId){ tbody.innerHTML = `<tr><td colspan="4">${t("pickFirst")}<\/td><\/tr>`; return; }
+    tbody.innerHTML = `<tr><td colspan="4">${t("loading")}<\/td><\/tr>`;
+    try{
+      const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
+      if(!res?.ok){ tbody.innerHTML = `<tr><td colspan="4">${res?.error||"Failed"}<\/td><\/tr>`; return; }
+      const rows = res.rows || [];
+      if(rows.length === 0){ tbody.innerHTML = `<tr><td colspan="4">${t("noAttendance")}<\/td><\/tr>`; return; }
+      tbody.innerHTML = rows.map(r => `<tr><td>${r.studentId}<\/td><td>${r.name}<\/td><td>${r.status}<\/td><td><button class="btn" onclick="editStatus('${r.studentId.replace(/'/g,"\\'")}')">${t("edit")}<\/button><\/td><\/tr>`).join("");
+    }catch(e){ tbody.innerHTML = `<tr><td colspan="4">${t("apiFail")}: ${e?.message||e}<\/td><\/tr>`
