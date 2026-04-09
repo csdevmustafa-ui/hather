@@ -1,556 +1,264 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="pageTitleDoctor">لوحة عضو هيئة التدريس - Hather</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta charset="UTF-8">
+  <title>لوحة عضو هيئة التدريس - Hather</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
-      --card: rgba(255,255,255,.08);
-      --line: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --accent:#18c26b; --accent2:#11a85b;
-      --danger:#ff5d5d; --warn:#ffcc66; --ok:#52ffa2;
-      --shadow:0 18px 60px rgba(0,0,0,.35);
-      --radius: 22px;
-    }
-    *{ box-sizing:border-box; font-family:"Cairo", system-ui, -apple-system, Segoe UI, Arial; }
-    body{
-      margin:0; min-height:100vh; color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
-        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
-    }
-
-    .container{ width:min(1180px, 94vw); margin:28px auto 36px; }
-    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
-    .brand{ display:flex; gap:12px; align-items:center; }
-    .logo{
-      width:48px; height:48px; border-radius:16px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.14);
-      display:grid; place-items:center;
-      box-shadow: 0 10px 30px rgba(0,0,0,.22);
-    }
-    .brand h1{ margin:0; font-size:18px; font-weight:900; }
-    .brand p{ margin:2px 0 0; color:var(--muted); font-size:13px; }
-
-    .actionsTop{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-    .btn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:16px;
-      cursor:pointer;
-      display:flex; align-items:center; justify-content:center; gap:10px;
-      box-shadow: 0 10px 28px rgba(0,0,0,.16);
-      transition:.15s ease;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-    .btn.primary{
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border:1px solid rgba(255,255,255,.18);
-      color:#06210f; font-weight:900;
-    }
-    .btn.danger{
-      background: linear-gradient(135deg, #ff6b6b, #ff3d3d);
-      border:1px solid rgba(255,255,255,.18);
-      color:#2a0000; font-weight:900;
-    }
-
-    .grid{ display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; align-items:start; }
-    @media(max-width:980px){ .grid{ grid-template-columns:1fr; } }
-
-    .card{
-      background: var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding:16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-    }
-    .card h2{ margin:0 0 12px; font-size:16px; font-weight:900; }
-    .hr{ height:1px; background: rgba(255,255,255,.12); margin:14px 0; }
-
-    label{ display:block; font-size:12px; color:#fff; opacity:.92; margin:0 0 6px; }
-    .input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.15);
-      color: var(--text);
-      outline:none;
-    }
-    .input::placeholder{ color: rgba(255,255,255,.55); }
-
-    .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    @media(max-width:520px){ .row{ grid-template-columns:1fr; } }
-
-    .status{
-      margin-top:10px; padding:10px 12px; border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.14);
-      color: #fff; font-size:13px; display:none;
-    }
-    .status.show{ display:block; }
-    .status.ok{ border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12); }
-    .status.bad{ border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12); }
-    .status.warn{ border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10); }
-
-    .tableWrap{ overflow:auto; border-radius:18px; border:1px solid rgba(255,255,255,.12); }
-    table{ width:100%; border-collapse:collapse; min-width:820px; }
-    th, td{ padding:12px 10px; font-size:13px; text-align:center; }
-    thead th{
-      position:sticky; top:0;
-      background: rgba(0,0,0,.20);
-      color: rgba(255,255,255,.85);
-      font-weight:900;
-    }
-    tbody tr{ border-top:1px solid rgba(255,255,255,.10); cursor:pointer; }
-    tbody tr:hover{ background: rgba(255,255,255,.06); }
-    tbody tr.active{ background: rgba(24,194,107,.18); }
-
-    .qrGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    @media(max-width:980px){ .qrGrid{ grid-template-columns:1fr; } }
-
-    .qrBox{
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:10px; background: rgba(0,0,0,.15);
-      border:1px dashed rgba(255,255,255,.18);
-      border-radius: 18px; padding:14px; min-height:320px;
-    }
-    .qrBox img{
-      width:240px; height:240px; border-radius:16px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      object-fit:contain;
-    }
-    .pill{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 10px; border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.92);
-      font-weight:800; font-size:12px;
-    }
-    .qrHint{ color:#fff; font-size:12px; opacity:.95; text-align:center; }
-
-    .lock{
-      position:fixed; inset:0; z-index:9999;
-      display:flex; align-items:center; justify-content:center; padding:18px;
-      background: radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-                  linear-gradient(135deg, rgba(6,39,22,.96), rgba(15,90,52,.92));
-    }
-    .lockCard{
-      width:min(560px, 96vw);
-      border-radius: 26px; padding: 18px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-    }
-    .lockHeader{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .lockTitle h3{ margin:0; font-size:18px; font-weight:900; }
-    .lockTitle p{ margin:4px 0 0; font-size:12px; color:#fff; opacity:.92; }
-    .pinRow{ display:grid; grid-template-columns: 1fr auto; gap:10px; margin-top:14px; }
-    .pinWrap{
-      display:flex; gap:8px; align-items:center;
-      padding:10px 10px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
-    }
-    .pinWrap input{
-      flex:1; border:0; background:transparent; outline:none;
-      color: var(--text); font-size:14px; padding:6px 8px;
-    }
-    .iconBtn{
-      width:42px; height:42px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      display:grid; place-items:center; cursor:pointer;
-    }
-    .footNote{ margin-top:10px; font-size:12px; color:#fff; opacity:.88; }
-    .hidden{ display:none !important; }
-
-    .modal{
-      position:fixed; inset:0; z-index:99999;
-      background: rgba(0,0,0,.55);
-      display:none; align-items:center; justify-content:center; padding:18px;
-    }
-    .modal.show{ display:flex; }
-    .modalCard{
-      width:min(560px, 95vw);
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.16);
-      border-radius: 22px; padding:16px;
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow); text-align:center;
-    }
-    .modalCard img{
-      width:min(420px, 84vw); height:auto;
-      border-radius:18px; border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.12);
-      object-fit:contain;
-    }
-
-    .footer{ text-align:center; color: rgba(255,255,255,.70); margin-top:16px; font-size:12px; }
-    .spin{
-      width:16px; height:16px; border-radius:999px;
-      border:2px solid rgba(0,0,0,.25);
-      border-top-color: rgba(0,0,0,.65);
-      animation: sp 1s linear infinite;
-      display:none;
-    }
-    .spin.show{ display:inline-block; }
-    @keyframes sp { to { transform: rotate(360deg); } }
-  </style>
-  
   <script src="assets/i18n.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/qr.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,#062716,#0f5a34);color:#fff;min-height:100vh}
+    .container{max-width:1200px;margin:auto;padding:20px}
+    .hidden{display:none}
+    .lock{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center;z-index:9999}
+    .lock-card{background:rgba(255,255,255,.1);padding:30px;border-radius:20px;width:350px;text-align:center}
+    .lock-card input{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:none;background:rgba(255,255,255,.2);color:#fff}
+    .lock-card button{width:100%;padding:12px;border-radius:10px;border:none;background:#18c26b;color:#000;font-weight:bold;cursor:pointer}
+    .btn{padding:10px 15px;border-radius:10px;border:none;cursor:pointer;background:rgba(255,255,255,.2);color:#fff}
+    .btn-primary{background:#18c26b;color:#000}
+    .btn-danger{background:#ff5d5d;color:#fff}
+    .card{background:rgba(255,255,255,.1);border-radius:20px;padding:20px;margin-bottom:20px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}}
+    input,select{width:100%;padding:10px;border-radius:10px;border:none;background:rgba(255,255,255,.2);color:#fff;margin-bottom:10px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.2);text-align:center}
+    .status{padding:10px;border-radius:10px;margin-top:10px;display:none}
+    .status.show{display:block}
+    .status.ok{background:rgba(82,255,162,.2)}
+    .status.bad{background:rgba(255,93,93,.2)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    h2{font-size:18px;margin-bottom:15px}
+    label{font-size:12px;display:block;margin-bottom:5px}
+    .qrBox{text-align:center;padding:20px;background:rgba(0,0,0,.2);border-radius:20px}
+    .qrBox img{width:200px;height:200px;background:#fff;border-radius:10px}
+    .topbar{display:flex;justify-content:space-between;margin-bottom:20px}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:40px;height:40px;background:#18c26b;border-radius:10px;display:flex;align-items:center;justify-content:center}
+  </style>
 </head>
-
 <body>
 
-<div class="lock" id="lockScreen">
-  <div class="lockCard">
-    <div class="lockHeader">
-      <div class="lockTitle">
-        <h3 data-i18n="lockTitle">لوحة عضو هيئة التدريس</h3>
-        <p data-i18n="lockSub">الرجاء إدخال الرقم السري للمتابعة</p>
-      </div>
-      <span class="pill">PIN</span>
-    </div>
-    <div class="hr"></div>
-    <div class="pinRow">
-      <div class="pinWrap">
-        <span>🔒</span>
-        <input id="pinInput" type="password" data-i18n-placeholder="pinPlaceholder" placeholder="أدخل الرقم السري" />
-        <button class="iconBtn" id="togglePinBtn" onclick="togglePin()" data-i18n="showBtn">عرض</button>
-      </div>
-      <button class="btn primary" onclick="unlock()"><span class="spin" id="spUnlock"></span><span data-i18n="loginBtn">دخول</span></button>
-    </div>
-    <div class="status" id="lockStatus"></div>
-    <div class="footNote" data-i18n="lockNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
+<!-- شاشة قفل PIN -->
+<div id="lockScreen" class="lock">
+  <div class="lock-card">
+    <h3 data-i18n="lockTitle">لوحة عضو هيئة التدريس</h3>
+    <p data-i18n="lockSub">الرجاء إدخال الرقم السري</p>
+    <input type="password" id="pinInput" data-i18n-placeholder="pinPlaceholder" placeholder="أدخل الرقم السري">
+    <button onclick="unlock()" data-i18n="loginBtn">دخول</button>
+    <div id="lockStatus" class="status"></div>
   </div>
 </div>
 
-<div class="container hidden" id="app">
+<!-- المحتوى الرئيسي -->
+<div id="app" class="container hidden">
   <div class="topbar">
     <div class="brand">
       <div class="logo">H</div>
-      <div>
-        <h1 data-i18n="dashboardTitle">لوحة التحكم — عضو هيئة التدريس</h1>
-        <p data-i18n="dashboardSub">إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p>
-      </div>
+      <div><h1 data-i18n="dashboardTitle">لوحة الدكتور</h1><p data-i18n="dashboardSub">إدارة المحاضرات والحضور</p></div>
     </div>
-    <div class="actionsTop">
+    <div>
       <button class="btn" onclick="goHome()" data-i18n="homeBtn">الرئيسية</button>
-      <button class="btn" onclick="logout()" data-i18n="logoutBtn">تسجيل الخروج</button>
-      <button class="btn primary" onclick="refreshAll()" data-i18n="refreshBtn">تحديث</button>
+      <button class="btn" onclick="logout()" data-i18n="logoutBtn">خروج</button>
+      <button class="btn btn-primary" onclick="refreshAll()" data-i18n="refreshBtn">تحديث</button>
+      <button class="btn" id="langBtnDoctor" onclick="toggleLang()">English</button>
     </div>
   </div>
+
   <div class="grid">
-    <div class="card">
-      <h2 data-i18n="lecturesTitle">المحاضرات</h2>
-      <label data-i18n="searchLabel">بحث (LectureID / المقرر / الشعبة)</label>
-      <input id="searchBox" class="input" data-i18n-placeholder="searchPlaceholder" placeholder="ابحث هنا..." oninput="applyFilter()" />
-      <div class="tableWrap">
-        <table id="lectureTable">
-          <thead>
-            <tr>
-              <th>LectureID</th>
-              <th data-i18n="thCourse">المقرر</th>
-              <th data-i18n="thSection">الشعبة</th>
-              <th data-i18n="thStart">البداية</th>
-              <th data-i18n="thEnd">النهاية</th>
-              <th data-i18n="thState">الحالة</th>
-            </tr>
-          </thead>
-          <tbody id="lectureRows"><tr><td colspan="6" data-i18n="loading">جاري التحميل...<\/td><\/tr><\/tbody>
-        <\/table>
-      <\/div>
-      <div class="hr"><\/div>
-      <h2 data-i18n="qrTitle">رمز الحضور و QR<\/h2>
-      <div class="qrGrid">
-        <div class="card" style="margin:0">
-          <label data-i18n="selectedLectureLabel">LectureID المحدد<\/label>
-          <input class="input" id="selectedLectureId" data-i18n-placeholder="selectedLecturePlaceholder" placeholder="اختر من الجدول أو الصقه هنا" />
-          <div class="row">
-            <button class="btn primary" onclick="generateCode()"><span class="spin" id="spCode"><\/span><span data-i18n="generateBtn">توليد (Code + QR)<\/span><\/button>
-            <button class="btn" onclick="loadStudents()" data-i18n="showStudentsBtn">عرض الطلاب<\/button>
-          <\/div>
-          <div class="row" style="margin-top:10px">
-            <button class="btn danger" onclick="deleteSelectedLecture()" data-i18n="deleteLectureBtn">حذف المحاضرة<\/button>
-            <button class="btn" onclick="clearSelection()" data-i18n="clearBtn">إلغاء التحديد<\/button>
-          <\/div>
-          <div class="status" id="codeStatus"><\/div>
-        <\/div>
+    <!-- القسم الأيمن -->
+    <div>
+      <div class="card">
+        <h2 data-i18n="lecturesTitle">المحاضرات</h2>
+        <input type="text" id="searchBox" data-i18n-placeholder="searchPlaceholder" placeholder="بحث..." onkeyup="applyFilter()">
+        <div style="overflow-x:auto">
+          <table id="lectureTable">
+            <thead><tr><th>LectureID</th><th data-i18n="thCourse">المقرر</th><th data-i18n="thSection">الشعبة</th><th data-i18n="thStart">البداية</th><th data-i18n="thEnd">النهاية</th></tr></thead>
+            <tbody id="lectureRows"><tr><td colspan="5" data-i18n="loading">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="qrTitle">رمز الحضور و QR</h2>
+        <label data-i18n="selectedLectureLabel">LectureID المحدد</label>
+        <input type="text" id="selectedLectureId" data-i18n-placeholder="selectedLecturePlaceholder" placeholder="اختر محاضرة">
+        <div class="row">
+          <button class="btn btn-primary" onclick="generateCode()" data-i18n="generateBtn">توليد كود</button>
+          <button class="btn" onclick="loadStudents()" data-i18n="showStudentsBtn">عرض الطلاب</button>
+          <button class="btn btn-danger" onclick="deleteSelectedLecture()" data-i18n="deleteLectureBtn">حذف</button>
+          <button class="btn" onclick="clearSelection()" data-i18n="clearBtn">إلغاء</button>
+        </div>
         <div class="qrBox">
-          <img id="qrImg" alt="QR" />
-          <div class="pill" id="codeText">Code: —<\/div>
-          <div class="qrHint" data-i18n="qrHint">يتم إنشاء رمز QR داخل المتصفح.<\/div>
-          <button class="btn" onclick="zoomQR()" data-i18n="zoomBtn">تكبير<\/button>
-        <\/div>
-      <\/div>
-      <div class="hr"><\/div>
-      <h2 data-i18n="studentsTitle">طلاب المحاضرة<\/h2>
-      <div class="tableWrap">
-        <table id="studentTable">
-          <thead>
-            <tr>
-              <th data-i18n="thStudentId">StudentID<\/th>
-              <th data-i18n="thName">الاسم<\/th>
-              <th data-i18n="thStatus">الحالة<\/th>
-              <th data-i18n="thEdit">تعديل<\/th>
-            </tr>
-          <\/thead>
-          <tbody id="studentRows"><tr><td colspan="4" data-i18n="noLectureSelected">اختر محاضرة ثم اضغط "عرض الطلاب".<\/td><\/tr><\/tbody>
-        <\/table>
-      <\/div>
-    <\/div>
-    <div class="card">
-      <h2 data-i18n="createLectureTitle">إنشاء محاضرة<\/h2>
-      <div class="row">
-        <div><label data-i18n="courseLabel">المقرر<\/label><input class="input" id="course" data-i18n-placeholder="coursePlaceholder" placeholder="مثال: CS111" /><\/div>
-        <div><label data-i18n="sectionLabel">الشعبة<\/label><input class="input" id="section" data-i18n-placeholder="sectionPlaceholder" placeholder="مثال: 1" /><\/div>
-      <\/div>
-      <div class="row"><div><label data-i18n="startLabel">وقت البداية<\/label><input class="input" id="start" type="datetime-local" /><\/div>
-      <div><label data-i18n="endLabel">وقت النهاية<\/label><input class="input" id="end" type="datetime-local" /><\/div><\/div>
-      <button class="btn primary" onclick="createLecture()"><span class="spin" id="spCreate"><\/span><span data-i18n="createBtn">إنشاء<\/span><\/button>
-      <div class="status" id="createStatus"><\/div>
-      <div class="hr"><\/div>
-      <h2 data-i18n="weeklyTitle">إنشاء جدول أسبوعي<\/h2>
-      <div class="row">
-        <div><label data-i18n="courseLabel">المقرر<\/label><input class="input" id="wCourse" data-i18n-placeholder="coursePlaceholder" placeholder="مثال: CS111" /><\/div>
-        <div><label data-i18n="sectionLabel">الشعبة<\/label><input class="input" id="wSection" data-i18n-placeholder="sectionPlaceholder" placeholder="مثال: 1" /><\/div>
-      <\/div>
-      <div class="row">
-        <div><label data-i18n="fromDateLabel">من تاريخ<\/label><input class="input" id="fromDate" type="date" /><\/div>
-        <div><label data-i18n="toDateLabel">إلى تاريخ<\/label><input class="input" id="toDate" type="date" /><\/div>
-      <\/div>
-      <div class="row">
-        <div><label data-i18n="startTimeLabel">وقت البداية<\/label><input class="input" id="wStartTime" type="time" /><\/div>
-        <div><label data-i18n="endTimeLabel">وقت النهاية<\/label><input class="input" id="wEndTime" type="time" /><\/div>
-      <\/div>
-      <div data-i18n="daysLabel">الأيام:<\/div>
-      <div class="row" style="grid-template-columns:repeat(5,1fr)">
-        <label><input type="checkbox" class="day" value="0"> <span data-i18n="sun">الأحد<\/span><\/label>
-        <label><input type="checkbox" class="day" value="1"> <span data-i18n="mon">الاثنين<\/span><\/label>
-        <label><input type="checkbox" class="day" value="2"> <span data-i18n="tue">الثلاثاء<\/span><\/label>
-        <label><input type="checkbox" class="day" value="3"> <span data-i18n="wed">الأربعاء<\/span><\/label>
-        <label><input type="checkbox" class="day" value="4"> <span data-i18n="thu">الخميس<\/span><\/label>
-      <\/div>
-      <button class="btn primary" onclick="createSchedule()"><span class="spin" id="spSchedule"><\/span><span data-i18n="createScheduleBtn">إنشاء الجدول<\/span><\/button>
-      <div class="status" id="scheduleStatus"><\/div>
-    <\/div>
-  <\/div>
-  <div class="footer" data-i18n="footer">Hather Attendance System © 2026<\/div>
-<\/div>
+          <img id="qrImg" src="">
+          <div id="codeText" class="pill">Code: --</div>
+          <div class="qrHint" data-i18n="qrHint">QR يظهر هنا</div>
+        </div>
+        <div id="codeStatus" class="status"></div>
+      </div>
 
-<div class="modal" id="qrModal" onclick="closeModal()">
-  <div class="modalCard" onclick="event.stopPropagation()">
-    <img id="qrBig" alt="QR Big">
-    <button class="btn primary" onclick="closeModal()" data-i18n="closeBtn">إغلاق<\/button>
-  <\/div>
-<\/div>
+      <div class="card">
+        <h2 data-i18n="studentsTitle">طلاب المحاضرة</h2>
+        <div style="overflow-x:auto">
+          <table id="studentTable">
+            <thead><tr><th data-i18n="thStudentId">StudentID</th><th data-i18n="thName">الاسم</th><th data-i18n="thStatus">الحالة</th><th data-i18n="thEdit">تعديل</th></tr></thead>
+            <tbody id="studentRows"><tr><td colspan="4" data-i18n="noLectureSelected">اختر محاضرة ثم عرض الطلاب</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-<script src="assets/app.js"><\/script>
-<script src="assets/qr.js"><\/script>
+    <!-- القسم الأيسر -->
+    <div>
+      <div class="card">
+        <h2 data-i18n="createLectureTitle">إنشاء محاضرة</h2>
+        <div class="row">
+          <div><label data-i18n="courseLabel">المقرر</label><input id="course" data-i18n-placeholder="coursePlaceholder" placeholder="CS111"></div>
+          <div><label data-i18n="sectionLabel">الشعبة</label><input id="section" data-i18n-placeholder="sectionPlaceholder" placeholder="1"></div>
+        </div>
+        <div class="row">
+          <div><label data-i18n="startLabel">وقت البداية</label><input id="start" type="datetime-local"></div>
+          <div><label data-i18n="endLabel">وقت النهاية</label><input id="end" type="datetime-local"></div>
+        </div>
+        <button class="btn btn-primary" onclick="createLecture()" data-i18n="createBtn">إنشاء</button>
+        <div id="createStatus" class="status"></div>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="weeklyTitle">جدول أسبوعي</h2>
+        <div class="row">
+          <div><label data-i18n="courseLabel">المقرر</label><input id="wCourse" placeholder="CS111"></div>
+          <div><label data-i18n="sectionLabel">الشعبة</label><input id="wSection" placeholder="1"></div>
+        </div>
+        <div class="row">
+          <div><label data-i18n="fromDateLabel">من تاريخ</label><input id="fromDate" type="date"></div>
+          <div><label data-i18n="toDateLabel">إلى تاريخ</label><input id="toDate" type="date"></div>
+        </div>
+        <div class="row">
+          <div><label data-i18n="startTimeLabel">وقت البداية</label><input id="wStartTime" type="time"></div>
+          <div><label data-i18n="endTimeLabel">وقت النهاية</label><input id="wEndTime" type="time"></div>
+        </div>
+        <label data-i18n="daysLabel">الأيام:</label>
+        <div class="row">
+          <label><input type="checkbox" class="day" value="0"> <span data-i18n="sun">أحد</span></label>
+          <label><input type="checkbox" class="day" value="1"> <span data-i18n="mon">إثنين</span></label>
+          <label><input type="checkbox" class="day" value="2"> <span data-i18n="tue">ثلاثاء</span></label>
+          <label><input type="checkbox" class="day" value="3"> <span data-i18n="wed">أربعاء</span></label>
+          <label><input type="checkbox" class="day" value="4"> <span data-i18n="thu">خميس</span></label>
+        </div>
+        <button class="btn btn-primary" onclick="createSchedule()" data-i18n="createScheduleBtn">إنشاء الجدول</button>
+        <div id="scheduleStatus" class="status"></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer" style="text-align:center;margin-top:20px" data-i18n="footer">Hather Attendance System</div>
+</div>
 
 <script>
-  const $ = (id) => document.getElementById(id);
-  let ALL_LECTURES = [], ACTIVE_LECTURE = "", LAST_QR_DATAURL = "";
+  const $ = id => document.getElementById(id);
+  let ALL_LECTURES = [], ACTIVE_LECTURE = "";
 
-  function showStatus(el, type, msg){ el.className = "status show " + (type || ""); el.textContent = msg || ""; }
-  function hideStatus(el){ el.className = "status"; el.textContent = ""; }
-  function setSpin(id, on){ const sp = $(id); if(sp) sp.classList.toggle("show", !!on); }
-
-  function togglePin(){
-    const inp = $("pinInput");
-    const btn = $("togglePinBtn");
-    if(inp.type === "password"){ inp.type = "text"; btn.textContent = t("hideBtn"); }
-    else { inp.type = "password"; btn.textContent = t("showBtn"); }
-  }
+  function showStatus(el, type, msg){ if(el){ el.className = "status show " + type; el.textContent = msg; } }
+  function hideStatus(el){ if(el){ el.className = "status"; el.textContent = ""; } }
+  function setSpin(id, on){}
 
   async function unlock(){
-    const pin = ($("pinInput").value || "").trim();
+    const pin = $("pinInput").value.trim();
     const st = $("lockStatus");
-    hideStatus(st);
-    if(!pin){ showStatus(st, "bad", t("enterPin")); return; }
-    setSpin("spUnlock", true);
-    showStatus(st, "warn", t("verifying"));
+    if(!pin){ showStatus(st,"bad","أدخل الرقم السري"); return; }
     try{
       setDoctorKey(pin);
       const res = await doctorCall({ action:"listLectures" });
-      if(!res || !res.ok) throw new Error((res && res.error) ? res.error : "Unauthorized");
+      if(!res || !res.ok) throw new Error("Unauthorized");
       $("lockScreen").classList.add("hidden");
       $("app").classList.remove("hidden");
-      hideStatus(st);
       await refreshAll();
+      if(typeof applyLang === 'function') applyLang();
     }catch(e){
       clearDoctorKey();
-      showStatus(st, "bad", t("loginFail") + ": " + (e?.message || e));
-    }finally{ setSpin("spUnlock", false); }
+      showStatus(st,"bad","فشل الدخول: "+e.message);
+    }
   }
 
   function logout(){ clearDoctorKey(); $("pinInput").value = ""; $("lockScreen").classList.remove("hidden"); $("app").classList.add("hidden"); }
   function goHome(){ location.href = "index.html"; }
-
-  function clearSelection(){
-    ACTIVE_LECTURE = "";
-    $("selectedLectureId").value = "";
-    $("codeText").textContent = "Code: —";
-    $("qrImg").src = "";
-    LAST_QR_DATAURL = "";
-    $("studentRows").innerHTML = `<tr><td colspan="4">${t("noLectureSelected")}<\/td><\/tr>`;
-    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
-  }
-
-  function pickLecture(id){
-    ACTIVE_LECTURE = id;
-    $("selectedLectureId").value = id;
-    $("studentRows").innerHTML = `<tr><td colspan="4">${t("pressShow")}<\/td><\/tr>`;
-    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
-    const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
-    if(tr) tr.classList.add("active");
-  }
+  function clearSelection(){ ACTIVE_LECTURE = ""; $("selectedLectureId").value = ""; $("codeText").innerHTML = "Code: --"; $("qrImg").src = ""; }
 
   function applyFilter(){
-    const q = ($("searchBox").value || "").trim().toLowerCase();
-    const filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r=> (r.lectureId||"").toLowerCase().includes(q) || (r.course||"").toLowerCase().includes(q) || (r.section||"").toLowerCase().includes(q));
+    let q = ($("searchBox").value || "").toLowerCase();
+    let filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r => r.lectureId.toLowerCase().includes(q) || r.course.toLowerCase().includes(q));
     renderLectures(filtered);
   }
 
   function renderLectures(rows){
-    const tbody = $("lectureRows");
-    if(!rows || rows.length===0){ tbody.innerHTML = `<tr><td colspan="6">${t("noLectures")}<\/td><\/tr>`; return; }
-    tbody.innerHTML = rows.map(r => `<tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId.replace(/'/g,"\\'")}')"><td><b>${r.lectureId}<\/b><\/td><td>${r.course}<\/td><td>${r.section}<\/td><td>${r.start}<\/td><td>${r.end}<\/td><td>${r.state}<\/td><\/tr>`).join("");
+    let tbody = $("lectureRows");
+    if(!rows || rows.length===0){ tbody.innerHTML = `<tr><td colspan="5" data-i18n="noLectures">لا توجد محاضرات</td></tr>`; return; }
+    tbody.innerHTML = rows.map(r => `<tr onclick="pickLecture('${r.lectureId}')"><td>${r.lectureId}</td><td>${r.course}</td><td>${r.section}</td><td>${r.start}</td><td>${r.end}</td></tr>`).join("");
   }
 
-  async function refreshAll(){ await loadLectures(); try{ await apiHealth(); }catch(e){} }
-  
+  function pickLecture(id){ ACTIVE_LECTURE = id; $("selectedLectureId").value = id; }
+
+  async function refreshAll(){ await loadLectures(); }
   async function loadLectures(){
-    const tbody = $("lectureRows");
-    tbody.innerHTML = `<tr><td colspan="6">${t("loading")}<\/td><\/tr>`;
-    let res;
-    try{ res = await doctorCall({ action:"listLectures" }); }catch(e){ tbody.innerHTML = `<tr><td colspan="6">${t("apiFail")}: ${e?.message||e}<\/td><\/tr>`; return; }
-    if(!res || !res.ok){ tbody.innerHTML = `<tr><td colspan="6">${res?.error||"Failed"}<\/td><\/tr>`; return; }
-    ALL_LECTURES = (res.rows || []).filter(x => String(x.state||"").toLowerCase() !== "deleted");
-    applyFilter();
-    if(ACTIVE_LECTURE && !ALL_LECTURES.some(x=>x.lectureId===ACTIVE_LECTURE)) clearSelection();
+    let res = await doctorCall({ action:"listLectures" });
+    if(res && res.ok){ ALL_LECTURES = res.rows || []; applyFilter(); }
   }
 
   async function createLecture(){
-    const st = $("createStatus");
-    hideStatus(st);
-    const course = ($("course").value||"").trim(), section = ($("section").value||"").trim(), start = ($("start").value||"").trim(), end = ($("end").value||"").trim();
-    if(!course || !section || !start || !end){ showStatus(st,"bad", t("fillAll")); return; }
-    setSpin("spCreate",true);
-    showStatus(st,"warn", t("creating"));
-    try{
-      const res = await doctorCall({ action:"createLecture", course, section, start, end });
-      if(res?.ok){ showStatus(st,"ok", t("createdOk")); await loadLectures(); }
-      else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
-    finally{ setSpin("spCreate",false); }
+    let course = $("course").value.trim(), section = $("section").value.trim(), start = $("start").value, end = $("end").value;
+    if(!course || !section || !start || !end){ showStatus($("createStatus"),"bad","أكمل الحقول"); return; }
+    let res = await doctorCall({ action:"createLecture", course, section, start, end });
+    if(res && res.ok){ showStatus($("createStatus"),"ok","تم الإنشاء"); await loadLectures(); }
+    else showStatus($("createStatus"),"bad","فشل");
   }
 
   async function createSchedule(){
-    const st = $("scheduleStatus");
-    hideStatus(st);
-    const course = ($("wCourse").value||"").trim(), section = ($("wSection").value||"").trim(), fromDate = ($("fromDate").value||"").trim(), toDate = ($("toDate").value||"").trim(), startTime = ($("wStartTime").value||"").trim(), endTime = ($("wEndTime").value||"").trim(), days = Array.from(document.querySelectorAll(".day:checked")).map(x=>Number(x.value));
-    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length===0){ showStatus(st,"bad", t("completeAndDays")); return; }
-    setSpin("spSchedule",true);
-    showStatus(st,"warn", t("creatingSchedule"));
-    try{
-      const res = await doctorCall({ action:"createWeeklySchedule", course, section, fromDate, toDate, startTime, endTime, days });
-      if(res?.ok){ showStatus(st,"ok", t("scheduleOk") + ` (${res.created||0} ${t("lecturesCreated")})`); await loadLectures(); }
-      else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
-    finally{ setSpin("spSchedule",false); }
+    let course = $("wCourse").value.trim(), section = $("wSection").value.trim(), fromDate = $("fromDate").value, toDate = $("toDate").value, startTime = $("wStartTime").value, endTime = $("wEndTime").value, days = [...document.querySelectorAll(".day:checked")].map(c=>+c.value);
+    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || !days.length){ showStatus($("scheduleStatus"),"bad","أكمل الحقول"); return; }
+    let res = await doctorCall({ action:"createWeeklySchedule", course, section, fromDate, toDate, startTime, endTime, days });
+    if(res && res.ok){ showStatus($("scheduleStatus"),"ok","تم إنشاء "+res.created+" محاضرة"); await loadLectures(); }
+    else showStatus($("scheduleStatus"),"bad","فشل");
   }
 
   async function generateCode(){
-    const st = $("codeStatus");
-    hideStatus(st);
-    const lectureId = ($("selectedLectureId").value||"").trim();
-    if(!lectureId){ showStatus(st,"bad", t("pickFirst")); return; }
-    setSpin("spCode",true);
-    showStatus(st,"warn", t("generating"));
-    try{
-      const res = await doctorCall({ action:"generateCode", lectureId });
-      if(res?.ok){
-        $("codeText").textContent = "Code: " + (res.code || "—");
-        const qrText = res.qrText || JSON.stringify({ lectureId, code: res.code || "" });
-        const img = $("qrImg");
-        img.src = "";
-        LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420);
-        showStatus(st,"ok", t("codeGenerated"));
-      } else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
-    finally{ setSpin("spCode",false); }
+    let lectureId = $("selectedLectureId").value.trim();
+    if(!lectureId){ showStatus($("codeStatus"),"bad","اختر محاضرة"); return; }
+    let res = await doctorCall({ action:"generateCode", lectureId });
+    if(res && res.ok){ $("codeText").innerHTML = "Code: "+res.code; renderQrToImg($("qrImg"), JSON.stringify({lectureId,code:res.code}), 200); showStatus($("codeStatus"),"ok","تم التوليد"); }
+    else showStatus($("codeStatus"),"bad","فشل");
   }
 
   async function deleteSelectedLecture(){
-    const lectureId = ($("selectedLectureId").value||"").trim();
-    const st = $("codeStatus");
-    hideStatus(st);
-    if(!lectureId){ showStatus(st,"bad", t("pickFirst")); return; }
-    if(!confirm(t("deleteConfirm"))) return;
-    showStatus(st,"warn", t("deleting"));
-    try{
-      const res = await doctorCall({ action:"deleteLecture", lectureId });
-      if(res?.ok){ showStatus(st,"ok", t("deletedOk")); clearSelection(); await loadLectures(); }
-      else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
+    let lectureId = $("selectedLectureId").value.trim();
+    if(!lectureId){ showStatus($("codeStatus"),"bad","اختر محاضرة"); return; }
+    if(!confirm("تأكيد الحذف؟")) return;
+    let res = await doctorCall({ action:"deleteLecture", lectureId });
+    if(res && res.ok){ showStatus($("codeStatus"),"ok","تم الحذف"); clearSelection(); await loadLectures(); }
+    else showStatus($("codeStatus"),"bad","فشل");
   }
 
   async function loadStudents(){
-    const tbody = $("studentRows");
-    const lectureId = ($("selectedLectureId").value||"").trim();
-    if(!lectureId){ tbody.innerHTML = `<tr><td colspan="4">${t("pickFirst")}<\/td><\/tr>`; return; }
-    tbody.innerHTML = `<tr><td colspan="4">${t("loading")}<\/td><\/tr>`;
-    try{
-      const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
-      if(!res?.ok){ tbody.innerHTML = `<tr><td colspan="4">${res?.error||"Failed"}<\/td><\/tr>`; return; }
-      const rows = res.rows || [];
-      if(rows.length === 0){ tbody.innerHTML = `<tr><td colspan="4">${t("noAttendance")}<\/td><\/tr>`; return; }
-      tbody.innerHTML = rows.map(r => `<tr><td>${r.studentId}<\/td><td>${r.name}<\/td><td>${r.status}<\/td><td><button class="btn" onclick="editStatus('${r.studentId.replace(/'/g,"\\'")}')">${t("edit")}<\/button><\/td><\/tr>`).join("");
-    }catch(e){ tbody.innerHTML = `<tr><td colspan="4">${t("apiFail")}: ${e?.message||e}<\/td><\/tr>`; }
+    let lectureId = $("selectedLectureId").value.trim();
+    if(!lectureId){ $("studentRows").innerHTML = '<tr><td colspan="4">اختر محاضرة</td></tr>'; return; }
+    let res = await doctorCall({ action:"listStudentsForLecture", lectureId });
+    if(res && res.ok && res.rows.length){
+      $("studentRows").innerHTML = res.rows.map(r => `<tr><td>${r.studentId}</td><td>${r.name}</td><td>${r.status}</td><td><button class="btn" onclick="editStatus('${r.studentId}')" data-i18n="edit">تعديل</button></td></tr>`).join("");
+    } else { $("studentRows").innerHTML = '<tr><td colspan="4">لا يوجد طلاب</td></tr>'; }
   }
 
   async function editStatus(studentId){
-    const lectureId = ($("selectedLectureId").value||"").trim();
-    if(!lectureId) return;
-    const next = prompt(t("updateStatusPrompt"), t("present"));
-    if(!next) return;
-    const st = $("codeStatus");
-    showStatus(st,"warn", t("updating"));
-    try{
-      const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
-      if(res?.ok){ showStatus(st,"ok", t("statusUpdated")); await loadStudents(); }
-      else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
+    let lectureId = $("selectedLectureId").value.trim();
+    let newStatus = prompt("حالة جديدة: حضور / تأخير", "حضور");
+    if(!newStatus) return;
+    let res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: newStatus });
+    if(res && res.ok){ showStatus($("codeStatus"),"ok","تم التحديث"); await loadStudents(); }
+    else showStatus($("codeStatus"),"bad","فشل");
   }
 
-  function zoomQR(){ const src = LAST_QR_DATAURL || $("qrImg").src; if(src){ $("qrBig").src = src; $("qrModal").classList.add("show"); } }
-  function closeModal(){ $("qrModal").classList.remove("show"); }
-
-  // تطبيق الترجمة عند تحميل الصفحة
-  if (typeof applyLang === 'function') {
-    applyLang();
-  }
+  // تفعيل الترجمة بعد تحميل الصفحة
+  if(typeof applyLang === 'function') applyLang();
 </script>
 </body>
 </html>
