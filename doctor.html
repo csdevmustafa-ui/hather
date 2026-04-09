@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة عضو هيئة التدريس - Hather</title>
+  <title data-i18n="pageTitleDoctor">لوحة عضو هيئة التدريس - Hather</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -217,7 +217,6 @@
     @keyframes sp { to { transform: rotate(360deg); } }
   </style>
   
-  <!-- ربط ملف الترجمة -->
   <script src="assets/i18n.js"></script>
 </head>
 
@@ -440,6 +439,7 @@
   }
 
   async function refreshAll(){ await loadLectures(); try{ await apiHealth(); }catch(e){} }
+  
   async function loadLectures(){
     const tbody = $("lectureRows");
     tbody.innerHTML = `<tr><td colspan="6">${t("loading")}<\/td><\/tr>`;
@@ -527,4 +527,30 @@
       const rows = res.rows || [];
       if(rows.length === 0){ tbody.innerHTML = `<tr><td colspan="4">${t("noAttendance")}<\/td><\/tr>`; return; }
       tbody.innerHTML = rows.map(r => `<tr><td>${r.studentId}<\/td><td>${r.name}<\/td><td>${r.status}<\/td><td><button class="btn" onclick="editStatus('${r.studentId.replace(/'/g,"\\'")}')">${t("edit")}<\/button><\/td><\/tr>`).join("");
-    }catch(e){ tbody.innerHTML = `<tr><td colspan="4">${t("apiFail")}: ${e?.message||e}<\/td><\/tr>`
+    }catch(e){ tbody.innerHTML = `<tr><td colspan="4">${t("apiFail")}: ${e?.message||e}<\/td><\/tr>`; }
+  }
+
+  async function editStatus(studentId){
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    if(!lectureId) return;
+    const next = prompt(t("updateStatusPrompt"), t("present"));
+    if(!next) return;
+    const st = $("codeStatus");
+    showStatus(st,"warn", t("updating"));
+    try{
+      const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
+      if(res?.ok){ showStatus(st,"ok", t("statusUpdated")); await loadStudents(); }
+      else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad", t("apiFail")+": "+ (e?.message||e)); }
+  }
+
+  function zoomQR(){ const src = LAST_QR_DATAURL || $("qrImg").src; if(src){ $("qrBig").src = src; $("qrModal").classList.add("show"); } }
+  function closeModal(){ $("qrModal").classList.remove("show"); }
+
+  // تطبيق الترجمة عند تحميل الصفحة
+  if (typeof applyLang === 'function') {
+    applyLang();
+  }
+</script>
+</body>
+</html>
