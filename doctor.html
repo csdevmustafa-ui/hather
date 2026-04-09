@@ -31,7 +31,7 @@
     }
 
     .container{ width:min(1180px, 94vw); margin:28px auto 36px; }
-    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
+    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
     .brand{ display:flex; gap:12px; align-items:center; }
     .logo{
       width:48px; height:48px; border-radius:16px;
@@ -665,10 +665,14 @@
     try{
       const res = await doctorCall({ action:"createLecture", course, section, start, end });
       if(res && res.ok){
-        showStatus(st, "ok", "تم إنشاء المحاضرة");
+        showStatus(st, "ok", res.message || "تم إنشاء المحاضرة");
+        $("course").value = "";
+        $("section").value = "";
+        $("start").value = "";
+        $("end").value = "";
         await loadLectures();
       }else{
-        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+        showStatus(st, "bad", (res && res.error) ? res.error : "فشل الإنشاء");
       }
     }catch(e){
       showStatus(st, "bad", "فشل الاتصال: " + (e?.message||e));
@@ -704,10 +708,17 @@
       });
 
       if(res && res.ok){
-        showStatus(st, "ok", `تم إنشاء الجدول (تم توليد ${res.created||0} محاضرة)`);
+        showStatus(st, "ok", res.message || `تم إنشاء الجدول (تم توليد ${res.created||0} محاضرة)`);
+        $("wCourse").value = "";
+        $("wSection").value = "";
+        $("fromDate").value = "";
+        $("toDate").value = "";
+        $("wStartTime").value = "";
+        $("wEndTime").value = "";
+        document.querySelectorAll(".day:checked").forEach(cb => cb.checked = false);
         await loadLectures();
       }else{
-        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+        showStatus(st, "bad", (res && res.error) ? res.error : "فشل إنشاء الجدول");
       }
     }catch(e){
       showStatus(st, "bad", "فشل الاتصال: " + (e?.message||e));
@@ -740,9 +751,9 @@
         img.src = "";
         LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420);
 
-        showStatus(st, "ok", "تم توليد الكود و QR");
+        showStatus(st, "ok", res.message || "تم توليد الكود و QR");
       }else{
-        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+        showStatus(st, "bad", (res && res.error) ? res.error : "فشل التوليد");
       }
     }catch(e){
       showStatus(st, "bad", "فشل: " + (e?.message||e));
@@ -769,11 +780,11 @@
     try{
       const res = await doctorCall({ action:"deleteLecture", lectureId });
       if(res && res.ok){
-        showStatus(st, "ok", "تم حذف المحاضرة");
+        showStatus(st, "ok", res.message || "تم حذف المحاضرة");
         clearSelection();
         await loadLectures();
       }else{
-        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+        showStatus(st, "bad", (res && res.error) ? res.error : "فشل الحذف");
       }
     }catch(e){
       showStatus(st, "bad", "فشل الاتصال: " + (e?.message||e));
@@ -784,16 +795,16 @@
     const tbody = $("studentRows");
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId){
-      tbody.innerHTML = `<tr><td colspan="4">اختر LectureID أولاً<li>`;
+      tbody.innerHTML = `<tr><td colspan="4">اختر LectureID أولاً</div>`;
       return;
     }
 
-    tbody.innerHTML = `<tr><td colspan="4">جاري التحميل...<li></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4">جاري التحميل...</div>`;
 
     try{
       const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
       if(!res || !res.ok){
-        tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "Failed"} </div>`;
+        tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "فشل التحميل"} </div>`;
         return;
       }
 
@@ -824,8 +835,14 @@
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId) return;
 
-    const next = prompt("اكتب الحالة الجديدة:\nحضور\nتأخير\nغياب", "حضور");
+    const next = prompt("اكتب الحالة الجديدة:\nحضور\nتأخير", "حضور");
     if(!next) return;
+
+    // السماح فقط بحالتين: حضور أو تأخير
+    if(next !== "حضور" && next !== "تأخير"){
+      alert("الحالة غير مسموحة. استخدم 'حضور' أو 'تأخير' فقط");
+      return;
+    }
 
     const st = $("codeStatus");
     showStatus(st, "warn", "جاري تحديث الحالة...");
@@ -833,10 +850,10 @@
     try{
       const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
       if(res && res.ok){
-        showStatus(st, "ok", "تم تحديث الحالة");
+        showStatus(st, "ok", res.message || "تم تحديث الحالة");
         await loadStudents();
       }else{
-        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+        showStatus(st, "bad", (res && res.error) ? res.error : "فشل التحديث");
       }
     }catch(e){
       showStatus(st, "bad", "فشل: " + (e?.message||e));
