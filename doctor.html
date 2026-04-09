@@ -4,11 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة عضو هيئة التدريس - Hather</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
   <style>
     :root{
       --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
@@ -29,7 +25,6 @@
         radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
         linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
     }
-
     .container{ width:min(1180px, 94vw); margin:28px auto 36px; }
     .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
     .brand{ display:flex; gap:12px; align-items:center; }
@@ -42,7 +37,6 @@
     }
     .brand h1{ margin:0; font-size:18px; font-weight:900; }
     .brand p{ margin:2px 0 0; color:var(--muted); font-size:13px; }
-
     .actionsTop{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
     .btn{
       border:1px solid rgba(255,255,255,.14);
@@ -68,10 +62,8 @@
       border:1px solid rgba(255,255,255,.18);
       color:#2a0000; font-weight:900;
     }
-
     .grid{ display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; align-items:start; }
     @media(max-width:980px){ .grid{ grid-template-columns:1fr; } }
-
     .card{
       background: var(--card);
       border:1px solid var(--line);
@@ -82,7 +74,6 @@
     }
     .card h2{ margin:0 0 12px; font-size:16px; font-weight:900; }
     .hr{ height:1px; background: rgba(255,255,255,.12); margin:14px 0; }
-
     label{ display:block; font-size:12px; color:#fff; opacity:.92; margin:0 0 6px; }
     .input{
       width:100%;
@@ -94,10 +85,8 @@
       outline:none;
     }
     .input::placeholder{ color: rgba(255,255,255,.55); }
-
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     @media(max-width:520px){ .row{ grid-template-columns:1fr; } }
-
     .status{
       margin-top:10px; padding:10px 12px; border-radius: 14px;
       border:1px solid rgba(255,255,255,.14);
@@ -108,7 +97,6 @@
     .status.ok{ border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12); }
     .status.bad{ border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12); }
     .status.warn{ border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10); }
-
     .tableWrap{ overflow:auto; border-radius:18px; border:1px solid rgba(255,255,255,.12); }
     table{ width:100%; border-collapse:collapse; min-width:820px; }
     th, td{ padding:12px 10px; font-size:13px; text-align:center; }
@@ -121,10 +109,8 @@
     tbody tr{ border-top:1px solid rgba(255,255,255,.10); cursor:pointer; }
     tbody tr:hover{ background: rgba(255,255,255,.06); }
     tbody tr.active{ background: rgba(24,194,107,.18); }
-
     .qrGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
     @media(max-width:980px){ .qrGrid{ grid-template-columns:1fr; } }
-
     .qrBox{
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       gap:10px; background: rgba(0,0,0,.15);
@@ -146,7 +132,6 @@
       font-weight:800; font-size:12px;
     }
     .qrHint{ color:#fff; font-size:12px; opacity:.95; text-align:center; }
-
     .lock{
       position:fixed; inset:0; z-index:9999;
       display:flex; align-items:center; justify-content:center; padding:18px;
@@ -183,7 +168,6 @@
     }
     .footNote{ margin-top:10px; font-size:12px; color:#fff; opacity:.88; }
     .hidden{ display:none !important; }
-
     .modal{
       position:fixed; inset:0; z-index:99999;
       background: rgba(0,0,0,.55);
@@ -204,7 +188,6 @@
       background: rgba(0,0,0,.12);
       object-fit:contain;
     }
-
     .footer{ text-align:center; color: rgba(255,255,255,.70); margin-top:16px; font-size:12px; }
     .spin{
       width:16px; height:16px; border-radius:999px;
@@ -217,9 +200,7 @@
     @keyframes sp { to { transform: rotate(360deg); } }
   </style>
 </head>
-
 <body>
-
 <div class="lock" id="lockScreen">
   <div class="lockCard">
     <div class="lockHeader">
@@ -242,7 +223,6 @@
     <div class="footNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
   </div>
 </div>
-
 <div class="container hidden" id="app">
   <div class="topbar">
     <div class="brand">
@@ -336,32 +316,26 @@
   <\/div>
   <div class="footer">Hather Attendance System © 2026<\/div>
 <\/div>
-
 <div class="modal" id="qrModal" onclick="closeModal()">
   <div class="modalCard" onclick="event.stopPropagation()">
     <img id="qrBig" alt="QR Big">
     <button class="btn primary" onclick="closeModal()">إغلاق<\/button>
   <\/div>
 <\/div>
-
 <script src="assets/app.js"><\/script>
 <script src="assets/qr.js"><\/script>
-
 <script>
   const $ = (id) => document.getElementById(id);
   let ALL_LECTURES = [], ACTIVE_LECTURE = "", LAST_QR_DATAURL = "";
-
   function showStatus(el, type, msg){ el.className = "status show " + (type || ""); el.textContent = msg || ""; }
   function hideStatus(el){ el.className = "status"; el.textContent = ""; }
   function setSpin(id, on){ const sp = $(id); if(sp) sp.classList.toggle("show", !!on); }
-
   function togglePin(){
     const inp = $("pinInput");
     const btn = $("togglePinBtn");
     if(inp.type === "password"){ inp.type = "text"; btn.textContent = "إخفاء"; }
     else { inp.type = "password"; btn.textContent = "عرض"; }
   }
-
   async function unlock(){
     const pin = ($("pinInput").value || "").trim();
     const st = $("lockStatus");
@@ -382,10 +356,8 @@
       showStatus(st, "bad", "فشل الدخول: " + (e?.message || e));
     }finally{ setSpin("spUnlock", false); }
   }
-
   function logout(){ clearDoctorKey(); $("pinInput").value = ""; $("lockScreen").classList.remove("hidden"); $("app").classList.add("hidden"); }
   function goHome(){ location.href = "index.html"; }
-
   function clearSelection(){
     ACTIVE_LECTURE = "";
     $("selectedLectureId").value = "";
@@ -395,7 +367,6 @@
     $("studentRows").innerHTML = `<tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".<\/td><\/tr>`;
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
   }
-
   function pickLecture(id){
     ACTIVE_LECTURE = id;
     $("selectedLectureId").value = id;
@@ -404,19 +375,16 @@
     const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
     if(tr) tr.classList.add("active");
   }
-
   function applyFilter(){
     const q = ($("searchBox").value || "").trim().toLowerCase();
     const filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r=> (r.lectureId||"").toLowerCase().includes(q) || (r.course||"").toLowerCase().includes(q) || (r.section||"").toLowerCase().includes(q));
     renderLectures(filtered);
   }
-
   function renderLectures(rows){
     const tbody = $("lectureRows");
     if(!rows || rows.length===0){ tbody.innerHTML = `<tr><td colspan="6">لا توجد محاضرات<\/td><\/tr>`; return; }
     tbody.innerHTML = rows.map(r => `<tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId.replace(/'/g,"\\'")}')"><td><b>${r.lectureId}<\/b><\/td><td>${r.course}<\/td><td>${r.section}<\/td><td>${r.start}<\/td><td>${r.end}<\/td><td>${r.state}<\/td><\/tr>`).join("");
   }
-
   async function refreshAll(){ await loadLectures(); try{ await apiHealth(); }catch(e){} }
   async function loadLectures(){
     const tbody = $("lectureRows");
@@ -428,7 +396,6 @@
     applyFilter();
     if(ACTIVE_LECTURE && !ALL_LECTURES.some(x=>x.lectureId===ACTIVE_LECTURE)) clearSelection();
   }
-
   async function createLecture(){
     const st = $("createStatus");
     hideStatus(st);
@@ -443,7 +410,6 @@
     }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
     finally{ setSpin("spCreate",false); }
   }
-
   async function createSchedule(){
     const st = $("scheduleStatus");
     hideStatus(st);
@@ -458,7 +424,6 @@
     }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
     finally{ setSpin("spSchedule",false); }
   }
-
   async function generateCode(){
     const st = $("codeStatus");
     hideStatus(st);
@@ -469,9 +434,4 @@
     try{
       const res = await doctorCall({ action:"generateCode", lectureId });
       if(res?.ok){
-        $("codeText").textContent = "Code: " + (res.code || "—");
-        const qrText = res.qrText || JSON.stringify({ lectureId, code: res.code || "" });
-        const img = $("qrImg");
-        img.src = "";
-        LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420);
-        showStatus(st,"ok","تم توليد الكود و
+       
