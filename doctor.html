@@ -240,7 +240,7 @@
       <div class="pinWrap">
         <span style="opacity:.9">🔒</span>
         <input id="pinInput" type="password" inputmode="numeric" placeholder="أدخل الرقم السري" autocomplete="current-password" />
-        <button class="iconBtn" id="togglePinBtn" title="إظهار/إخفاء" onclick="togglePin(event)">عرض</button>
+        <button class="iconBtn" id="togglePinBtn" onclick="togglePin()">عرض</button>
       </div>
 
       <button class="btn primary" onclick="unlock()">
@@ -480,7 +480,6 @@
   </div>
 </div>
 
-<!-- ✅ scripts (ترتيب مهم) -->
 <script src="assets/app.js"></script>
 <script src="assets/qr.js"></script>
 
@@ -505,13 +504,17 @@
     sp.classList.toggle("show", !!on);
   }
 
-  function togglePin(e){
-    e.preventDefault();
+  // ✅ دالة إظهار/إخفاء كلمة السر (تم إصلاحها)
+  function togglePin(){
     const inp = $("pinInput");
     const btn = $("togglePinBtn");
-    const isHidden = inp.type === "password";
-    inp.type = isHidden ? "text" : "password";
-    btn.textContent = isHidden ? "إخفاء" : "عرض";
+    if(inp.type === "password"){
+      inp.type = "text";
+      btn.textContent = "إخفاء";
+    } else {
+      inp.type = "password";
+      btn.textContent = "عرض";
+    }
   }
 
   async function unlock(){
@@ -565,7 +568,6 @@
     LAST_QR_DATAURL = "";
     $("studentRows").innerHTML = `<tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>`;
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
-    fixDoctorTranslation();
   }
 
   function pickLecture(id){
@@ -576,7 +578,6 @@
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
     const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
     if(tr) tr.classList.add("active");
-    fixDoctorTranslation();
   }
 
   function applyFilter(){
@@ -594,7 +595,6 @@
     const tbody = $("lectureRows");
     if(!rows || rows.length===0){
       tbody.innerHTML = `<tr><td colspan="6">لا توجد محاضرات</td></tr>`;
-      fixDoctorTranslation();
       return;
     }
 
@@ -608,32 +608,27 @@
         <td>${r.state||""}</td>
       </tr>
     `).join("");
-    fixDoctorTranslation();
   }
 
   async function refreshAll(){
     await loadLectures();
     try{ await apiHealth(); } catch(e){}
-    fixDoctorTranslation();
   }
 
   async function loadLectures(){
     const tbody = $("lectureRows");
     tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
-    fixDoctorTranslation();
 
     let res;
     try{
       res = await doctorCall({ action:"listLectures" });
     }catch(e){
       tbody.innerHTML = `<tr><td colspan="6">فشل الاتصال بالـ API: ${(e?.message||e)}</td></tr>`;
-      fixDoctorTranslation();
       return;
     }
 
     if(!res || !res.ok){
       tbody.innerHTML = `<tr><td colspan="6">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
-      fixDoctorTranslation();
       return;
     }
 
@@ -644,7 +639,6 @@
       const exists = ALL_LECTURES.some(x => x.lectureId === ACTIVE_LECTURE);
       if(!exists) clearSelection();
     }
-    fixDoctorTranslation();
   }
 
   async function createLecture(){
@@ -677,7 +671,6 @@
     }finally{
       setSpin("spCreate", false);
     }
-    fixDoctorTranslation();
   }
 
   async function createSchedule(){
@@ -717,7 +710,6 @@
     }finally{
       setSpin("spSchedule", false);
     }
-    fixDoctorTranslation();
   }
 
   async function generateCode(){
@@ -753,7 +745,6 @@
     }finally{
       setSpin("spCode", false);
     }
-    fixDoctorTranslation();
   }
 
   async function deleteSelectedLecture(){
@@ -783,7 +774,6 @@
     }catch(e){
       showStatus(st, "bad", "فشل الاتصال: " + (e?.message||e));
     }
-    fixDoctorTranslation();
   }
 
   async function loadStudents(){
@@ -791,32 +781,18 @@
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId){
       tbody.innerHTML = `<tr><td colspan="4">اختر LectureID أولاً</td></tr>`;
-      fixDoctorTranslation();
       return;
     }
 
     tbody.innerHTML = `<tr><td colspan="4">جاري التحميل...</td></tr>`;
-    fixDoctorTranslation();
 
     try{
       const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
       if(!res || !res.ok){
         tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
-        fixDoctorTranslation();
         return;
       }
 
       const rows = res.rows || [];
       if(rows.length === 0){
-        tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة</td></tr>`;
-        fixDoctorTranslation();
-        return;
-      }
-
-      tbody.innerHTML = rows.map(r => `
-        <tr>
-          <td>${r.studentId||""}</td>
-          <td>${r.name||""}</td>
-          <td>${r.status||""}</td>
-          <td>
-            <button class="btn"
+        tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة</td></
