@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة عضو هيئة التدريس - Hather</title>
+  <title data-i18n="pageTitleDoctor">لوحة عضو هيئة التدريس - Hather</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -228,8 +228,8 @@
   <div class="lockCard">
     <div class="lockHeader">
       <div class="lockTitle">
-        <h3>لوحة عضو هيئة التدريس</h3>
-        <p>الرجاء إدخال الرقم السري للمتابعة</p>
+        <h3 data-i18n="lockTitle">لوحة عضو هيئة التدريس</h3>
+        <p data-i18n="lockSub">الرجاء إدخال الرقم السري للمتابعة</p>
       </div>
       <span class="pill">PIN</span>
     </div>
@@ -239,18 +239,18 @@
     <div class="pinRow">
       <div class="pinWrap">
         <span style="opacity:.9">🔒</span>
-        <input id="pinInput" type="password" inputmode="numeric" placeholder="أدخل الرقم السري" autocomplete="current-password" />
-        <button class="iconBtn" id="togglePinBtn" title="إظهار/إخفاء" onclick="togglePin(event)">عرض</button>
+        <input id="pinInput" type="password" inputmode="numeric" data-i18n-placeholder="pinPh" placeholder="أدخل الرقم السري" autocomplete="current-password" />
+        <button class="iconBtn" id="togglePinBtn" title="إظهار/إخفاء" onclick="togglePin(event)"><span data-i18n="pinShow">عرض</span></button>
       </div>
 
       <button class="btn primary" onclick="unlock()">
         <span class="spin" id="spUnlock"></span>
-        <span>دخول</span>
+        <span data-i18n="login">دخول</span>
       </button>
     </div>
 
     <div class="status" id="lockStatus"></div>
-    <div class="footNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
+    <div class="footNote" data-i18n="facultyOnly">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
   </div>
 </div>
 
@@ -261,15 +261,16 @@
     <div class="brand">
       <div class="logo">H</div>
       <div>
-        <h1>لوحة التحكم — عضو هيئة التدريس</h1>
-        <p>إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p>
+        <h1 data-i18n="doctorTitle">لوحة التحكم — عضو هيئة التدريس</h1>
+        <p data-i18n="doctorSub">إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p>
       </div>
     </div>
 
     <div class="actionsTop">
-      <button class="btn" onclick="goHome()">الرئيسية</button>
-      <button class="btn" onclick="logout()">تسجيل الخروج</button>
-      <button class="btn primary" onclick="refreshAll()">تحديث</button>
+      <button class="btn" onclick="goHome()" data-i18n="home">الرئيسية</button>
+      <button class="btn" id="langBtn" onclick="toggleLang()" data-i18n="langBtn">English</button>
+      <button class="btn" onclick="logout()" data-i18n="logout">تسجيل الخروج</button>
+      <button class="btn primary" onclick="refreshAll()" data-i18n="refresh">تحديث</button>
     </div>
   </div>
 
@@ -277,10 +278,10 @@
 
     <!-- Left -->
     <div class="card">
-      <h2>المحاضرات</h2>
+      <h2 data-i18n="lectures">المحاضرات</h2>
 
-      <label>بحث (LectureID / المقرر / الشعبة)</label>
-      <input id="searchBox" class="input" placeholder="ابحث هنا..." oninput="applyFilter()" />
+      <label data-i18n="searchLabel">بحث (LectureID / المقرر / الشعبة)</label>
+      <input id="searchBox" class="input" data-i18n-placeholder="searchPh" placeholder="ابحث هنا..." oninput="applyFilter()" />
 
       <div style="height:10px"></div>
 
@@ -289,47 +290,47 @@
           <thead>
             <tr>
               <th>LectureID</th>
-              <th>المقرر</th>
-              <th>الشعبة</th>
-              <th>البداية</th>
-              <th>النهاية</th>
-              <th>الحالة</th>
+              <th data-i18n="thCourse">المقرر</th>
+              <th data-i18n="thSection">الشعبة</th>
+              <th data-i18n="thStart">البداية</th>
+              <th data-i18n="thEnd">النهاية</th>
+              <th data-i18n="status">الحالة</th>
             </tr>
           </thead>
           <tbody id="lectureRows">
-            <tr><td colspan="6">جاري التحميل...</td></tr>
+            <tr><td colspan="6" data-i18n="loadingRow">جاري التحميل...</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="hr"></div>
 
-      <h2>رمز الحضور و QR</h2>
+      <h2 data-i18n="qrTitle">رمز الحضور و QR</h2>
 
       <div class="qrGrid">
         <div class="card" style="margin:0">
-          <label>LectureID المحدد</label>
-          <input class="input" id="selectedLectureId" placeholder="اختر من الجدول أو الصقه هنا" />
+          <label data-i18n="selectedLecture">LectureID المحدد</label>
+          <input class="input" id="selectedLectureId" data-i18n-placeholder="selectedLecturePh" placeholder="اختر من الجدول أو الصقه هنا" />
 
           <div style="height:10px"></div>
 
           <div class="row">
             <button class="btn primary" onclick="generateCode()">
               <span class="spin" id="spCode"></span>
-              <span>توليد (Code + QR)</span>
+              <span data-i18n="generate">توليد (Code + QR)</span>
             </button>
 
             <button class="btn" onclick="loadStudents()">
-              <span>عرض الطلاب</span>
+              <span data-i18n="showStudents">عرض الطلاب</span>
             </button>
           </div>
 
           <div class="row" style="margin-top:10px">
             <button class="btn danger" onclick="deleteSelectedLecture()">
-              <span>حذف المحاضرة</span>
+              <span data-i18n="deleteLecture">حذف المحاضرة</span>
             </button>
             <button class="btn" onclick="clearSelection()">
-              <span>إلغاء التحديد</span>
+              <span data-i18n="cancel">إلغاء التحديد</span>
             </button>
           </div>
 
@@ -339,26 +340,26 @@
         <div class="qrBox">
           <img id="qrImg" alt="QR" />
           <div class="pill" id="codeText">Code: —</div>
-          <div class="qrHint">يتم إنشاء رمز QR داخل المتصفح.</div>
-          <button class="btn" onclick="zoomQR()">تكبير</button>
+          <div class="qrHint" data-i18n="qrHint">يتم إنشاء رمز QR داخل المتصفح.</div>
+          <button class="btn" onclick="zoomQR()" data-i18n="zoom">تكبير</button>
         </div>
       </div>
 
       <div class="hr"></div>
 
-      <h2>طلاب المحاضرة</h2>
+      <h2 data-i18n="lectureStudents">طلاب المحاضرة</h2>
       <div class="tableWrap">
         <table style="min-width:560px">
           <thead>
             <tr>
-              <th>StudentID</th>
-              <th>الاسم</th>
-              <th>الحالة</th>
-              <th>تعديل</th>
+              <th data-i18n="studentsThId">StudentID</th>
+              <th data-i18n="studentsThName">الاسم</th>
+              <th data-i18n="studentsThStatus">الحالة</th>
+              <th data-i18n="studentsThEdit">تعديل</th>
             </tr>
           </thead>
           <tbody id="studentRows">
-            <tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>
+            <tr><td colspan="4" data-i18n="chooseThenShow">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>
           </tbody>
         </table>
       </div>
@@ -366,26 +367,26 @@
 
     <!-- Right -->
     <div class="card">
-      <h2>إنشاء محاضرة</h2>
+      <h2 data-i18n="createLectureTitle">إنشاء محاضرة</h2>
 
       <div class="row">
         <div>
-          <label>المقرر</label>
+          <label data-i18n="thCourse">المقرر</label>
           <input class="input" id="course" placeholder="مثال: CS111" />
         </div>
         <div>
-          <label>الشعبة</label>
+          <label data-i18n="thSection">الشعبة</label>
           <input class="input" id="section" placeholder="مثال: 1" />
         </div>
       </div>
 
       <div class="row" style="margin-top:10px">
         <div>
-          <label>وقت البداية</label>
+          <label data-i18n="thStart">وقت البداية</label>
           <input class="input" id="start" type="datetime-local" />
         </div>
         <div>
-          <label>وقت النهاية</label>
+          <label data-i18n="thEnd">وقت النهاية</label>
           <input class="input" id="end" type="datetime-local" />
         </div>
       </div>
@@ -393,7 +394,7 @@
       <div style="margin-top:10px">
         <button class="btn primary" onclick="createLecture()">
           <span class="spin" id="spCreate"></span>
-          <span>إنشاء</span>
+          <span data-i18n="create">إنشاء</span>
         </button>
       </div>
 
@@ -401,65 +402,65 @@
 
       <div class="hr"></div>
 
-      <h2>إنشاء جدول أسبوعي</h2>
+      <h2 data-i18n="weeklyTitle">إنشاء جدول أسبوعي</h2>
 
       <div class="row">
         <div>
-          <label>المقرر</label>
+          <label data-i18n="thCourse">المقرر</label>
           <input class="input" id="wCourse" placeholder="مثال: CS111" />
         </div>
         <div>
-          <label>الشعبة</label>
+          <label data-i18n="thSection">الشعبة</label>
           <input class="input" id="wSection" placeholder="مثال: 1" />
         </div>
       </div>
 
       <div class="row" style="margin-top:10px">
         <div>
-          <label>من تاريخ</label>
+          <label data-i18n="fromDate">من تاريخ</label>
           <input class="input" id="fromDate" type="date" />
         </div>
         <div>
-          <label>إلى تاريخ</label>
+          <label data-i18n="toDate">إلى تاريخ</label>
           <input class="input" id="toDate" type="date" />
         </div>
       </div>
 
       <div class="row" style="margin-top:10px">
         <div>
-          <label>وقت البداية</label>
+          <label data-i18n="thStart">وقت البداية</label>
           <input class="input" id="wStartTime" type="time" />
         </div>
         <div>
-          <label>وقت النهاية</label>
+          <label data-i18n="thEnd">وقت النهاية</label>
           <input class="input" id="wEndTime" type="time" />
         </div>
       </div>
 
-      <div style="margin-top:10px; color:#fff; opacity:.95; font-weight:800; font-size:13px">الأيام:</div>
+      <div style="margin-top:10px; color:#fff; opacity:.95; font-weight:800; font-size:13px" data-i18n="daysTitle">الأيام:</div>
 
       <div class="row" style="grid-template-columns: repeat(5, 1fr); margin-top:8px; gap:8px">
         <label style="display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; border-radius:16px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.12);">
-          <input type="checkbox" class="day" value="0"> الأحد
+          <input type="checkbox" class="day" value="0"> <span data-i18n="sun">الأحد</span>
         </label>
         <label style="display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; border-radius:16px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.12);">
-          <input type="checkbox" class="day" value="1"> الاثنين
+          <input type="checkbox" class="day" value="1"> <span data-i18n="mon">الاثنين</span>
         </label>
         <label style="display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; border-radius:16px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.12);">
-          <input type="checkbox" class="day" value="2"> الثلاثاء
+          <input type="checkbox" class="day" value="2"> <span data-i18n="tue">الثلاثاء</span>
         </label>
         <label style="display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; border-radius:16px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.12);">
-          <input type="checkbox" class="day" value="3"> الأربعاء
+          <input type="checkbox" class="day" value="3"> <span data-i18n="wed">الأربعاء</span>
         </label>
         <label style="display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; border-radius:16px; border:1px solid rgba(255,255,255,.14); background: rgba(0,0,0,.12);">
-          <input type="checkbox" class="day" value="4"> الخميس
+          <input type="checkbox" class="day" value="4"> <span data-i18n="thu">الخميس</span>
         </label>
       </div>
 
       <div style="margin-top:10px">
         <button class="btn primary" onclick="createSchedule()">
           <span class="spin" id="spSchedule"></span>
-          <span>إنشاء الجدول</span>
+          <span data-i18n="createSchedule">إنشاء الجدول</span>
         </button>
       </div>
 
@@ -476,14 +477,14 @@
   <div class="modalCard" onclick="event.stopPropagation()">
     <img id="qrBig" alt="QR Big">
     <div style="height:12px"></div>
-    <button class="btn primary" onclick="closeModal()">إغلاق</button>
+    <button class="btn primary" onclick="closeModal()" data-i18n="close">إغلاق</button>
   </div>
 </div>
 
 <!-- ✅ scripts (ترتيب مهم) -->
+<script src="assets/i18n.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/qr.js"></script>
-<script src="assets/i18n.js"></script>
 
 <script>
   // تطبيق الترجمة بعد تحميل الصفحة
@@ -603,13 +604,13 @@
 
     tbody.innerHTML = rows.map(r => `
       <tr data-id="${(r.lectureId||"")}" onclick="pickLecture('${(r.lectureId||"").replace(/'/g,"\\'")}')">
-         <td><b>${r.lectureId||""}</b></td>
-         <td>${r.course||""}</td>
-         <td>${r.section||""}</td>
-         <td>${r.start||""}</td>
-         <td>${r.end||""}</td>
-         <td>${r.state||""}</td>
-       </tr>
+        <td><b>${r.lectureId||""}</b></td>
+        <td>${r.course||""}</td>
+        <td>${r.section||""}</td>
+        <td>${r.start||""}</td>
+        <td>${r.end||""}</td>
+        <td>${r.state||""}</td>
+      </tr>
     `).join("");
   }
 
@@ -783,19 +784,75 @@
     const tbody = $("studentRows");
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId){
-      tbody.innerHTML = `<tr><td colspan="4">اختر LectureID أولاً</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4">اختر LectureID أولاً<li>`;
       return;
     }
 
-    tbody.innerHTML = `<tr><td colspan="4">جاري التحميل...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4">جاري التحميل...<li></tr>`;
 
     try{
       const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
       if(!res || !res.ok){
-        tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "Failed"} </div>`;
         return;
       }
 
       const rows = res.rows || [];
       if(rows.length === 0){
-        tbody.innerHTML = `<tr><td
+        tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة</div>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.studentId||""} </div>
+          <td>${r.name||""} </div>
+          <td>${r.status||""} </div>
+          <td>
+            <button class="btn" style="padding:8px 10px; border-radius:12px" onclick="editStatus('${(r.studentId||"").replace(/'/g,"\\'")}')">
+              تعديل
+            </button>
+           </div>
+         `
+      ).join("");
+    }catch(e){
+      tbody.innerHTML = `<tr><td colspan="4">فشل الاتصال: ${(e?.message||e)}</div>`;
+    }
+  }
+
+  async function editStatus(studentId){
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    if(!lectureId) return;
+
+    const next = prompt("اكتب الحالة الجديدة:\nحضور\nتأخير\nغياب", "حضور");
+    if(!next) return;
+
+    const st = $("codeStatus");
+    showStatus(st, "warn", "جاري تحديث الحالة...");
+
+    try{
+      const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
+      if(res && res.ok){
+        showStatus(st, "ok", "تم تحديث الحالة");
+        await loadStudents();
+      }else{
+        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
+      }
+    }catch(e){
+      showStatus(st, "bad", "فشل: " + (e?.message||e));
+    }
+  }
+
+  function zoomQR(){
+    const src = LAST_QR_DATAURL || $("qrImg").src;
+    if(!src) return;
+    $("qrBig").src = src;
+    $("qrModal").classList.add("show");
+  }
+  function closeModal(){
+    $("qrModal").classList.remove("show");
+  }
+</script>
+
+</body>
+</html>
