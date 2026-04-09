@@ -480,13 +480,13 @@
   </div>
 </div>
 
-<!-- scripts -->
+<!-- ✅ scripts (ترتيب مهم) -->
 <script src="assets/app.js"></script>
 <script src="assets/qr.js"></script>
 <script src="assets/i18n.js"></script>
 
 <script>
-  // تطبيق الترجمة
+  // تطبيق الترجمة بعد تحميل الصفحة
   if (typeof applyLang === 'function') {
     applyLang();
   }
@@ -603,13 +603,13 @@
 
     tbody.innerHTML = rows.map(r => `
       <tr data-id="${(r.lectureId||"")}" onclick="pickLecture('${(r.lectureId||"").replace(/'/g,"\\'")}')">
-        <td><b>${r.lectureId||""}</b></td>
-        <td>${r.course||""}</td>
-        <td>${r.section||""}</td>
-        <td>${r.start||""}</td>
-        <td>${r.end||""}</td>
-        <td>${r.state||""}</td>
-      </tr>
+         <td><b>${r.lectureId||""}</b></td>
+         <td>${r.course||""}</td>
+         <td>${r.section||""}</td>
+         <td>${r.start||""}</td>
+         <td>${r.end||""}</td>
+         <td>${r.state||""}</td>
+       </tr>
     `).join("");
   }
 
@@ -798,14 +798,4 @@
 
       const rows = res.rows || [];
       if(rows.length === 0){
-        tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = rows.map(r => `
-        <tr>
-          <td>${r.studentId||""}</td>
-          <td>${r.name||""}</td>
-          <td>${r.status||""}</td>
-          <td>
-            <button class="btn"
+        tbody.innerHTML = `<tr><td
