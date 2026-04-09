@@ -524,6 +524,13 @@
 
   function zoomQR(){ const src = LAST_QR_DATAURL || $("qrImg").src; if(src){ $("qrBig").src = src; $("qrModal").classList.add("show"); } }
   function closeModal(){ $("qrModal").classList.remove("show"); }
+
+  // ✅ إصلاح الترجمة للصفحة (يتم استدعاؤها مرة واحدة فقط عند تحميل الصفحة)
+  setTimeout(() => {
+    if (typeof applyLang === 'function') {
+      applyLang();
+    }
+  }, 100);
 </script>
 </body>
 </html>
