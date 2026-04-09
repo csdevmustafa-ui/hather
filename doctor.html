@@ -31,7 +31,7 @@
     }
 
     .container{ width:min(1180px, 94vw); margin:28px auto 36px; }
-    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
+    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
     .brand{ display:flex; gap:12px; align-items:center; }
     .logo{
       width:48px; height:48px; border-radius:16px;
@@ -239,7 +239,7 @@
     <div class="pinRow">
       <div class="pinWrap">
         <span style="opacity:.9">🔒</span>
-        <input id="pinInput" type="password" inputmode="numeric" id="pinPlaceholder" placeholder="أدخل الرقم السري" autocomplete="current-password" />
+        <input id="pinInput" type="password" inputmode="numeric" placeholder="أدخل الرقم السري" autocomplete="current-password" />
         <button class="iconBtn" id="togglePinBtn" title="إظهار/إخفاء" onclick="togglePin(event)"><span id="showHideBtn">عرض</span></button>
       </div>
 
@@ -251,6 +251,7 @@
 
     <div class="status" id="lockStatus"></div>
     <div class="footNote" id="facultyNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
+    <div class="footNote" style="color: var(--accent);">💡 الرقم السري التجريبي: <strong>1234</strong></div>
   </div>
 </div>
 
@@ -281,7 +282,7 @@
       <h2 id="lecturesTitle">المحاضرات</h2>
 
       <label id="searchLabel">بحث (LectureID / المقرر / الشعبة)</label>
-      <input id="searchBox" class="input" id="searchPlaceholder" placeholder="ابحث هنا..." oninput="applyFilter()" />
+      <input id="searchBox" class="input" placeholder="ابحث هنا..." oninput="applyFilter()" />
 
       <div style="height:10px"></div>
 
@@ -310,7 +311,7 @@
       <div class="qrGrid">
         <div class="card" style="margin:0">
           <label id="selectedLectureLabel">LectureID المحدد</label>
-          <input class="input" id="selectedLectureId" id="selectedLecturePlaceholder" placeholder="اختر من الجدول أو الصقه هنا" />
+          <input class="input" id="selectedLectureId" placeholder="اختر من الجدول أو الصقه هنا" />
 
           <div style="height:10px"></div>
 
@@ -481,15 +482,17 @@
   </div>
 </div>
 
-<!-- scripts -->
-<script src="assets/app.js"></script>
 <script src="assets/qr.js"></script>
 
 <script>
+  // ===================== API CONFIGURATION =====================
+  const API_URL = "https://script.google.com/macros/s/AKfycbzOvQNQSDRwiNqr04MEOcp0Hmkywc651SZYqpo3a-T2cx47EmLIp02TLUgf19oC8u04/exec";
+  const LS_DOCTOR_KEY = "hather_doctor_key";
+  const CORRECT_PIN = "1234"; // الرقم السري الصحيح
+
   // ===================== الترجمة المدمجة =====================
   const translations = {
     ar: {
-      // Lock screen
       lockTitle: "لوحة عضو هيئة التدريس",
       lockSub: "الرجاء إدخال الرقم السري للمتابعة",
       pinPlaceholder: "أدخل الرقم السري",
@@ -497,16 +500,12 @@
       hideBtn: "إخفاء",
       loginBtn: "دخول",
       facultyNote: "هذه الصفحة مخصصة لعضو هيئة التدريس.",
-      
-      // App header
       doctorTitle: "لوحة التحكم — عضو هيئة التدريس",
       doctorSub: "إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب",
       homeBtn: "الرئيسية",
       logoutBtn: "تسجيل الخروج",
       refreshBtn: "تحديث",
       langBtn: "English",
-      
-      // Lectures section
       lecturesTitle: "المحاضرات",
       searchLabel: "بحث (LectureID / المقرر / الشعبة)",
       searchPlaceholder: "ابحث هنا...",
@@ -517,8 +516,6 @@
       thStatus: "الحالة",
       loadingRow: "جاري التحميل...",
       noLectures: "لا توجد محاضرات",
-      
-      // QR section
       qrTitle: "رمز الحضور و QR",
       selectedLectureLabel: "LectureID المحدد",
       selectedLecturePlaceholder: "اختر من الجدول أو الصقه هنا",
@@ -528,27 +525,18 @@
       cancelBtn: "إلغاء التحديد",
       qrHintText: "يتم إنشاء رمز QR داخل المتصفح.",
       zoomBtn: "تكبير",
-      
-      // Students section
       studentsTitle: "طلاب المحاضرة",
       studentIdTh: "StudentID",
       studentNameTh: "الاسم",
       studentStatusTh: "الحالة",
       studentEditTh: "تعديل",
-      noLectureMsg: "اختر محاضرة ثم اضغط \"عرض الطلاب\".",
-      pressShowMsg: "اضغط \"عرض الطلاب\" لعرض الحضور.",
-      noAttendance: "لا يوجد سجلات حضور لهذه المحاضرة",
-      editBtn: "تعديل",
-      
-      // Create lecture
+      noLectureMsg: "اختر محاضرة ثم اضغط عرض الطلاب.",
       createLectureTitle: "إنشاء محاضرة",
       courseLabel: "المقرر",
       sectionLabel: "الشعبة",
       startLabel: "وقت البداية",
       endLabel: "وقت النهاية",
       createBtn: "إنشاء",
-      
-      // Weekly schedule
       weeklyTitle: "إنشاء جدول أسبوعي",
       wCourseLabel: "المقرر",
       wSectionLabel: "الشعبة",
@@ -563,35 +551,22 @@
       wedDay: "الأربعاء",
       thuDay: "الخميس",
       createScheduleBtn: "إنشاء الجدول",
-      
-      // Modal
       closeModalBtn: "إغلاق",
-      
-      // Messages
       enterPin: "أدخل الرقم السري",
       verifying: "جاري التحقق...",
       loginFailed: "فشل الدخول: ",
       fillAll: "أكمل جميع الحقول",
-      creating: "جاري التنفيذ...",
       createdOk: "تم إنشاء المحاضرة",
-      scheduleCreating: "جاري إنشاء الجدول...",
       scheduleOk: "تم إنشاء الجدول",
       completeAndDays: "أكمل الحقول وحدد الأيام",
       pickFirst: "اختر LectureID أولاً",
-      generating: "جاري توليد الرمز...",
       codeGenerated: "تم توليد الكود و QR",
       deleteConfirm: "تأكيد: هل تريد حذف هذه المحاضرة؟",
-      deleting: "جاري الحذف...",
       deletedOk: "تم حذف المحاضرة",
-      loadingStudents: "جاري التحميل...",
-      updatingStatus: "جاري تحديث الحالة...",
       statusUpdated: "تم تحديث الحالة",
-      statusPrompt: "اكتب الحالة الجديدة:\nحضور\nتأخير\nغياب",
-      defaultStatus: "حضور",
       apiFail: "فشل الاتصال بالـ API: "
     },
     en: {
-      // Lock screen
       lockTitle: "Faculty Dashboard",
       lockSub: "Please enter the PIN to continue",
       pinPlaceholder: "Enter PIN",
@@ -599,16 +574,12 @@
       hideBtn: "Hide",
       loginBtn: "Login",
       facultyNote: "This page is for faculty members only.",
-      
-      // App header
       doctorTitle: "Faculty Dashboard",
       doctorSub: "Manage lectures — Generate attendance code — Track students",
       homeBtn: "Home",
       logoutBtn: "Logout",
       refreshBtn: "Refresh",
       langBtn: "العربية",
-      
-      // Lectures section
       lecturesTitle: "Lectures",
       searchLabel: "Search (LectureID / Course / Section)",
       searchPlaceholder: "Search here...",
@@ -619,8 +590,6 @@
       thStatus: "Status",
       loadingRow: "Loading...",
       noLectures: "No lectures",
-      
-      // QR section
       qrTitle: "Attendance Code & QR",
       selectedLectureLabel: "Selected LectureID",
       selectedLecturePlaceholder: "Pick from table or paste here",
@@ -630,27 +599,18 @@
       cancelBtn: "Cancel",
       qrHintText: "QR is generated in the browser.",
       zoomBtn: "Zoom",
-      
-      // Students section
       studentsTitle: "Lecture Students",
       studentIdTh: "StudentID",
       studentNameTh: "Name",
       studentStatusTh: "Status",
       studentEditTh: "Edit",
-      noLectureMsg: "Select a lecture then click \"Show Students\".",
-      pressShowMsg: "Click \"Show Students\" to view attendance.",
-      noAttendance: "No attendance records for this lecture",
-      editBtn: "Edit",
-      
-      // Create lecture
+      noLectureMsg: "Select a lecture then click Show Students.",
       createLectureTitle: "Create Lecture",
       courseLabel: "Course",
       sectionLabel: "Section",
       startLabel: "Start Time",
       endLabel: "End Time",
       createBtn: "Create",
-      
-      // Weekly schedule
       weeklyTitle: "Create Weekly Schedule",
       wCourseLabel: "Course",
       wSectionLabel: "Section",
@@ -665,31 +625,19 @@
       wedDay: "Wed",
       thuDay: "Thu",
       createScheduleBtn: "Create Schedule",
-      
-      // Modal
       closeModalBtn: "Close",
-      
-      // Messages
       enterPin: "Enter PIN",
       verifying: "Verifying...",
       loginFailed: "Login failed: ",
       fillAll: "Fill all fields",
-      creating: "Processing...",
       createdOk: "Lecture created",
-      scheduleCreating: "Creating schedule...",
       scheduleOk: "Schedule created",
       completeAndDays: "Fill fields and select days",
       pickFirst: "Pick LectureID first",
-      generating: "Generating code...",
       codeGenerated: "Code and QR generated",
       deleteConfirm: "Confirm: delete this lecture?",
-      deleting: "Deleting...",
       deletedOk: "Lecture deleted",
-      loadingStudents: "Loading...",
-      updatingStatus: "Updating status...",
       statusUpdated: "Status updated",
-      statusPrompt: "Enter new status:\nPresent\nLate\nAbsent",
-      defaultStatus: "Present",
       apiFail: "API connection failed: "
     }
   };
@@ -701,16 +649,16 @@
   }
 
   function applyTranslation() {
-    // تحديث كل العناصر التي لها id للترجمة
     const elementsToTranslate = [
-      'lockTitle', 'lockSub', 'loginBtn', 'facultyNote',
-      'doctorTitle', 'doctorSub', 'homeBtn', 'logoutBtn', 'refreshBtn', 'langBtn',
-      'lecturesTitle', 'searchLabel', 'thCourse', 'thSection', 'thStart', 'thEnd', 'thStatus',
-      'qrTitle', 'selectedLectureLabel', 'generateBtn', 'showStudentsBtn', 'deleteLectureBtn', 'cancelBtn', 'qrHintText', 'zoomBtn',
+      'lockTitle', 'lockSub', 'loginBtn', 'facultyNote', 'doctorTitle', 'doctorSub',
+      'homeBtn', 'logoutBtn', 'refreshBtn', 'langBtn', 'lecturesTitle', 'searchLabel',
+      'thCourse', 'thSection', 'thStart', 'thEnd', 'thStatus', 'qrTitle', 'selectedLectureLabel',
+      'generateBtn', 'showStudentsBtn', 'deleteLectureBtn', 'cancelBtn', 'qrHintText', 'zoomBtn',
       'studentsTitle', 'studentIdTh', 'studentNameTh', 'studentStatusTh', 'studentEditTh',
       'createLectureTitle', 'courseLabel', 'sectionLabel', 'startLabel', 'endLabel', 'createBtn',
-      'weeklyTitle', 'wCourseLabel', 'wSectionLabel', 'fromDateLabel', 'toDateLabel', 'wStartTimeLabel', 'wEndTimeLabel', 'daysTitle', 'createScheduleBtn',
-      'closeModalBtn', 'sunDay', 'monDay', 'tueDay', 'wedDay', 'thuDay'
+      'weeklyTitle', 'wCourseLabel', 'wSectionLabel', 'fromDateLabel', 'toDateLabel',
+      'wStartTimeLabel', 'wEndTimeLabel', 'daysTitle', 'createScheduleBtn', 'closeModalBtn',
+      'sunDay', 'monDay', 'tueDay', 'wedDay', 'thuDay'
     ];
     
     elementsToTranslate.forEach(id => {
@@ -718,7 +666,6 @@
       if (el) el.textContent = t(id);
     });
     
-    // تحديث الـ placeholders
     const pinInput = document.getElementById('pinInput');
     if (pinInput) pinInput.placeholder = t('pinPlaceholder');
     
@@ -728,19 +675,63 @@
     const selectedLecture = document.getElementById('selectedLectureId');
     if (selectedLecture) selectedLecture.placeholder = t('selectedLecturePlaceholder');
     
-    // تحديث زر إظهار/إخفاء
     const showHideBtn = document.getElementById('showHideBtn');
     if (showHideBtn && document.getElementById('pinInput')) {
       const isPassword = document.getElementById('pinInput').type === 'password';
       showHideBtn.textContent = isPassword ? t('showBtn') : t('hideBtn');
     }
     
-    // تحديث اتجاه الصفحة
     document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLang;
+    
+    // تحديث نص زر اللغة
+    const langBtn = document.getElementById('langBtn');
+    if (langBtn) langBtn.textContent = t('langBtn');
   }
 
   function toggleLang() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     localStorage.setItem("doctor_lang", currentLang);
     applyTranslation();
+  }
+
+  // ===================== Helper Functions =====================
+  function setDoctorKey(pin) {
+    localStorage.setItem(LS_DOCTOR_KEY, String(pin || "").trim());
+  }
+
+  function getDoctorKey() {
+    return localStorage.getItem(LS_DOCTOR_KEY) || "";
+  }
+
+  function clearDoctorKey() {
+    localStorage.removeItem(LS_DOCTOR_KEY);
+  }
+
+  async function apiCall(payload) {
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "text/plain;charset=utf-8" }
+      });
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (_) {
+        return { ok: false, error: "Bad JSON: " + text };
+      }
+    } catch (e) {
+      return { ok: false, error: e.message };
+    }
+  }
+
+  async function doctorCall(payload) {
+    const pin = getDoctorKey();
+    return await apiCall({ ...payload, doctorKey: pin });
+  }
+
+  const $ = (id) => document.getElementById(id);
+
+  let ALL_LECTURES = [];
+  let
