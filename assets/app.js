@@ -4,6 +4,7 @@
  * - Student + Doctor helpers
  * - Health ping
  * - UI helpers
+ * - Language support for backend messages
  ****************************/
 
 // ✅ ضع رابط الـ Apps Script Web App هنا فقط
@@ -25,39 +26,48 @@ function clearDoctorKey() {
 
 // ===================== API =====================
 async function apiCall(payload) {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(payload),
-    headers: { "Content-Type": "text/plain;charset=utf-8" } // مهم مع Apps Script
-  });
-
-  const text = await res.text();
   try {
-    return JSON.parse(text);
-  } catch (_) {
-    return { ok: false, error: "Bad JSON: " + text };
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: { "Content-Type": "text/plain;charset=utf-8" }
+    });
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch (_) {
+      return { ok: false, error: "Bad JSON: " + text };
+    }
+  } catch (e) {
+    return { ok: false, error: e.message };
   }
 }
 
-// Student calls (no doctorKey required)
+// Student calls (no doctorKey required) - with language
 async function studentCall(payload) {
-  return await apiCall(payload);
+  const lang = localStorage.getItem('HATHER_LANG') || 'ar';
+  return await apiCall({ ...payload, lang: lang });
 }
 
-// Doctor calls (adds doctorKey)
+// Doctor calls (adds doctorKey) - with language
 async function doctorCall(payload) {
   const pin = getDoctorKey();
-  return await apiCall({ ...payload, doctorKey: pin });
+  const lang = localStorage.getItem('HATHER_LANG') || 'ar';
+  return await apiCall({ ...payload, doctorKey: pin, lang: lang });
 }
 
 // Health ping
 async function apiHealth() {
-  const r = await fetch(API_URL + "?action=health");
-  const text = await r.text();
   try {
-    return JSON.parse(text);
-  } catch (_) {
-    return { ok: false, error: text };
+    const r = await fetch(API_URL + "?action=health");
+    const text = await r.text();
+    try {
+      return JSON.parse(text);
+    } catch (_) {
+      return { ok: false, error: text };
+    }
+  } catch (e) {
+    return { ok: false, error: e.message };
   }
 }
 
