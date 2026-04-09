@@ -342,7 +342,6 @@
     document.documentElement.lang = lang;
     document.documentElement.dir = (lang === "en") ? "ltr" : "rtl";
 
-    // translate title if it has data-i18n
     const titleEl = document.querySelector("title[data-i18n]");
     if (titleEl) document.title = t(titleEl.getAttribute("data-i18n"));
 
@@ -350,7 +349,6 @@
       .querySelectorAll("[data-i18n],[data-i18n-placeholder],[data-i18n-title],[data-i18n-aria]")
       .forEach(translateEl);
 
-    // update language button (if exists)
     const langBtn = document.getElementById("langBtn");
     if (langBtn) langBtn.textContent = t("langBtn");
   }
