@@ -1,477 +1,396 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة عضو هيئة التدريس - Hather</title>
+// assets/i18n.js
+(function () {
+  const KEY = "HATHER_LANG";
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  const dict = {
+    ar: {
+      // Global
+      back: "رجوع",
+      home: "الرئيسية",
+      loading: "جاري التحميل...",
+      failed: "فشل الطلب",
+      badId: "الرقم الجامعي غير صحيح",
+      apiFail: "❌ فشل الاتصال بالـ API",
+      okDone: "تم ✅",
+      close: "إغلاق",
+      confirm: "تأكيد",
+      yes: "نعم",
+      no: "لا",
+      langBtn: "English",
+      hideBtn: "إخفاء",
+      showBtn: "عرض",
+      enterPin: "أدخل الرقم السري",
+      verifying: "جاري التحقق...",
+      loginFail: "فشل الدخول",
+      pressShow: "اضغط عرض الطلاب لعرض الحضور",
+      noLectures: "لا توجد محاضرات",
+      fillAll: "أكمل جميع الحقول",
+      creating: "جاري الإنشاء...",
+      createdOk: "تم إنشاء المحاضرة",
+      generating: "جاري توليد الرمز...",
+      codeGenerated: "تم توليد الكود و QR",
+      deleting: "جاري الحذف...",
+      deletedOk: "تم حذف المحاضرة",
+      deleteConfirm: "تأكيد: هل تريد حذف هذه المحاضرة؟",
+      pickFirst: "اختر LectureID أولاً",
+      noAttendance: "لا يوجد سجلات حضور لهذه المحاضرة",
+      updating: "جاري تحديث الحالة...",
+      statusUpdated: "تم تحديث الحالة",
+      creatingSchedule: "جاري إنشاء الجدول...",
+      scheduleOk: "تم إنشاء الجدول",
+      lecturesCreated: "محاضرة",
+      completeAndDays: "أكمل الحقول وحدد الأيام",
 
-  <style>
-    :root{
-      --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
-      --card: rgba(255,255,255,.08);
-      --line: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --accent:#18c26b; --accent2:#11a85b;
-      --danger:#ff5d5d; --warn:#ffcc66; --ok:#52ffa2;
-      --shadow:0 18px 60px rgba(0,0,0,.35);
-      --radius: 22px;
+      // Home / index
+      pageTitleHome: "نظام الحضور الإلكتروني",
+      homeTitle: "نظام الحضور الإلكتروني",
+      homeSub: "إدارة المحاضرات، تسجيل الحضور، وإنشاء التقارير",
+      homeDoctor: "لوحة عضو هيئة التدريس",
+      homeStudent: "بوابة الطالب",
+      homeReports: "تقارير الطالب",
+      noteTitle: "ملاحظة",
+      note1: "• لوحة عضو هيئة التدريس محمية برمز الدخول.",
+      note2: "• بوابة الطالب مخصصة لتسجيل الحضور بالكود أو QR.",
+      note3: "• تقارير الطالب تعرض الحضور باستخدام الرقم الجامعي.",
+
+      // Doctor Lock Screen
+      lockTitle: "لوحة عضو هيئة التدريس",
+      lockSub: "الرجاء إدخال الرقم السري للمتابعة",
+      pinPlaceholder: "أدخل الرقم السري",
+      loginBtn: "دخول",
+      lockNote: "هذه الصفحة مخصصة لعضو هيئة التدريس.",
+
+      // Doctor Dashboard
+      dashboardTitle: "لوحة التحكم — عضو هيئة التدريس",
+      dashboardSub: "إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب",
+      homeBtn: "الرئيسية",
+      logoutBtn: "تسجيل الخروج",
+      refreshBtn: "تحديث",
+
+      // Lectures Section
+      lecturesTitle: "المحاضرات",
+      searchLabel: "بحث (LectureID / المقرر / الشعبة)",
+      searchPlaceholder: "ابحث هنا...",
+      thCourse: "المقرر",
+      thSection: "الشعبة",
+      thStart: "البداية",
+      thEnd: "النهاية",
+      thState: "الحالة",
+
+      // QR Section
+      qrTitle: "رمز الحضور و QR",
+      selectedLectureLabel: "LectureID المحدد",
+      selectedLecturePlaceholder: "اختر من الجدول أو الصقه هنا",
+      generateBtn: "توليد (Code + QR)",
+      showStudentsBtn: "عرض الطلاب",
+      deleteLectureBtn: "حذف المحاضرة",
+      clearBtn: "إلغاء التحديد",
+      qrHint: "يتم إنشاء رمز QR داخل المتصفح.",
+      zoomBtn: "تكبير",
+      closeBtn: "إغلاق",
+
+      // Students Section
+      studentsTitle: "طلاب المحاضرة",
+      thStudentId: "StudentID",
+      thName: "الاسم",
+      thStatus: "الحالة",
+      thEdit: "تعديل",
+      noLectureSelected: "اختر محاضرة ثم اضغط عرض الطلاب",
+      edit: "تعديل",
+
+      // Create Lecture Section
+      createLectureTitle: "إنشاء محاضرة",
+      courseLabel: "المقرر",
+      sectionLabel: "الشعبة",
+      startLabel: "وقت البداية",
+      endLabel: "وقت النهاية",
+      coursePlaceholder: "مثال: CS111",
+      sectionPlaceholder: "مثال: 1",
+      createBtn: "إنشاء",
+
+      // Weekly Schedule Section
+      weeklyTitle: "إنشاء جدول أسبوعي",
+      fromDateLabel: "من تاريخ",
+      toDateLabel: "إلى تاريخ",
+      startTimeLabel: "وقت البداية",
+      endTimeLabel: "وقت النهاية",
+      daysLabel: "الأيام:",
+      sun: "الأحد",
+      mon: "الاثنين",
+      tue: "الثلاثاء",
+      wed: "الأربعاء",
+      thu: "الخميس",
+      createScheduleBtn: "إنشاء الجدول",
+
+      // Footer
+      footer: "Hather Attendance System © 2026",
+
+      // Student Page
+      pageTitleStudent: "قسم الطالب - Hather",
+      studentTitle: "قسم الطالب",
+      studentSub: "تسجيل الحضور بالكود أو QR",
+      studentByCodeTitle: "التسجيل بالكود",
+      studentByQrTitle: "التسجيل عبر QR",
+      studentIdLabel: "StudentID (9 أرقام)",
+      codeLabel: "Code",
+      studentIdPh: "مثال: 202311644",
+      codePh: "مثال: 123456",
+      checkin: "تسجيل الحضور",
+      startCam: "فتح الكاميرا",
+      stopCam: "إيقاف",
+      studentHintJson: "إذا كان الكود من QR قد يكون نص JSON — سيتم التعامل معه تلقائيًا.",
+      qrHintPerm: "قد تحتاج للسماح للمتصفح باستخدام الكاميرا.",
+      needCode: "يرجى إدخال الكود",
+      alreadyChecked: "تم تسجيل حضورك مسبقاً لهذه المحاضرة",
+      qrReadOk: "تمت قراءة QR ✅",
+      camRunning: "الكاميرا تعمل — وجّهها على QR",
+      camFail: "فشل تشغيل الكاميرا — تحقق من السماح",
+
+      // Student Report Page
+      pageTitleStudentReport: "تقرير الطالب - Hather",
+      reportTitle: "تقرير الحضور",
+      reportSub: "أدخل رقمك الجامعي لعرض سجل حضورك",
+      uniIdLabel: "الرقم الجامعي",
+      uniIdPh: "مثال: 441012345",
+      showReport: "عرض التقرير",
+      enterUniId: "أدخل الرقم الجامعي",
+      reportLoading: "جاري تحميل التقرير...",
+      reportLoaded: "تم تحميل التقرير بنجاح",
+      reportFailFetch: "فشل جلب البيانات",
+      present: "حضور",
+      late: "تأخير",
+      absent: "غياب",
+      time: "الوقت",
+      status: "الحالة",
+
+      // Reports Page
+      pageTitleReports: "تقارير الطالب - Hather",
+      reportsTitle: "تقارير الطالب",
+      reportsSub: "عرض الحضور والغياب والتأخير",
+      uniIdLabel2: "الرقم الجامعي (9 أرقام)",
+      noRecords: "لا توجد سجلات",
+      reportOkMini: "تم تحميل التقرير ✅"
+    },
+
+    en: {
+      // Global
+      back: "Back",
+      home: "Home",
+      loading: "Loading...",
+      failed: "Request failed",
+      badId: "Invalid Student ID",
+      apiFail: "❌ API connection failed",
+      okDone: "Done ✅",
+      close: "Close",
+      confirm: "Confirm",
+      yes: "Yes",
+      no: "No",
+      langBtn: "العربية",
+      hideBtn: "Hide",
+      showBtn: "Show",
+      enterPin: "Enter PIN",
+      verifying: "Verifying...",
+      loginFail: "Login failed",
+      pressShow: "Click Show Students to view attendance",
+      noLectures: "No lectures",
+      fillAll: "Fill all fields",
+      creating: "Creating...",
+      createdOk: "Lecture created",
+      generating: "Generating code...",
+      codeGenerated: "Code and QR generated",
+      deleting: "Deleting...",
+      deletedOk: "Lecture deleted",
+      deleteConfirm: "Confirm: delete this lecture?",
+      pickFirst: "Pick LectureID first",
+      noAttendance: "No attendance records for this lecture",
+      updating: "Updating status...",
+      statusUpdated: "Status updated",
+      creatingSchedule: "Creating schedule...",
+      scheduleOk: "Schedule created",
+      lecturesCreated: "lectures",
+      completeAndDays: "Fill fields and select days",
+
+      // Home / index
+      pageTitleHome: "Electronic Attendance System",
+      homeTitle: "Electronic Attendance System",
+      homeSub: "Manage lectures, record attendance, and generate reports",
+      homeDoctor: "Faculty Dashboard",
+      homeStudent: "Student Portal",
+      homeReports: "Student Reports",
+      noteTitle: "Note",
+      note1: "• Faculty dashboard is protected by a login PIN.",
+      note2: "• Student portal is for check-in using code or QR.",
+      note3: "• Student reports show attendance using Student ID.",
+
+      // Doctor Lock Screen
+      lockTitle: "Faculty Dashboard",
+      lockSub: "Please enter PIN to continue",
+      pinPlaceholder: "Enter PIN",
+      loginBtn: "Login",
+      lockNote: "This page is for faculty only.",
+
+      // Doctor Dashboard
+      dashboardTitle: "Faculty Dashboard",
+      dashboardSub: "Manage lectures — Generate QR — Track students",
+      homeBtn: "Home",
+      logoutBtn: "Logout",
+      refreshBtn: "Refresh",
+
+      // Lectures Section
+      lecturesTitle: "Lectures",
+      searchLabel: "Search (LectureID / Course / Section)",
+      searchPlaceholder: "Search here...",
+      thCourse: "Course",
+      thSection: "Section",
+      thStart: "Start",
+      thEnd: "End",
+      thState: "State",
+
+      // QR Section
+      qrTitle: "Attendance Code & QR",
+      selectedLectureLabel: "Selected LectureID",
+      selectedLecturePlaceholder: "Pick from table or paste here",
+      generateBtn: "Generate (Code + QR)",
+      showStudentsBtn: "Show Students",
+      deleteLectureBtn: "Delete Lecture",
+      clearBtn: "Cancel",
+      qrHint: "QR is generated in browser.",
+      zoomBtn: "Zoom",
+      closeBtn: "Close",
+
+      // Students Section
+      studentsTitle: "Lecture Students",
+      thStudentId: "StudentID",
+      thName: "Name",
+      thStatus: "Status",
+      thEdit: "Edit",
+      noLectureSelected: "Select a lecture then click Show Students",
+      edit: "Edit",
+
+      // Create Lecture Section
+      createLectureTitle: "Create Lecture",
+      courseLabel: "Course",
+      sectionLabel: "Section",
+      startLabel: "Start Time",
+      endLabel: "End Time",
+      coursePlaceholder: "Example: CS111",
+      sectionPlaceholder: "Example: 1",
+      createBtn: "Create",
+
+      // Weekly Schedule Section
+      weeklyTitle: "Create Weekly Schedule",
+      fromDateLabel: "From Date",
+      toDateLabel: "To Date",
+      startTimeLabel: "Start Time",
+      endTimeLabel: "End Time",
+      daysLabel: "Days:",
+      sun: "Sun",
+      mon: "Mon",
+      tue: "Tue",
+      wed: "Wed",
+      thu: "Thu",
+      createScheduleBtn: "Create Schedule",
+
+      // Footer
+      footer: "Hather Attendance System © 2026",
+
+      // Student Page
+      pageTitleStudent: "Student - Hather",
+      studentTitle: "Student",
+      studentSub: "Check-in by code or QR",
+      studentByCodeTitle: "Check-in by Code",
+      studentByQrTitle: "Check-in via QR",
+      studentIdLabel: "StudentID (9 digits)",
+      codeLabel: "Code",
+      studentIdPh: "Example: 202311644",
+      codePh: "Example: 123456",
+      checkin: "Check-in",
+      startCam: "Start Camera",
+      stopCam: "Stop",
+      studentHintJson: "If the QR contains JSON text, it will be handled automatically.",
+      qrHintPerm: "You may need to allow camera access.",
+      needCode: "Please enter the code",
+      alreadyChecked: "You already checked-in for this lecture",
+      qrReadOk: "QR read ✅",
+      camRunning: "Camera is running — point it at the QR",
+      camFail: "Failed to start camera — check permissions",
+
+      // Student Report Page
+      pageTitleStudentReport: "Student Report - Hather",
+      reportTitle: "Attendance Report",
+      reportSub: "Enter your student ID to view your attendance",
+      uniIdLabel: "Student ID",
+      uniIdPh: "Example: 441012345",
+      showReport: "Show Report",
+      enterUniId: "Enter your student ID",
+      reportLoading: "Loading report...",
+      reportLoaded: "Report loaded successfully",
+      reportFailFetch: "Failed to fetch data",
+      present: "Present",
+      late: "Late",
+      absent: "Absent",
+      time: "Time",
+      status: "Status",
+
+      // Reports Page
+      pageTitleReports: "Student Reports - Hather",
+      reportsTitle: "Student Reports",
+      reportsSub: "View present / absent / late",
+      uniIdLabel2: "Student ID (9 digits)",
+      noRecords: "No records",
+      reportOkMini: "Report loaded ✅"
     }
-    *{ box-sizing:border-box; font-family:"Cairo", system-ui, -apple-system, Segoe UI, Arial; }
-    body{
-      margin:0; min-height:100vh; color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
-        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
-    }
+  };
 
-    .container{ width:min(1180px, 94vw); margin:28px auto 36px; }
-    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
-    .brand{ display:flex; gap:12px; align-items:center; }
-    .logo{
-      width:48px; height:48px; border-radius:16px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.14);
-      display:grid; place-items:center;
-      box-shadow: 0 10px 30px rgba(0,0,0,.22);
-    }
-    .brand h1{ margin:0; font-size:18px; font-weight:900; }
-    .brand p{ margin:2px 0 0; color:var(--muted); font-size:13px; }
-
-    .actionsTop{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-    .btn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:16px;
-      cursor:pointer;
-      display:flex; align-items:center; justify-content:center; gap:10px;
-      box-shadow: 0 10px 28px rgba(0,0,0,.16);
-      transition:.15s ease;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-    .btn.primary{
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border:1px solid rgba(255,255,255,.18);
-      color:#06210f; font-weight:900;
-    }
-    .btn.danger{
-      background: linear-gradient(135deg, #ff6b6b, #ff3d3d);
-      border:1px solid rgba(255,255,255,.18);
-      color:#2a0000; font-weight:900;
-    }
-
-    .grid{ display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; align-items:start; }
-    @media(max-width:980px){ .grid{ grid-template-columns:1fr; } }
-
-    .card{
-      background: var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding:16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-    }
-    .card h2{ margin:0 0 12px; font-size:16px; font-weight:900; }
-    .hr{ height:1px; background: rgba(255,255,255,.12); margin:14px 0; }
-
-    label{ display:block; font-size:12px; color:#fff; opacity:.92; margin:0 0 6px; }
-    .input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.15);
-      color: var(--text);
-      outline:none;
-    }
-    .input::placeholder{ color: rgba(255,255,255,.55); }
-
-    .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    @media(max-width:520px){ .row{ grid-template-columns:1fr; } }
-
-    .status{
-      margin-top:10px; padding:10px 12px; border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.14);
-      color: #fff; font-size:13px; display:none;
-    }
-    .status.show{ display:block; }
-    .status.ok{ border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12); }
-    .status.bad{ border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12); }
-    .status.warn{ border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10); }
-
-    .tableWrap{ overflow:auto; border-radius:18px; border:1px solid rgba(255,255,255,.12); }
-    table{ width:100%; border-collapse:collapse; min-width:820px; }
-    th, td{ padding:12px 10px; font-size:13px; text-align:center; }
-    thead th{
-      position:sticky; top:0;
-      background: rgba(0,0,0,.20);
-      color: rgba(255,255,255,.85);
-      font-weight:900;
-    }
-    tbody tr{ border-top:1px solid rgba(255,255,255,.10); cursor:pointer; }
-    tbody tr:hover{ background: rgba(255,255,255,.06); }
-    tbody tr.active{ background: rgba(24,194,107,.18); }
-
-    .qrGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    @media(max-width:980px){ .qrGrid{ grid-template-columns:1fr; } }
-
-    .qrBox{
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:10px; background: rgba(0,0,0,.15);
-      border:1px dashed rgba(255,255,255,.18);
-      border-radius: 18px; padding:14px; min-height:320px;
-    }
-    .qrBox img{
-      width:240px; height:240px; border-radius:16px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      object-fit:contain;
-    }
-    .pill{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 10px; border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.92);
-      font-weight:800; font-size:12px;
-    }
-    .qrHint{ color:#fff; font-size:12px; opacity:.95; text-align:center; }
-
-    .lock{
-      position:fixed; inset:0; z-index:9999;
-      display:flex; align-items:center; justify-content:center; padding:18px;
-      background: radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
-                  linear-gradient(135deg, rgba(6,39,22,.96), rgba(15,90,52,.92));
-    }
-    .lockCard{
-      width:min(560px, 96vw);
-      border-radius: 26px; padding: 18px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-    }
-    .lockHeader{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .lockTitle h3{ margin:0; font-size:18px; font-weight:900; }
-    .lockTitle p{ margin:4px 0 0; font-size:12px; color:#fff; opacity:.92; }
-    .pinRow{ display:grid; grid-template-columns: 1fr auto; gap:10px; margin-top:14px; }
-    .pinWrap{
-      display:flex; gap:8px; align-items:center;
-      padding:10px 10px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
-    }
-    .pinWrap input{
-      flex:1; border:0; background:transparent; outline:none;
-      color: var(--text); font-size:14px; padding:6px 8px;
-    }
-    .iconBtn{
-      width:42px; height:42px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      display:grid; place-items:center; cursor:pointer;
-    }
-    .footNote{ margin-top:10px; font-size:12px; color:#fff; opacity:.88; }
-    .hidden{ display:none !important; }
-
-    .modal{
-      position:fixed; inset:0; z-index:99999;
-      background: rgba(0,0,0,.55);
-      display:none; align-items:center; justify-content:center; padding:18px;
-    }
-    .modal.show{ display:flex; }
-    .modalCard{
-      width:min(560px, 95vw);
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.16);
-      border-radius: 22px; padding:16px;
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow); text-align:center;
-    }
-    .modalCard img{
-      width:min(420px, 84vw); height:auto;
-      border-radius:18px; border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.12);
-      object-fit:contain;
-    }
-
-    .footer{ text-align:center; color: rgba(255,255,255,.70); margin-top:16px; font-size:12px; }
-    .spin{
-      width:16px; height:16px; border-radius:999px;
-      border:2px solid rgba(0,0,0,.25);
-      border-top-color: rgba(0,0,0,.65);
-      animation: sp 1s linear infinite;
-      display:none;
-    }
-    .spin.show{ display:inline-block; }
-    @keyframes sp { to { transform: rotate(360deg); } }
-  </style>
-</head>
-
-<body>
-
-<div class="lock" id="lockScreen">
-  <div class="lockCard">
-    <div class="lockHeader">
-      <div class="lockTitle">
-        <h3>لوحة عضو هيئة التدريس</h3>
-        <p>الرجاء إدخال الرقم السري للمتابعة</p>
-      </div>
-      <span class="pill">PIN</span>
-    </div>
-    <div class="hr"></div>
-    <div class="pinRow">
-      <div class="pinWrap">
-        <span>🔒</span>
-        <input id="pinInput" type="password" placeholder="أدخل الرقم السري" />
-        <button class="iconBtn" id="togglePinBtn" onclick="togglePin()">عرض</button>
-      </div>
-      <button class="btn primary" onclick="unlock()">دخول</button>
-    </div>
-    <div class="status" id="lockStatus"></div>
-    <div class="footNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
-  </div>
-</div>
-
-<div class="container hidden" id="app">
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo">H</div>
-      <div><h1>لوحة التحكم — عضو هيئة التدريس</h1><p>إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p></div>
-    </div>
-    <div class="actionsTop">
-      <button class="btn" onclick="goHome()">الرئيسية</button>
-      <button class="btn" onclick="logout()">تسجيل الخروج</button>
-      <button class="btn primary" onclick="refreshAll()">تحديث</button>
-    </div>
-  </div>
-  <div class="grid">
-    <div class="card">
-      <h2>المحاضرات</h2>
-      <label>بحث (LectureID / المقرر / الشعبة)</label>
-      <input id="searchBox" class="input" placeholder="ابحث هنا..." oninput="applyFilter()" />
-      <div class="tableWrap">
-        <table>
-          <thead><tr><th>LectureID</th><th>المقرر</th><th>الشعبة</th><th>البداية</th><th>النهاية</th><th>الحالة</th></tr></thead>
-          <tbody id="lectureRows"><tr><td colspan="6">جاري التحميل...<\/td><\/tr><\/tbody>
-        <\/table>
-      <\/div>
-      <div class="hr"><\/div>
-      <h2>رمز الحضور و QR<\/h2>
-      <div class="qrGrid">
-        <div class="card" style="margin:0">
-          <label>LectureID المحدد<\/label>
-          <input class="input" id="selectedLectureId" placeholder="اختر من الجدول أو الصقه هنا" />
-          <div class="row">
-            <button class="btn primary" onclick="generateCode()">توليد (Code + QR)<\/button>
-            <button class="btn" onclick="loadStudents()">عرض الطلاب<\/button>
-          <\/div>
-          <div class="row" style="margin-top:10px">
-            <button class="btn danger" onclick="deleteSelectedLecture()">حذف المحاضرة<\/button>
-            <button class="btn" onclick="clearSelection()">إلغاء التحديد<\/button>
-          <\/div>
-          <div class="status" id="codeStatus"><\/div>
-        <\/div>
-        <div class="qrBox">
-          <img id="qrImg" alt="QR" />
-          <div class="pill" id="codeText">Code: —<\/div>
-          <div class="qrHint">يتم إنشاء رمز QR داخل المتصفح.<\/div>
-          <button class="btn" onclick="zoomQR()">تكبير<\/button>
-        <\/div>
-      <\/div>
-      <div class="hr"><\/div>
-      <h2>طلاب المحاضرة<\/h2>
-      <div class="tableWrap">
-        <table style="min-width:560px">
-          <thead><tr><th>StudentID</th><th>الاسم</th><th>الحالة</th><th>تعديل</th></tr></thead>
-          <tbody id="studentRows"><tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".<\/td><\/tr><\/tbody>
-        <\/table>
-      <\/div>
-    <\/div>
-    <div class="card">
-      <h2>إنشاء محاضرة<\/h2>
-      <div class="row">
-        <div><label>المقرر<\/label><input class="input" id="course" placeholder="مثال: CS111" /><\/div>
-        <div><label>الشعبة<\/label><input class="input" id="section" placeholder="مثال: 1" /><\/div>
-      <\/div>
-      <div class="row"><div><label>وقت البداية<\/label><input class="input" id="start" type="datetime-local" /><\/div>
-      <div><label>وقت النهاية<\/label><input class="input" id="end" type="datetime-local" /><\/div><\/div>
-      <button class="btn primary" onclick="createLecture()">إنشاء<\/button>
-      <div class="status" id="createStatus"><\/div>
-      <div class="hr"><\/div>
-      <h2>إنشاء جدول أسبوعي<\/h2>
-      <div class="row">
-        <div><label>المقرر<\/label><input class="input" id="wCourse" placeholder="مثال: CS111" /><\/div>
-        <div><label>الشعبة<\/label><input class="input" id="wSection" placeholder="مثال: 1" /><\/div>
-      <\/div>
-      <div class="row">
-        <div><label>من تاريخ<\/label><input class="input" id="fromDate" type="date" /><\/div>
-        <div><label>إلى تاريخ<\/label><input class="input" id="toDate" type="date" /><\/div>
-      <\/div>
-      <div class="row">
-        <div><label>وقت البداية<\/label><input class="input" id="wStartTime" type="time" /><\/div>
-        <div><label>وقت النهاية<\/label><input class="input" id="wEndTime" type="time" /><\/div>
-      <\/div>
-      <div>الأيام:<\/div>
-      <div class="row" style="grid-template-columns:repeat(5,1fr)">
-        <label><input type="checkbox" class="day" value="0"> الأحد<\/label>
-        <label><input type="checkbox" class="day" value="1"> الاثنين<\/label>
-        <label><input type="checkbox" class="day" value="2"> الثلاثاء<\/label>
-        <label><input type="checkbox" class="day" value="3"> الأربعاء<\/label>
-        <label><input type="checkbox" class="day" value="4"> الخميس<\/label>
-      <\/div>
-      <button class="btn primary" onclick="createSchedule()">إنشاء الجدول<\/button>
-      <div class="status" id="scheduleStatus"><\/div>
-    <\/div>
-  <\/div>
-  <div class="footer">Hather Attendance System © 2026<\/div>
-<\/div>
-
-<div class="modal" id="qrModal" onclick="closeModal()">
-  <div class="modalCard" onclick="event.stopPropagation()">
-    <img id="qrBig" alt="QR Big">
-    <button class="btn primary" onclick="closeModal()">إغلاق<\/button>
-  <\/div>
-<\/div>
-
-<script src="assets/app.js"><\/script>
-<script src="assets/qr.js"><\/script>
-
-<script>
-  const $ = (id) => document.getElementById(id);
-  let ALL_LECTURES = [], ACTIVE_LECTURE = "", LAST_QR_DATAURL = "";
-
-  function showStatus(el, type, msg){ el.className = "status show " + (type || ""); el.textContent = msg || ""; }
-  function hideStatus(el){ el.className = "status"; el.textContent = ""; }
-  function setSpin(id, on){ const sp = $(id); if(sp) sp.classList.toggle("show", !!on); }
-
-  function togglePin(){
-    const inp = $("pinInput");
-    const btn = $("togglePinBtn");
-    if(inp.type === "password"){ inp.type = "text"; btn.textContent = "إخفاء"; }
-    else { inp.type = "password"; btn.textContent = "عرض"; }
+  function getLang() {
+    return localStorage.getItem(KEY) || "ar";
+  }
+  function setLang(lang) {
+    localStorage.setItem(KEY, lang);
+  }
+  function t(k) {
+    const lang = getLang();
+    return (dict[lang] && dict[lang][k]) || (dict.ar[k]) || k;
   }
 
-  async function unlock(){
-    const pin = ($("pinInput").value || "").trim();
-    const st = $("lockStatus");
-    hideStatus(st);
-    if(!pin){ showStatus(st, "bad", "أدخل الرقم السري"); return; }
-    setSpin("spUnlock", true);
-    showStatus(st, "warn", "جاري التحقق...");
-    try{
-      setDoctorKey(pin);
-      const res = await doctorCall({ action:"listLectures" });
-      if(!res || !res.ok) throw new Error((res && res.error) ? res.error : "Unauthorized");
-      $("lockScreen").classList.add("hidden");
-      $("app").classList.remove("hidden");
-      hideStatus(st);
-      await refreshAll();
-    }catch(e){
-      clearDoctorKey();
-      showStatus(st, "bad", "فشل الدخول: " + (e?.message || e));
-    }finally{ setSpin("spUnlock", false); }
+  function translateEl(el) {
+    const k = el.getAttribute("data-i18n");
+    if (k) el.textContent = t(k);
+
+    const pk = el.getAttribute("data-i18n-placeholder");
+    if (pk) el.setAttribute("placeholder", t(pk));
+
+    const tk = el.getAttribute("data-i18n-title");
+    if (tk) el.setAttribute("title", t(tk));
+
+    const ak = el.getAttribute("data-i18n-aria");
+    if (ak) el.setAttribute("aria-label", t(ak));
   }
 
-  function logout(){ clearDoctorKey(); $("pinInput").value = ""; $("lockScreen").classList.remove("hidden"); $("app").classList.add("hidden"); }
-  function goHome(){ location.href = "index.html"; }
+  function applyLang() {
+    const lang = getLang();
 
-  function clearSelection(){
-    ACTIVE_LECTURE = "";
-    $("selectedLectureId").value = "";
-    $("codeText").textContent = "Code: —";
-    $("qrImg").src = "";
-    LAST_QR_DATAURL = "";
-    $("studentRows").innerHTML = `<tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".<\/td><\/tr>`;
-    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang === "en") ? "ltr" : "rtl";
+
+    const titleEl = document.querySelector("title[data-i18n]");
+    if (titleEl) document.title = t(titleEl.getAttribute("data-i18n"));
+
+    document
+      .querySelectorAll("[data-i18n],[data-i18n-placeholder],[data-i18n-title],[data-i18n-aria]")
+      .forEach(translateEl);
+
+    const langBtn = document.getElementById("langBtn");
+    if (langBtn) langBtn.textContent = t("langBtn");
   }
 
-  function pickLecture(id){
-    ACTIVE_LECTURE = id;
-    $("selectedLectureId").value = id;
-    $("studentRows").innerHTML = `<tr><td colspan="4">اضغط "عرض الطلاب" لعرض الحضور.<\/td><\/tr>`;
-    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
-    const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
-    if(tr) tr.classList.add("active");
+  function toggleLang() {
+    const next = (getLang() === "ar") ? "en" : "ar";
+    setLang(next);
+    applyLang();
   }
 
-  function applyFilter(){
-    const q = ($("searchBox").value || "").trim().toLowerCase();
-    const filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r=> (r.lectureId||"").toLowerCase().includes(q) || (r.course||"").toLowerCase().includes(q) || (r.section||"").toLowerCase().includes(q));
-    renderLectures(filtered);
-  }
-
-  function renderLectures(rows){
-    const tbody = $("lectureRows");
-    if(!rows || rows.length===0){ tbody.innerHTML = `<tr><td colspan="6">لا توجد محاضرات<\/td><\/tr>`; return; }
-    tbody.innerHTML = rows.map(r => `<tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId.replace(/'/g,"\\'")}')"><td><b>${r.lectureId}<\/b><\/td><td>${r.course}<\/td><td>${r.section}<\/td><td>${r.start}<\/td><td>${r.end}<\/td><td>${r.state}<\/td><\/tr>`).join("");
-  }
-
-  async function refreshAll(){ await loadLectures(); try{ await apiHealth(); }catch(e){} }
-  async function loadLectures(){
-    const tbody = $("lectureRows");
-    tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...<\/td><\/tr>`;
-    let res;
-    try{ res = await doctorCall({ action:"listLectures" }); }catch(e){ tbody.innerHTML = `<tr><td colspan="6">فشل الاتصال: ${e?.message||e}<\/td><\/tr>`; return; }
-    if(!res || !res.ok){ tbody.innerHTML = `<tr><td colspan="6">${res?.error||"Failed"}<\/td><\/tr>`; return; }
-    ALL_LECTURES = (res.rows || []).filter(x => String(x.state||"").toLowerCase() !== "deleted");
-    applyFilter();
-    if(ACTIVE_LECTURE && !ALL_LECTURES.some(x=>x.lectureId===ACTIVE_LECTURE)) clearSelection();
-  }
-
-  async function createLecture(){
-    const st = $("createStatus");
-    hideStatus(st);
-    const course = ($("course").value||"").trim(), section = ($("section").value||"").trim(), start = ($("start").value||"").trim(), end = ($("end").value||"").trim();
-    if(!course || !section || !start || !end){ showStatus(st,"bad","أكمل جميع الحقول"); return; }
-    setSpin("spCreate",true);
-    showStatus(st,"warn","جاري التنفيذ...");
-    try{
-      const res = await doctorCall({ action:"createLecture", course, section, start, end });
-      if(res?.ok){ showStatus(st,"ok","تم إنشاء المحاضرة"); await loadLectures(); }
-      else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
-    finally{ setSpin("spCreate",false); }
-  }
-
-  async function createSchedule(){
-    const st = $("scheduleStatus");
-    hideStatus(st);
-    const course = ($("wCourse").value||"").trim(), section = ($("wSection").value||"").trim(), fromDate = ($("fromDate").value||"").trim(), toDate = ($("toDate").value||"").trim(), startTime = ($("wStartTime").value||"").trim(), endTime = ($("wEndTime").value||"").trim(), days = Array.from(document.querySelectorAll(".day:checked")).map(x=>Number(x.value));
-    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length===0){ showStatus(st,"bad","أكمل الحقول وحدد الأيام"); return; }
-    setSpin("spSchedule",true);
-    showStatus(st,"warn","جاري إنشاء الجدول...");
-    try{
-      const res = await doctorCall({ action:"createWeeklySchedule", course, section, fromDate, toDate, startTime, endTime, days });
-      if(res?.ok){ showStatus(st,"ok",`تم إنشاء الجدول (تم توليد ${res.created||0} محاضرة)`); await loadLectures(); }
-      else showStatus(st,"bad", res?.error||"Failed");
-    }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
-    finally{ setSpin("spSchedule",false); }
-  }
-
-  async function generateCode(){
-    const st = $("codeStatus");
-    hideStatus(st);
-    const lectureId = ($("selectedLectureId").value||"").trim();
-    if(!lectureId){ showStatus(st,"bad","اختر LectureID أولاً"); return; }
-    setSpin("spCode",true);
-    showStatus(st,"warn","جاري توليد الرمز...");
-    try{
-      const res = await doctorCall({ action:"generateCode", lectureId });
-      if(res?.ok){
-        $("codeText").textContent = "Code: " + (res.code || "—");
-        const qrText = res.qrText || JSON.stringify({ lectureId, code: res.code || "" });
-        const img = $("qrImg");
-        img.src = "";
-        LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420);
-        showStatus(st,"ok","تم توليد الكود و
+  window.applyLang = applyLang;
+  window.toggleLang = toggleLang;
+  window.t = t;
+})();
