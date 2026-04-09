@@ -1,711 +1,550 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة الدكتور - Hather</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة عضو هيئة التدريس - Hather</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="assets/app.js"></script>
-  <script src="assets/qr.js"></script>
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root{
+      --bg1:#062716; --bg2:#0a3a22; --bg3:#0f5a34;
+      --card: rgba(255,255,255,.08);
+      --line: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --accent:#18c26b; --accent2:#11a85b;
+      --danger:#ff5d5d; --warn:#ffcc66; --ok:#52ffa2;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+    *{ box-sizing:border-box; font-family:"Cairo", system-ui, -apple-system, Segoe UI, Arial; }
+    body{
+      margin:0; min-height:100vh; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(900px 420px at 0% 100%, rgba(24,194,107,.20), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
     }
 
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: linear-gradient(135deg, #062716, #0f5a34);
-      color: #fff;
-      min-height: 100vh;
+    .container{ width:min(1180px, 94vw); margin:28px auto 36px; }
+    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
+    .brand{ display:flex; gap:12px; align-items:center; }
+    .logo{
+      width:48px; height:48px; border-radius:16px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+    }
+    .brand h1{ margin:0; font-size:18px; font-weight:900; }
+    .brand p{ margin:2px 0 0; color:var(--muted); font-size:13px; }
+
+    .actionsTop{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:16px;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.16);
+      transition:.15s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border:1px solid rgba(255,255,255,.18);
+      color:#06210f; font-weight:900;
+    }
+    .btn.danger{
+      background: linear-gradient(135deg, #ff6b6b, #ff3d3d);
+      border:1px solid rgba(255,255,255,.18);
+      color:#2a0000; font-weight:900;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
+    .grid{ display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; align-items:start; }
+    @media(max-width:980px){ .grid{ grid-template-columns:1fr; } }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    .card h2{ margin:0 0 12px; font-size:16px; font-weight:900; }
+    .hr{ height:1px; background: rgba(255,255,255,.12); margin:14px 0; }
+
+    label{ display:block; font-size:12px; color:#fff; opacity:.92; margin:0 0 6px; }
+    .input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.15);
+      color: var(--text);
+      outline:none;
+    }
+    .input::placeholder{ color: rgba(255,255,255,.55); }
+
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media(max-width:520px){ .row{ grid-template-columns:1fr; } }
+
+    .status{
+      margin-top:10px; padding:10px 12px; border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      color: #fff; font-size:13px; display:none;
+    }
+    .status.show{ display:block; }
+    .status.ok{ border-color: rgba(82,255,162,.35); background: rgba(82,255,162,.12); }
+    .status.bad{ border-color: rgba(255,93,93,.35); background: rgba(255,93,93,.12); }
+    .status.warn{ border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10); }
+
+    .tableWrap{ overflow:auto; border-radius:18px; border:1px solid rgba(255,255,255,.12); }
+    table{ width:100%; border-collapse:collapse; min-width:820px; }
+    th, td{ padding:12px 10px; font-size:13px; text-align:center; }
+    thead th{
+      position:sticky; top:0;
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.85);
+      font-weight:900;
+    }
+    tbody tr{ border-top:1px solid rgba(255,255,255,.10); cursor:pointer; }
+    tbody tr:hover{ background: rgba(255,255,255,.06); }
+    tbody tr.active{ background: rgba(24,194,107,.18); }
+
+    .qrGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    @media(max-width:980px){ .qrGrid{ grid-template-columns:1fr; } }
+
+    .qrBox{
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:10px; background: rgba(0,0,0,.15);
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius: 18px; padding:14px; min-height:320px;
+    }
+    .qrBox img{
+      width:240px; height:240px; border-radius:16px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      object-fit:contain;
+    }
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px; border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.92);
+      font-weight:800; font-size:12px;
+    }
+    .qrHint{ color:#fff; font-size:12px; opacity:.95; text-align:center; }
+
+    .lock{
+      position:fixed; inset:0; z-index:9999;
+      display:flex; align-items:center; justify-content:center; padding:18px;
+      background: radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.08), transparent 60%),
+                  linear-gradient(135deg, rgba(6,39,22,.96), rgba(15,90,52,.92));
+    }
+    .lockCard{
+      width:min(560px, 96vw);
+      border-radius: 26px; padding: 18px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+    .lockHeader{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .lockTitle h3{ margin:0; font-size:18px; font-weight:900; }
+    .lockTitle p{ margin:4px 0 0; font-size:12px; color:#fff; opacity:.92; }
+    .pinRow{ display:grid; grid-template-columns: 1fr auto; gap:10px; margin-top:14px; }
+    .pinWrap{
+      display:flex; gap:8px; align-items:center;
+      padding:10px 10px; border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+    }
+    .pinWrap input{
+      flex:1; border:0; background:transparent; outline:none;
+      color: var(--text); font-size:14px; padding:6px 8px;
+    }
+    .iconBtn{
+      width:42px; height:42px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      display:grid; place-items:center; cursor:pointer;
+    }
+    .footNote{ margin-top:10px; font-size:12px; color:#fff; opacity:.88; }
+    .hidden{ display:none !important; }
+
+    .modal{
+      position:fixed; inset:0; z-index:99999;
+      background: rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center; padding:18px;
+    }
+    .modal.show{ display:flex; }
+    .modalCard{
+      width:min(560px, 95vw);
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius: 22px; padding:16px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow); text-align:center;
+    }
+    .modalCard img{
+      width:min(420px, 84vw); height:auto;
+      border-radius:18px; border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      object-fit:contain;
     }
 
-    .hidden {
-      display: none;
+    .footer{ text-align:center; color: rgba(255,255,255,.70); margin-top:16px; font-size:12px; }
+    .spin{
+      width:16px; height:16px; border-radius:999px;
+      border:2px solid rgba(0,0,0,.25);
+      border-top-color: rgba(0,0,0,.65);
+      animation: sp 1s linear infinite;
+      display:none;
     }
-
-    /* شاشة القفل */
-    .lock {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.95);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .lock-card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      border-radius: 20px;
-      width: 350px;
-      text-align: center;
-    }
-
-    .lock-card input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: none;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .lock-card button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      background: #18c26b;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    /* الأزرار العامة */
-    .btn {
-      padding: 10px 15px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      margin: 5px;
-    }
-
-    .btn-primary {
-      background: #18c26b;
-      color: #000;
-      font-weight: bold;
-    }
-
-    .btn-danger {
-      background: #ff5d5d;
-      color: #fff;
-    }
-
-    /* البطاقات */
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 700px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      margin-bottom: 10px;
-    }
-
-    input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      text-align: center;
-    }
-
-    .status {
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 10px;
-      display: none;
-    }
-
-    .status.show {
-      display: block;
-    }
-
-    .status.ok {
-      background: rgba(82, 255, 162, 0.2);
-    }
-
-    .status.bad {
-      background: rgba(255, 93, 93, 0.2);
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    h2 {
-      font-size: 18px;
-      margin-bottom: 15px;
-    }
-
-    label {
-      font-size: 12px;
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .qrBox {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 20px;
-      margin-top: 10px;
-    }
-
-    .qrBox img {
-      width: 200px;
-      height: 200px;
-      background: #fff;
-      border-radius: 10px;
-      padding: 10px;
-    }
-
-    .pill {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 10px;
-      border-radius: 20px;
-      margin: 10px 0;
-      font-family: monospace;
-      font-size: 18px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .logo {
-      width: 40px;
-      height: 40px;
-      background: #18c26b;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-      padding: 10px;
-    }
+    .spin.show{ display:inline-block; }
+    @keyframes sp { to { transform: rotate(360deg); } }
   </style>
 </head>
+
 <body>
 
-<!-- شاشة إدخال PIN -->
-<div id="lockScreen" class="lock">
-  <div class="lock-card">
-    <h3 id="lockTitle">لوحة عضو هيئة التدريس</h3>
-    <p id="lockSub">الرجاء إدخال الرقم السري للمتابعة</p>
-    <input type="password" id="pinInput" placeholder="أدخل الرقم السري">
-    <button onclick="unlock()" id="loginBtn">دخول</button>
-    <div id="lockStatus" class="status"></div>
+<div class="lock" id="lockScreen">
+  <div class="lockCard">
+    <div class="lockHeader">
+      <div class="lockTitle">
+        <h3>لوحة عضو هيئة التدريس</h3>
+        <p>الرجاء إدخال الرقم السري للمتابعة</p>
+      </div>
+      <span class="pill">PIN</span>
+    </div>
+    <div class="hr"></div>
+    <div class="pinRow">
+      <div class="pinWrap">
+        <span>🔒</span>
+        <input id="pinInput" type="password" placeholder="أدخل الرقم السري" />
+        <button class="iconBtn" id="togglePinBtn" onclick="togglePin()">عرض</button>
+      </div>
+      <button class="btn primary" onclick="unlock()">دخول</button>
+    </div>
+    <div class="status" id="lockStatus"></div>
+    <div class="footNote">هذه الصفحة مخصصة لعضو هيئة التدريس.</div>
   </div>
 </div>
 
-<!-- المحتوى الرئيسي -->
-<div id="app" class="container hidden">
+<div class="container hidden" id="app">
   <div class="topbar">
     <div class="brand">
       <div class="logo">H</div>
-      <div>
-        <h1 id="dashboardTitle">لوحة التحكم — عضو هيئة التدريس</h1>
-        <p id="dashboardSub">إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p>
-      </div>
+      <div><h1>لوحة التحكم — عضو هيئة التدريس</h1><p>إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب</p></div>
     </div>
-    <div>
-      <button class="btn" onclick="goHome()" id="homeBtn">الرئيسية</button>
-      <button class="btn" onclick="logout()" id="logoutBtn">تسجيل الخروج</button>
-      <button class="btn btn-primary" onclick="refreshAll()" id="refreshBtn">تحديث</button>
-      <button class="btn" id="langBtn" onclick="toggleMyLang()">English</button>
+    <div class="actionsTop">
+      <button class="btn" onclick="goHome()">الرئيسية</button>
+      <button class="btn" onclick="logout()">تسجيل الخروج</button>
+      <button class="btn primary" onclick="refreshAll()">تحديث</button>
     </div>
   </div>
-
   <div class="grid">
-    <!-- العمود الأيمن -->
-    <div>
-      <div class="card">
-        <h2 id="lecturesTitle">المحاضرات</h2>
-        <input type="text" id="searchBox" placeholder="بحث (LectureID / المقرر / الشعبة)" onkeyup="applyFilter()">
-        <div style="overflow-x: auto;">
-          <table id="lectureTable">
-            <thead>
-              <tr>
-                <th>LectureID</th>
-                <th id="thCourse">المقرر</th>
-                <th id="thSection">الشعبة</th>
-                <th id="thStart">البداية</th>
-                <th id="thEnd">النهاية</th>
-              </tr>
-            </thead>
-            <tbody id="lectureRows">
-              <tr><td colspan="5" id="loadingMsg">جاري التحميل...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2 id="qrTitle">رمز الحضور و QR</h2>
-        <label id="selectedLectureLabel">LectureID المحدد</label>
-        <input type="text" id="selectedLectureId" placeholder="اختر من الجدول أو الصقه هنا">
-        <div class="row">
-          <button class="btn btn-primary" onclick="generateCode()" id="generateBtn">توليد (Code + QR)</button>
-          <button class="btn" onclick="loadStudents()" id="showStudentsBtn">عرض الطلاب</button>
-          <button class="btn btn-danger" onclick="deleteSelectedLecture()" id="deleteLectureBtn">حذف المحاضرة</button>
-          <button class="btn" onclick="clearSelection()" id="clearBtn">إلغاء التحديد</button>
-        </div>
+    <div class="card">
+      <h2>المحاضرات</h2>
+      <label>بحث (LectureID / المقرر / الشعبة)</label>
+      <input id="searchBox" class="input" placeholder="ابحث هنا..." oninput="applyFilter()" />
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>LectureID</th>
+              <th>المقرر</th>
+              <th>الشعبة</th>
+              <th>البداية</th>
+              <th>النهاية</th>
+              <th>الحالة</th>
+            </tr>
+          </thead>
+          <tbody id="lectureRows"><tr><td colspan="6">جاري التحميل...<\/td><\/tr><\/tbody>
+        <\/table>
+      <\/div>
+      <div class="hr"><\/div>
+      <h2>رمز الحضور و QR<\/h2>
+      <div class="qrGrid">
+        <div class="card" style="margin:0">
+          <label>LectureID المحدد<\/label>
+          <input class="input" id="selectedLectureId" placeholder="اختر من الجدول أو الصقه هنا" />
+          <div class="row">
+            <button class="btn primary" onclick="generateCode()">توليد (Code + QR)<\/button>
+            <button class="btn" onclick="loadStudents()">عرض الطلاب<\/button>
+          <\/div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn danger" onclick="deleteSelectedLecture()">حذف المحاضرة<\/button>
+            <button class="btn" onclick="clearSelection()">إلغاء التحديد<\/button>
+          <\/div>
+          <div class="status" id="codeStatus"><\/div>
+        <\/div>
         <div class="qrBox">
-          <img id="qrImg" src="">
-          <div class="pill" id="codeText">Code: —</div>
-          <div class="qrHint" id="qrHint">يتم إنشاء رمز QR داخل المتصفح</div>
-        </div>
-        <div id="codeStatus" class="status"></div>
-      </div>
+          <img id="qrImg" alt="QR" />
+          <div class="pill" id="codeText">Code: —<\/div>
+          <div class="qrHint">يتم إنشاء رمز QR داخل المتصفح.<\/div>
+          <button class="btn" onclick="zoomQR()">تكبير<\/button>
+        <\/div>
+      <\/div>
+      <div class="hr"><\/div>
+      <h2>طلاب المحاضرة<\/h2>
+      <div class="tableWrap">
+        <table style="min-width:560px">
+          <thead>
+            <tr>
+              <th>StudentID</th>
+              <th>الاسم</th>
+              <th>الحالة</th>
+              <th>تعديل</th>
+            </tr>
+          <\/thead>
+          <tbody id="studentRows"><tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".<\/td><\/tr><\/tbody>
+        <\/table>
+      <\/div>
+    <\/div>
+    <div class="card">
+      <h2>إنشاء محاضرة<\/h2>
+      <div class="row">
+        <div><label>المقرر<\/label><input class="input" id="course" placeholder="مثال: CS111" /><\/div>
+        <div><label>الشعبة<\/label><input class="input" id="section" placeholder="مثال: 1" /><\/div>
+      <\/div>
+      <div class="row"><div><label>وقت البداية<\/label><input class="input" id="start" type="datetime-local" /><\/div>
+      <div><label>وقت النهاية<\/label><input class="input" id="end" type="datetime-local" /><\/div><\/div>
+      <button class="btn primary" onclick="createLecture()">إنشاء<\/button>
+      <div class="status" id="createStatus"><\/div>
+      <div class="hr"><\/div>
+      <h2>إنشاء جدول أسبوعي<\/h2>
+      <div class="row">
+        <div><label>المقرر<\/label><input class="input" id="wCourse" placeholder="مثال: CS111" /><\/div>
+        <div><label>الشعبة<\/label><input class="input" id="wSection" placeholder="مثال: 1" /><\/div>
+      <\/div>
+      <div class="row">
+        <div><label>من تاريخ<\/label><input class="input" id="fromDate" type="date" /><\/div>
+        <div><label>إلى تاريخ<\/label><input class="input" id="toDate" type="date" /><\/div>
+      <\/div>
+      <div class="row">
+        <div><label>وقت البداية<\/label><input class="input" id="wStartTime" type="time" /><\/div>
+        <div><label>وقت النهاية<\/label><input class="input" id="wEndTime" type="time" /><\/div>
+      <\/div>
+      <div>الأيام:<\/div>
+      <div class="row" style="grid-template-columns:repeat(5,1fr)">
+        <label><input type="checkbox" class="day" value="0"> الأحد<\/label>
+        <label><input type="checkbox" class="day" value="1"> الاثنين<\/label>
+        <label><input type="checkbox" class="day" value="2"> الثلاثاء<\/label>
+        <label><input type="checkbox" class="day" value="3"> الأربعاء<\/label>
+        <label><input type="checkbox" class="day" value="4"> الخميس<\/label>
+      <\/div>
+      <button class="btn primary" onclick="createSchedule()">إنشاء الجدول<\/button>
+      <div class="status" id="scheduleStatus"><\/div>
+    <\/div>
+  <\/div>
+  <div class="footer">Hather Attendance System © 2026<\/div>
+<\/div>
 
-      <div class="card">
-        <h2 id="studentsTitle">طلاب المحاضرة</h2>
-        <div style="overflow-x: auto;">
-          <table id="studentTable">
-            <thead>
-              <tr>
-                <th id="thStudentId">StudentID</th>
-                <th id="thName">الاسم</th>
-                <th id="thStatus">الحالة</th>
-                <th id="thEdit">تعديل</th>
-              </tr>
-            </thead>
-            <tbody id="studentRows">
-              <tr><td colspan="4" id="noLectureSelected">اختر محاضرة ثم اضغط "عرض الطلاب"</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+<div class="modal" id="qrModal" onclick="closeModal()">
+  <div class="modalCard" onclick="event.stopPropagation()">
+    <img id="qrBig" alt="QR Big">
+    <button class="btn primary" onclick="closeModal()">إغلاق<\/button>
+  <\/div>
+<\/div>
 
-    <!-- العمود الأيسر -->
-    <div>
-      <div class="card">
-        <h2 id="createLectureTitle">إنشاء محاضرة</h2>
-        <div class="row">
-          <div>
-            <label id="courseLabel">المقرر</label>
-            <input id="course" placeholder="مثال: CS111">
-          </div>
-          <div>
-            <label id="sectionLabel">الشعبة</label>
-            <input id="section" placeholder="مثال: 1">
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label id="startLabel">وقت البداية</label>
-            <input id="start" type="datetime-local">
-          </div>
-          <div>
-            <label id="endLabel">وقت النهاية</label>
-            <input id="end" type="datetime-local">
-          </div>
-        </div>
-        <button class="btn btn-primary" onclick="createLecture()" id="createBtn">إنشاء</button>
-        <div id="createStatus" class="status"></div>
-      </div>
-
-      <div class="card">
-        <h2 id="weeklyTitle">إنشاء جدول أسبوعي</h2>
-        <div class="row">
-          <div>
-            <label id="weeklyCourseLabel">المقرر</label>
-            <input id="wCourse" placeholder="مثال: CS111">
-          </div>
-          <div>
-            <label id="weeklySectionLabel">الشعبة</label>
-            <input id="wSection" placeholder="مثال: 1">
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label id="fromDateLabel">من تاريخ</label>
-            <input id="fromDate" type="date">
-          </div>
-          <div>
-            <label id="toDateLabel">إلى تاريخ</label>
-            <input id="toDate" type="date">
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label id="startTimeLabel">وقت البداية</label>
-            <input id="wStartTime" type="time">
-          </div>
-          <div>
-            <label id="endTimeLabel">وقت النهاية</label>
-            <input id="wEndTime" type="time">
-          </div>
-        </div>
-        <label id="daysLabel">الأيام:</label>
-        <div class="row">
-          <label><input type="checkbox" class="day" value="0"> <span id="sun">الأحد</span></label>
-          <label><input type="checkbox" class="day" value="1"> <span id="mon">الاثنين</span></label>
-          <label><input type="checkbox" class="day" value="2"> <span id="tue">الثلاثاء</span></label>
-          <label><input type="checkbox" class="day" value="3"> <span id="wed">الأربعاء</span></label>
-          <label><input type="checkbox" class="day" value="4"> <span id="thu">الخميس</span></label>
-        </div>
-        <button class="btn btn-primary" onclick="createSchedule()" id="createScheduleBtn">إنشاء الجدول</button>
-        <div id="scheduleStatus" class="status"></div>
-      </div>
-    </div>
-  </div>
-  <div class="footer" id="footer">Hather Attendance System © 2026</div>
-</div>
+<script src="assets/app.js"><\/script>
+<script src="assets/qr.js"><\/script>
 
 <script>
-  // ============= الترجمة المدمجة =============
-  let currentLang = localStorage.getItem('HATHER_LANG') || 'ar';
-  
-  const translations = {
-    ar: {
-      lockTitle: 'لوحة عضو هيئة التدريس',
-      lockSub: 'الرجاء إدخال الرقم السري للمتابعة',
-      pinPlaceholder: 'أدخل الرقم السري',
-      loginBtn: 'دخول',
-      dashboardTitle: 'لوحة التحكم — عضو هيئة التدريس',
-      dashboardSub: 'إدارة المحاضرات — توليد رمز الحضور — متابعة الطلاب',
-      homeBtn: 'الرئيسية',
-      logoutBtn: 'تسجيل الخروج',
-      refreshBtn: 'تحديث',
-      lecturesTitle: 'المحاضرات',
-      searchPlaceholder: 'بحث (LectureID / المقرر / الشعبة)',
-      thCourse: 'المقرر',
-      thSection: 'الشعبة',
-      thStart: 'البداية',
-      thEnd: 'النهاية',
-      loadingMsg: 'جاري التحميل...',
-      noLectures: 'لا توجد محاضرات',
-      qrTitle: 'رمز الحضور و QR',
-      selectedLectureLabel: 'LectureID المحدد',
-      selectedLecturePlaceholder: 'اختر من الجدول أو الصقه هنا',
-      generateBtn: 'توليد (Code + QR)',
-      showStudentsBtn: 'عرض الطلاب',
-      deleteLectureBtn: 'حذف المحاضرة',
-      clearBtn: 'إلغاء التحديد',
-      qrHint: 'يتم إنشاء رمز QR داخل المتصفح',
-      studentsTitle: 'طلاب المحاضرة',
-      thStudentId: 'StudentID',
-      thName: 'الاسم',
-      thStatus: 'الحالة',
-      thEdit: 'تعديل',
-      noLectureSelected: 'اختر محاضرة ثم اضغط عرض الطلاب',
-      createLectureTitle: 'إنشاء محاضرة',
-      courseLabel: 'المقرر',
-      sectionLabel: 'الشعبة',
-      startLabel: 'وقت البداية',
-      endLabel: 'وقت النهاية',
-      createBtn: 'إنشاء',
-      weeklyTitle: 'إنشاء جدول أسبوعي',
-      fromDateLabel: 'من تاريخ',
-      toDateLabel: 'إلى تاريخ',
-      startTimeLabel: 'وقت البداية',
-      endTimeLabel: 'وقت النهاية',
-      daysLabel: 'الأيام:',
-      sun: 'الأحد',
-      mon: 'الاثنين',
-      tue: 'الثلاثاء',
-      wed: 'الأربعاء',
-      thu: 'الخميس',
-      createScheduleBtn: 'إنشاء الجدول',
-      footer: 'Hather Attendance System © 2026',
-      present: 'حضور',
-      late: 'تأخير',
-      edit: 'تعديل',
-      confirmDelete: 'تأكيد: هل تريد حذف هذه المحاضرة؟',
-      deletedOk: 'تم حذف المحاضرة',
-      createdOk: 'تم إنشاء المحاضرة',
-      codeGenerated: 'تم توليد الكود و QR',
-      statusUpdated: 'تم تحديث الحالة',
-      pickFirst: 'اختر LectureID أولاً',
-      fillAll: 'أكمل جميع الحقول',
-      apiFail: 'فشل الاتصال'
-    },
-    en: {
-      lockTitle: 'Faculty Dashboard',
-      lockSub: 'Please enter PIN to continue',
-      pinPlaceholder: 'Enter PIN',
-      loginBtn: 'Login',
-      dashboardTitle: 'Faculty Dashboard',
-      dashboardSub: 'Manage lectures — Generate QR — Track students',
-      homeBtn: 'Home',
-      logoutBtn: 'Logout',
-      refreshBtn: 'Refresh',
-      lecturesTitle: 'Lectures',
-      searchPlaceholder: 'Search (LectureID / Course / Section)',
-      thCourse: 'Course',
-      thSection: 'Section',
-      thStart: 'Start',
-      thEnd: 'End',
-      loadingMsg: 'Loading...',
-      noLectures: 'No lectures',
-      qrTitle: 'Attendance Code & QR',
-      selectedLectureLabel: 'Selected LectureID',
-      selectedLecturePlaceholder: 'Pick from table or paste here',
-      generateBtn: 'Generate (Code + QR)',
-      showStudentsBtn: 'Show Students',
-      deleteLectureBtn: 'Delete Lecture',
-      clearBtn: 'Cancel',
-      qrHint: 'QR is generated in browser',
-      studentsTitle: 'Lecture Students',
-      thStudentId: 'StudentID',
-      thName: 'Name',
-      thStatus: 'Status',
-      thEdit: 'Edit',
-      noLectureSelected: 'Select a lecture then click Show Students',
-      createLectureTitle: 'Create Lecture',
-      courseLabel: 'Course',
-      sectionLabel: 'Section',
-      startLabel: 'Start Time',
-      endLabel: 'End Time',
-      createBtn: 'Create',
-      weeklyTitle: 'Create Weekly Schedule',
-      fromDateLabel: 'From Date',
-      toDateLabel: 'To Date',
-      startTimeLabel: 'Start Time',
-      endTimeLabel: 'End Time',
-      daysLabel: 'Days:',
-      sun: 'Sun',
-      mon: 'Mon',
-      tue: 'Tue',
-      wed: 'Wed',
-      thu: 'Thu',
-      createScheduleBtn: 'Create Schedule',
-      footer: 'Hather Attendance System © 2026',
-      present: 'Present',
-      late: 'Late',
-      edit: 'Edit',
-      confirmDelete: 'Confirm: delete this lecture?',
-      deletedOk: 'Lecture deleted',
-      createdOk: 'Lecture created',
-      codeGenerated: 'Code and QR generated',
-      statusUpdated: 'Status updated',
-      pickFirst: 'Pick LectureID first',
-      fillAll: 'Fill all fields',
-      apiFail: 'API connection failed'
-    }
-  };
+  const $ = (id) => document.getElementById(id);
+  let ALL_LECTURES = [], ACTIVE_LECTURE = "", LAST_QR_DATAURL = "";
 
-  function applyMyTranslation() {
-    const t = translations[currentLang];
-    if (!t) return;
-    
-    document.getElementById('lockTitle') && (document.getElementById('lockTitle').innerText = t.lockTitle);
-    document.getElementById('lockSub') && (document.getElementById('lockSub').innerText = t.lockSub);
-    document.getElementById('pinInput') && (document.getElementById('pinInput').placeholder = t.pinPlaceholder);
-    document.getElementById('loginBtn') && (document.getElementById('loginBtn').innerText = t.loginBtn);
-    document.getElementById('dashboardTitle') && (document.getElementById('dashboardTitle').innerText = t.dashboardTitle);
-    document.getElementById('dashboardSub') && (document.getElementById('dashboardSub').innerText = t.dashboardSub);
-    document.getElementById('homeBtn') && (document.getElementById('homeBtn').innerText = t.homeBtn);
-    document.getElementById('logoutBtn') && (document.getElementById('logoutBtn').innerText = t.logoutBtn);
-    document.getElementById('refreshBtn') && (document.getElementById('refreshBtn').innerText = t.refreshBtn);
-    document.getElementById('lecturesTitle') && (document.getElementById('lecturesTitle').innerText = t.lecturesTitle);
-    document.getElementById('searchBox') && (document.getElementById('searchBox').placeholder = t.searchPlaceholder);
-    document.getElementById('thCourse') && (document.getElementById('thCourse').innerText = t.thCourse);
-    document.getElementById('thSection') && (document.getElementById('thSection').innerText = t.thSection);
-    document.getElementById('thStart') && (document.getElementById('thStart').innerText = t.thStart);
-    document.getElementById('thEnd') && (document.getElementById('thEnd').innerText = t.thEnd);
-    document.getElementById('loadingMsg') && (document.getElementById('loadingMsg').innerText = t.loadingMsg);
-    document.getElementById('qrTitle') && (document.getElementById('qrTitle').innerText = t.qrTitle);
-    document.getElementById('selectedLectureLabel') && (document.getElementById('selectedLectureLabel').innerText = t.selectedLectureLabel);
-    document.getElementById('selectedLectureId') && (document.getElementById('selectedLectureId').placeholder = t.selectedLecturePlaceholder);
-    document.getElementById('generateBtn') && (document.getElementById('generateBtn').innerHTML = t.generateBtn);
-    document.getElementById('showStudentsBtn') && (document.getElementById('showStudentsBtn').innerText = t.showStudentsBtn);
-    document.getElementById('deleteLectureBtn') && (document.getElementById('deleteLectureBtn').innerText = t.deleteLectureBtn);
-    document.getElementById('clearBtn') && (document.getElementById('clearBtn').innerText = t.clearBtn);
-    document.getElementById('qrHint') && (document.getElementById('qrHint').innerText = t.qrHint);
-    document.getElementById('studentsTitle') && (document.getElementById('studentsTitle').innerText = t.studentsTitle);
-    document.getElementById('thStudentId') && (document.getElementById('thStudentId').innerText = t.thStudentId);
-    document.getElementById('thName') && (document.getElementById('thName').innerText = t.thName);
-    document.getElementById('thStatus') && (document.getElementById('thStatus').innerText = t.thStatus);
-    document.getElementById('thEdit') && (document.getElementById('thEdit').innerText = t.thEdit);
-    document.getElementById('noLectureSelected') && (document.getElementById('noLectureSelected').innerText = t.noLectureSelected);
-    document.getElementById('createLectureTitle') && (document.getElementById('createLectureTitle').innerText = t.createLectureTitle);
-    document.getElementById('courseLabel') && (document.getElementById('courseLabel').innerText = t.courseLabel);
-    document.getElementById('sectionLabel') && (document.getElementById('sectionLabel').innerText = t.sectionLabel);
-    document.getElementById('startLabel') && (document.getElementById('startLabel').innerText = t.startLabel);
-    document.getElementById('endLabel') && (document.getElementById('endLabel').innerText = t.endLabel);
-    document.getElementById('createBtn') && (document.getElementById('createBtn').innerHTML = t.createBtn);
-    document.getElementById('weeklyTitle') && (document.getElementById('weeklyTitle').innerText = t.weeklyTitle);
-    document.getElementById('fromDateLabel') && (document.getElementById('fromDateLabel').innerText = t.fromDateLabel);
-    document.getElementById('toDateLabel') && (document.getElementById('toDateLabel').innerText = t.toDateLabel);
-    document.getElementById('startTimeLabel') && (document.getElementById('startTimeLabel').innerText = t.startTimeLabel);
-    document.getElementById('endTimeLabel') && (document.getElementById('endTimeLabel').innerText = t.endTimeLabel);
-    document.getElementById('daysLabel') && (document.getElementById('daysLabel').innerText = t.daysLabel);
-    document.getElementById('sun') && (document.getElementById('sun').innerText = t.sun);
-    document.getElementById('mon') && (document.getElementById('mon').innerText = t.mon);
-    document.getElementById('tue') && (document.getElementById('tue').innerText = t.tue);
-    document.getElementById('wed') && (document.getElementById('wed').innerText = t.wed);
-    document.getElementById('thu') && (document.getElementById('thu').innerText = t.thu);
-    document.getElementById('createScheduleBtn') && (document.getElementById('createScheduleBtn').innerHTML = t.createScheduleBtn);
-    document.getElementById('footer') && (document.getElementById('footer').innerText = t.footer);
-    document.getElementById('langBtn') && (document.getElementById('langBtn').innerText = (currentLang === 'ar' ? 'English' : 'العربية'));
-    
-    document.documentElement.dir = (currentLang === 'ar' ? 'rtl' : 'ltr');
-    document.documentElement.lang = currentLang;
+  function showStatus(el, type, msg){ el.className = "status show " + (type || ""); el.textContent = msg || ""; }
+  function hideStatus(el){ el.className = "status"; el.textContent = ""; }
+  function setSpin(id, on){ const sp = $(id); if(sp) sp.classList.toggle("show", !!on); }
+
+  function togglePin(){
+    const inp = $("pinInput");
+    const btn = $("togglePinBtn");
+    if(inp.type === "password"){ inp.type = "text"; btn.textContent = "إخفاء"; }
+    else { inp.type = "password"; btn.textContent = "عرض"; }
   }
 
-  function toggleMyLang() {
-    currentLang = currentLang === 'ar' ? 'en' : 'ar';
-    localStorage.setItem('HATHER_LANG', currentLang);
-    applyMyTranslation();
-  }
-
-  // ============= باقي دوال الصفحة =============
-  const $ = id => document.getElementById(id);
-  let ALL_LECTURES = [], ACTIVE_LECTURE = "";
-
-  function showStatus(el, type, msg) { if(el){ el.className = "status show " + type; el.textContent = msg; } }
-  function hideStatus(el) { if(el){ el.className = "status"; el.textContent = ""; } }
-
-  async function unlock() {
-    const pin = $("pinInput").value.trim();
+  async function unlock(){
+    const pin = ($("pinInput").value || "").trim();
     const st = $("lockStatus");
-    if (!pin) { showStatus(st, "bad", "أدخل الرقم السري"); return; }
-    try {
+    hideStatus(st);
+    if(!pin){ showStatus(st, "bad", "أدخل الرقم السري"); return; }
+    setSpin("spUnlock", true);
+    showStatus(st, "warn", "جاري التحقق...");
+    try{
       setDoctorKey(pin);
-      const res = await doctorCall({ action: "listLectures" });
-      if (!res || !res.ok) throw new Error("Unauthorized");
+      const res = await doctorCall({ action:"listLectures" });
+      if(!res || !res.ok) throw new Error((res && res.error) ? res.error : "Unauthorized");
       $("lockScreen").classList.add("hidden");
       $("app").classList.remove("hidden");
+      hideStatus(st);
       await refreshAll();
-    } catch(e) {
+    }catch(e){
       clearDoctorKey();
-      showStatus(st, "bad", "فشل الدخول: " + e.message);
-    }
+      showStatus(st, "bad", "فشل الدخول: " + (e?.message || e));
+    }finally{ setSpin("spUnlock", false); }
   }
 
-  function logout() { clearDoctorKey(); $("pinInput").value = ""; $("lockScreen").classList.remove("hidden"); $("app").classList.add("hidden"); }
-  function goHome() { location.href = "index.html"; }
-  function clearSelection() { ACTIVE_LECTURE = ""; $("selectedLectureId").value = ""; $("codeText").innerHTML = "Code: —"; $("qrImg").src = ""; }
+  function logout(){ clearDoctorKey(); $("pinInput").value = ""; $("lockScreen").classList.remove("hidden"); $("app").classList.add("hidden"); }
+  function goHome(){ location.href = "index.html"; }
 
-  function applyFilter() {
-    let q = ($("searchBox").value || "").toLowerCase();
-    let filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r => r.lectureId.toLowerCase().includes(q) || r.course.toLowerCase().includes(q));
+  function clearSelection(){
+    ACTIVE_LECTURE = "";
+    $("selectedLectureId").value = "";
+    $("codeText").textContent = "Code: —";
+    $("qrImg").src = "";
+    LAST_QR_DATAURL = "";
+    $("studentRows").innerHTML = `<tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".<\/td><\/tr>`;
+    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
+  }
+
+  function pickLecture(id){
+    ACTIVE_LECTURE = id;
+    $("selectedLectureId").value = id;
+    $("studentRows").innerHTML = `<tr><td colspan="4">اضغط "عرض الطلاب" لعرض الحضور.<\/td><\/tr>`;
+    document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
+    const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
+    if(tr) tr.classList.add("active");
+  }
+
+  function applyFilter(){
+    const q = ($("searchBox").value || "").trim().toLowerCase();
+    const filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r=> (r.lectureId||"").toLowerCase().includes(q) || (r.course||"").toLowerCase().includes(q) || (r.section||"").toLowerCase().includes(q));
     renderLectures(filtered);
   }
 
-  function renderLectures(rows) {
-    let tbody = $("lectureRows");
-    if (!rows || rows.length === 0) { tbody.innerHTML = `<tr><td colspan="5">${translations[currentLang].noLectures}</td></tr>`; return; }
-    tbody.innerHTML = rows.map(r => `<tr onclick="pickLecture('${r.lectureId}')"><td>${r.lectureId}</td><td>${r.course}</td><td>${r.section}</td><td>${r.start}</td><td>${r.end}</td></tr>`).join("");
+  function renderLectures(rows){
+    const tbody = $("lectureRows");
+    if(!rows || rows.length===0){ tbody.innerHTML = `<tr><td colspan="6">لا توجد محاضرات<\/td><\/tr>`; return; }
+    tbody.innerHTML = rows.map(r => `<tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId.replace(/'/g,"\\'")}')"><td><b>${r.lectureId}<\/b><\/td><td>${r.course}<\/td><td>${r.section}<\/td><td>${r.start}<\/td><td>${r.end}<\/td><td>${r.state}<\/td><\/tr>`).join("");
   }
 
-  function pickLecture(id) { ACTIVE_LECTURE = id; $("selectedLectureId").value = id; }
-
-  async function refreshAll() { await loadLectures(); }
-  async function loadLectures() {
-    let res = await doctorCall({ action: "listLectures" });
-    if (res && res.ok) { ALL_LECTURES = res.rows || []; applyFilter(); }
+  async function refreshAll(){ await loadLectures(); try{ await apiHealth(); }catch(e){} }
+  async function loadLectures(){
+    const tbody = $("lectureRows");
+    tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...<\/td><\/tr>`;
+    let res;
+    try{ res = await doctorCall({ action:"listLectures" }); }catch(e){ tbody.innerHTML = `<tr><td colspan="6">فشل الاتصال: ${e?.message||e}<\/td><\/tr>`; return; }
+    if(!res || !res.ok){ tbody.innerHTML = `<tr><td colspan="6">${res?.error||"Failed"}<\/td><\/tr>`; return; }
+    ALL_LECTURES = (res.rows || []).filter(x => String(x.state||"").toLowerCase() !== "deleted");
+    applyFilter();
+    if(ACTIVE_LECTURE && !ALL_LECTURES.some(x=>x.lectureId===ACTIVE_LECTURE)) clearSelection();
   }
 
-  async function createLecture() {
-    let course = $("course").value.trim(), section = $("section").value.trim(), start = $("start").value, end = $("end").value;
-    if (!course || !section || !start || !end) { showStatus($("createStatus"), "bad", translations[currentLang].fillAll); return; }
-    let res = await doctorCall({ action: "createLecture", course, section, start, end });
-    if (res && res.ok) { showStatus($("createStatus"), "ok", translations[currentLang].createdOk); await loadLectures(); }
-    else showStatus($("createStatus"), "bad", translations[currentLang].apiFail);
+  async function createLecture(){
+    const st = $("createStatus");
+    hideStatus(st);
+    const course = ($("course").value||"").trim(), section = ($("section").value||"").trim(), start = ($("start").value||"").trim(), end = ($("end").value||"").trim();
+    if(!course || !section || !start || !end){ showStatus(st,"bad","أكمل جميع الحقول"); return; }
+    setSpin("spCreate",true);
+    showStatus(st,"warn","جاري التنفيذ...");
+    try{
+      const res = await doctorCall({ action:"createLecture", course, section, start, end });
+      if(res?.ok){ showStatus(st,"ok","تم إنشاء المحاضرة"); await loadLectures(); }
+      else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
+    finally{ setSpin("spCreate",false); }
   }
 
-  async function createSchedule() {
-    let course = $("wCourse").value.trim(), section = $("wSection").value.trim(), fromDate = $("fromDate").value, toDate = $("toDate").value, startTime = $("wStartTime").value, endTime = $("wEndTime").value, days = [...document.querySelectorAll(".day:checked")].map(c => +c.value);
-    if (!course || !section || !fromDate || !toDate || !startTime || !endTime || !days.length) { showStatus($("scheduleStatus"), "bad", translations[currentLang].fillAll); return; }
-    let res = await doctorCall({ action: "createWeeklySchedule", course, section, fromDate, toDate, startTime, endTime, days });
-    if (res && res.ok) { showStatus($("scheduleStatus"), "ok", "تم إنشاء " + res.created + " محاضرة"); await loadLectures(); }
-    else showStatus($("scheduleStatus"), "bad", translations[currentLang].apiFail);
+  async function createSchedule(){
+    const st = $("scheduleStatus");
+    hideStatus(st);
+    const course = ($("wCourse").value||"").trim(), section = ($("wSection").value||"").trim(), fromDate = ($("fromDate").value||"").trim(), toDate = ($("toDate").value||"").trim(), startTime = ($("wStartTime").value||"").trim(), endTime = ($("wEndTime").value||"").trim(), days = Array.from(document.querySelectorAll(".day:checked")).map(x=>Number(x.value));
+    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length===0){ showStatus(st,"bad","أكمل الحقول وحدد الأيام"); return; }
+    setSpin("spSchedule",true);
+    showStatus(st,"warn","جاري إنشاء الجدول...");
+    try{
+      const res = await doctorCall({ action:"createWeeklySchedule", course, section, fromDate, toDate, startTime, endTime, days });
+      if(res?.ok){ showStatus(st,"ok",`تم إنشاء الجدول (تم توليد ${res.created||0} محاضرة)`); await loadLectures(); }
+      else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
+    finally{ setSpin("spSchedule",false); }
   }
 
-  async function generateCode() {
-    let lectureId = $("selectedLectureId").value.trim();
-    if (!lectureId) { showStatus($("codeStatus"), "bad", translations[currentLang].pickFirst); return; }
-    let res = await doctorCall({ action: "generateCode", lectureId });
-    if (res && res.ok) { $("codeText").innerHTML = "Code: " + res.code; renderQrToImg($("qrImg"), JSON.stringify({ lectureId, code: res.code }), 200); showStatus($("codeStatus"), "ok", translations[currentLang].codeGenerated); }
-    else showStatus($("codeStatus"), "bad", translations[currentLang].apiFail);
+  async function generateCode(){
+    const st = $("codeStatus");
+    hideStatus(st);
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    if(!lectureId){ showStatus(st,"bad","اختر LectureID أولاً"); return; }
+    setSpin("spCode",true);
+    showStatus(st,"warn","جاري توليد الرمز...");
+    try{
+      const res = await doctorCall({ action:"generateCode", lectureId });
+      if(res?.ok){
+        $("codeText").textContent = "Code: " + (res.code || "—");
+        const qrText = res.qrText || JSON.stringify({ lectureId, code: res.code || "" });
+        const img = $("qrImg");
+        img.src = "";
+        LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420);
+        showStatus(st,"ok","تم توليد الكود و QR");
+      } else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad","فشل: "+ (e?.message||e)); }
+    finally{ setSpin("spCode",false); }
   }
 
-  async function deleteSelectedLecture() {
-    let lectureId = $("selectedLectureId").value.trim();
-    if (!lectureId) { showStatus($("codeStatus"), "bad", translations[currentLang].pickFirst); return; }
-    if (!confirm(translations[currentLang].confirmDelete)) return;
-    let res = await doctorCall({ action: "deleteLecture", lectureId });
-    if (res && res.ok) { showStatus($("codeStatus"), "ok", translations[currentLang].deletedOk); clearSelection(); await loadLectures(); }
-    else showStatus($("codeStatus"), "bad", translations[currentLang].apiFail);
+  async function deleteSelectedLecture(){
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    const st = $("codeStatus");
+    hideStatus(st);
+    if(!lectureId){ showStatus(st,"bad","اختر LectureID أولاً"); return; }
+    if(!confirm("تأكيد: هل تريد حذف هذه المحاضرة؟")) return;
+    showStatus(st,"warn","جاري الحذف...");
+    try{
+      const res = await doctorCall({ action:"deleteLecture", lectureId });
+      if(res?.ok){ showStatus(st,"ok","تم حذف المحاضرة"); clearSelection(); await loadLectures(); }
+      else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad","فشل الاتصال: "+ (e?.message||e)); }
   }
 
-  async function loadStudents() {
-    let lectureId = $("selectedLectureId").value.trim();
-    if (!lectureId) { $("studentRows").innerHTML = `<tr><td colspan="4">${translations[currentLang].pickFirst}</td></tr>`; return; }
-    let res = await doctorCall({ action: "listStudentsForLecture", lectureId });
-    if (res && res.ok && res.rows.length) {
-      $("studentRows").innerHTML = res.rows.map(r => `<tr><td>${r.studentId}</td><td>${r.name}</td><td>${r.status}</td><td><button class="btn" onclick="editStatus('${r.studentId}')">${translations[currentLang].edit}</button></td></tr>`).join("");
-    } else { $("studentRows").innerHTML = `<tr><td colspan="4">${translations[currentLang].noLectureSelected}</td></tr>`; }
+  async function loadStudents(){
+    const tbody = $("studentRows");
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    if(!lectureId){ tbody.innerHTML = `<tr><td colspan="4">اختر LectureID أولاً<\/td><\/tr>`; return; }
+    tbody.innerHTML = `<tr><td colspan="4">جاري التحميل...<\/td><\/tr>`;
+    try{
+      const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
+      if(!res?.ok){ tbody.innerHTML = `<tr><td colspan="4">${res?.error||"Failed"}<\/td><\/tr>`; return; }
+      const rows = res.rows || [];
+      if(rows.length === 0){ tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة<\/td><\/tr>`; return; }
+      tbody.innerHTML = rows.map(r => `<tr><td>${r.studentId}<\/td><td>${r.name}<\/td><td>${r.status}<\/td><td><button class="btn" onclick="editStatus('${r.studentId.replace(/'/g,"\\'")}')">تعديل<\/button><\/td><\/tr>`).join("");
+    }catch(e){ tbody.innerHTML = `<tr><td colspan="4">فشل الاتصال: ${e?.message||e}<\/td><\/tr>`; }
   }
 
-  async function editStatus(studentId) {
-    let lectureId = $("selectedLectureId").value.trim();
-    let newStatus = prompt(translations[currentLang].edit, translations[currentLang].present);
-    if (!newStatus) return;
-    let res = await doctorCall({ action: "updateAttendanceStatus", lectureId, studentId, status: newStatus });
-    if (res && res.ok) { showStatus($("codeStatus"), "ok", translations[currentLang].statusUpdated); await loadStudents(); }
-    else showStatus($("codeStatus"), "bad", translations[currentLang].apiFail);
+  async function editStatus(studentId){
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    if(!lectureId) return;
+    const next = prompt("اكتب الحالة الجديدة:\nحضور\nتأخير", "حضور");
+    if(!next) return;
+    const st = $("codeStatus");
+    showStatus(st,"warn","جاري تحديث الحالة...");
+    try{
+      const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
+      if(res?.ok){ showStatus(st,"ok","تم تحديث الحالة"); await loadStudents(); }
+      else showStatus(st,"bad", res?.error||"Failed");
+    }catch(e){ showStatus(st,"bad","فشل: "+ (e?.message||e)); }
   }
 
-  // تشغيل الترجمة عند تحميل الصفحة
-  applyMyTranslation();
+  function zoomQR(){ const src = LAST_QR_DATAURL || $("qrImg").src; if(src){ $("qrBig").src = src; $("qrModal").classList.add("show"); } }
+  function closeModal(){ $("qrModal").classList.remove("show"); }
+
+  // ✅ الإضافة الوحيدة: تشغيل الترجمة بعد تحميل الصفحة
+  setTimeout(() => {
+    if (typeof applyLang === 'function') applyLang();
+  }, 200);
 </script>
 </body>
 </html>
