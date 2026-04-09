@@ -18,7 +18,7 @@
       --muted: rgba(255,255,255,.70);
       --accent:#18c26b; --accent2:#11a85b;
       --danger:#ff5d5d; --warn:#ffcc66; --ok:#52ffa2;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --shadow:0 18px 60px rgba(0,0,0,.35);
       --radius: 22px;
     }
     *{ box-sizing:border-box; font-family:"Cairo", system-ui, -apple-system, Segoe UI, Arial; }
@@ -565,6 +565,7 @@
     LAST_QR_DATAURL = "";
     $("studentRows").innerHTML = `<tr><td colspan="4">اختر محاضرة ثم اضغط "عرض الطلاب".</td></tr>`;
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
+    fixDoctorTranslation();
   }
 
   function pickLecture(id){
@@ -575,6 +576,7 @@
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
     const tr = document.querySelector(`#lectureRows tr[data-id="${CSS.escape(id)}"]`);
     if(tr) tr.classList.add("active");
+    fixDoctorTranslation();
   }
 
   function applyFilter(){
@@ -592,6 +594,7 @@
     const tbody = $("lectureRows");
     if(!rows || rows.length===0){
       tbody.innerHTML = `<tr><td colspan="6">لا توجد محاضرات</td></tr>`;
+      fixDoctorTranslation();
       return;
     }
 
@@ -605,27 +608,32 @@
         <td>${r.state||""}</td>
       </tr>
     `).join("");
+    fixDoctorTranslation();
   }
 
   async function refreshAll(){
     await loadLectures();
-    try{ await apiHealth(); }catch(e){}
+    try{ await apiHealth(); } catch(e){}
+    fixDoctorTranslation();
   }
 
   async function loadLectures(){
     const tbody = $("lectureRows");
     tbody.innerHTML = `<tr><td colspan="6">جاري التحميل...</td></tr>`;
+    fixDoctorTranslation();
 
     let res;
     try{
       res = await doctorCall({ action:"listLectures" });
     }catch(e){
       tbody.innerHTML = `<tr><td colspan="6">فشل الاتصال بالـ API: ${(e?.message||e)}</td></tr>`;
+      fixDoctorTranslation();
       return;
     }
 
     if(!res || !res.ok){
       tbody.innerHTML = `<tr><td colspan="6">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
+      fixDoctorTranslation();
       return;
     }
 
@@ -636,6 +644,7 @@
       const exists = ALL_LECTURES.some(x => x.lectureId === ACTIVE_LECTURE);
       if(!exists) clearSelection();
     }
+    fixDoctorTranslation();
   }
 
   async function createLecture(){
@@ -668,6 +677,7 @@
     }finally{
       setSpin("spCreate", false);
     }
+    fixDoctorTranslation();
   }
 
   async function createSchedule(){
@@ -707,6 +717,7 @@
     }finally{
       setSpin("spSchedule", false);
     }
+    fixDoctorTranslation();
   }
 
   async function generateCode(){
@@ -742,6 +753,7 @@
     }finally{
       setSpin("spCode", false);
     }
+    fixDoctorTranslation();
   }
 
   async function deleteSelectedLecture(){
@@ -771,6 +783,7 @@
     }catch(e){
       showStatus(st, "bad", "فشل الاتصال: " + (e?.message||e));
     }
+    fixDoctorTranslation();
   }
 
   async function loadStudents(){
@@ -778,21 +791,25 @@
     const lectureId = ($("selectedLectureId").value||"").trim();
     if(!lectureId){
       tbody.innerHTML = `<tr><td colspan="4">اختر LectureID أولاً</td></tr>`;
+      fixDoctorTranslation();
       return;
     }
 
     tbody.innerHTML = `<tr><td colspan="4">جاري التحميل...</td></tr>`;
+    fixDoctorTranslation();
 
     try{
       const res = await doctorCall({ action:"listStudentsForLecture", lectureId });
       if(!res || !res.ok){
         tbody.innerHTML = `<tr><td colspan="4">${(res && res.error) ? res.error : "Failed"}</td></tr>`;
+        fixDoctorTranslation();
         return;
       }
 
       const rows = res.rows || [];
       if(rows.length === 0){
         tbody.innerHTML = `<tr><td colspan="4">لا يوجد سجلات حضور لهذه المحاضرة</td></tr>`;
+        fixDoctorTranslation();
         return;
       }
 
@@ -802,50 +819,4 @@
           <td>${r.name||""}</td>
           <td>${r.status||""}</td>
           <td>
-            <button class="btn" style="padding:8px 10px; border-radius:12px" onclick="editStatus('${(r.studentId||"").replace(/'/g,"\\'")}')">
-              تعديل
-            </button>
-          </td>
-        </tr>
-      `).join("");
-    }catch(e){
-      tbody.innerHTML = `<tr><td colspan="4">فشل الاتصال: ${(e?.message||e)}</td></tr>`;
-    }
-  }
-
-  async function editStatus(studentId){
-    const lectureId = ($("selectedLectureId").value||"").trim();
-    if(!lectureId) return;
-
-    const next = prompt("اكتب الحالة الجديدة:\nحضور\nتأخير\nغياب", "حضور");
-    if(!next) return;
-
-    const st = $("codeStatus");
-    showStatus(st, "warn", "جاري تحديث الحالة...");
-
-    try{
-      const res = await doctorCall({ action:"updateAttendanceStatus", lectureId, studentId, status: next });
-      if(res && res.ok){
-        showStatus(st, "ok", "تم تحديث الحالة");
-        await loadStudents();
-      }else{
-        showStatus(st, "bad", (res && res.error) ? res.error : "Failed");
-      }
-    }catch(e){
-      showStatus(st, "bad", "فشل: " + (e?.message||e));
-    }
-  }
-
-  function zoomQR(){
-    const src = LAST_QR_DATAURL || $("qrImg").src;
-    if(!src) return;
-    $("qrBig").src = src;
-    $("qrModal").classList.add("show");
-  }
-  function closeModal(){
-    $("qrModal").classList.remove("show");
-  }
-</script>
-
-</body>
-</html>
+            <button class="btn"
