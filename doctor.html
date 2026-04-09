@@ -481,125 +481,62 @@
   </div>
 </div>
 
-<script src="assets/qr.js"></script>
-
 <script>
-  // ===================== API CONFIGURATION =====================
+  // ===================== جميع الدوال في مكان واحد =====================
   const API_URL = "https://script.google.com/macros/s/AKfycbzOvQNQSDRwiNqr04MEOcp0Hmkywc651SZYqpo3a-T2cx47EmLIp02TLUgf19oC8u04/exec";
   const LS_DOCTOR_KEY = "hather_doctor_key";
-  const CORRECT_PIN = "1234"; // الرقم السري الصحيح
+  const CORRECT_PIN = "1234";
 
-  // ===================== Helper Functions =====================
-  function setDoctorKey(pin) {
-    localStorage.setItem(LS_DOCTOR_KEY, String(pin || "").trim());
-  }
-
-  function getDoctorKey() {
-    return localStorage.getItem(LS_DOCTOR_KEY) || "";
-  }
-
-  function clearDoctorKey() {
-    localStorage.removeItem(LS_DOCTOR_KEY);
-  }
+  function setDoctorKey(pin) { localStorage.setItem(LS_DOCTOR_KEY, String(pin || "").trim()); }
+  function getDoctorKey() { return localStorage.getItem(LS_DOCTOR_KEY) || ""; }
+  function clearDoctorKey() { localStorage.removeItem(LS_DOCTOR_KEY); }
 
   async function apiCall(payload) {
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "text/plain;charset=utf-8" }
-      });
+      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "text/plain;charset=utf-8" } });
       const text = await res.text();
-      try {
-        return JSON.parse(text);
-      } catch (_) {
-        return { ok: false, error: "Bad JSON: " + text };
-      }
-    } catch (e) {
-      return { ok: false, error: e.message };
-    }
+      try { return JSON.parse(text); } catch (_) { return { ok: false, error: "Bad JSON: " + text }; }
+    } catch (e) { return { ok: false, error: e.message }; }
   }
 
-  async function doctorCall(payload) {
-    const pin = getDoctorKey();
-    return await apiCall({ ...payload, doctorKey: pin });
-  }
+  async function doctorCall(payload) { return await apiCall({ ...payload, doctorKey: getDoctorKey() }); }
 
   const $ = (id) => document.getElementById(id);
+  let ALL_LECTURES = [], ACTIVE_LECTURE = "", LAST_QR_DATAURL = "";
 
-  let ALL_LECTURES = [];
-  let ACTIVE_LECTURE = "";
-  let LAST_QR_DATAURL = "";
+  function showStatus(el, type, msg) { if(el){ el.className = "status show " + (type || ""); el.textContent = msg || ""; } }
+  function hideStatus(el) { if(el){ el.className = "status"; el.textContent = ""; } }
+  function setSpin(id, on) { const sp = $(id); if(sp) sp.classList.toggle("show", !!on); }
 
-  function showStatus(el, type, msg) {
-    if (!el) return;
-    el.className = "status show " + (type || "");
-    el.textContent = msg || "";
-  }
-
-  function hideStatus(el) {
-    if (!el) return;
-    el.className = "status";
-    el.textContent = "";
-  }
-
-  function setSpin(id, on) {
-    const sp = $(id);
-    if (sp) sp.classList.toggle("show", !!on);
-  }
-
-  // ===================== Lock Screen Functions =====================
   function togglePin(e) {
     e.preventDefault();
-    const inp = $("pinInput");
-    const btn = $("togglePinBtn");
+    const inp = $("pinInput"), btn = $("togglePinBtn");
     const isHidden = inp.type === "password";
     inp.type = isHidden ? "text" : "password";
     btn.textContent = isHidden ? "🙈 إخفاء" : "👁️ عرض";
   }
 
   async function unlock() {
-    const pin = ($("pinInput").value || "").trim();
-    const st = $("lockStatus");
+    const pin = ($("pinInput").value || "").trim(), st = $("lockStatus");
     hideStatus(st);
-
-    if (!pin) {
-      showStatus(st, "bad", "⚠️ أدخل الرقم السري");
-      return;
-    }
-
+    if(!pin){ showStatus(st, "bad", "⚠️ أدخل الرقم السري"); return; }
     setSpin("spUnlock", true);
     showStatus(st, "warn", "🔄 جاري التحقق...");
-
-    // محاكاة تأخير بسيط
     setTimeout(() => {
-      if (pin === CORRECT_PIN || pin === "0000") {
+      if(pin === CORRECT_PIN || pin === "0000"){
         setDoctorKey(pin);
         $("lockScreen").classList.add("hidden");
         $("app").classList.remove("hidden");
         hideStatus(st);
         refreshAll();
-      } else {
-        showStatus(st, "bad", "❌ رقم سري غير صحيح! الرقم الصحيح هو: 1234");
-      }
+      } else { showStatus(st, "bad", "❌ رقم سري غير صحيح! الرقم الصحيح هو: 1234"); }
       setSpin("spUnlock", false);
     }, 500);
   }
 
-  function logout() {
-    clearDoctorKey();
-    $("pinInput").value = "";
-    $("lockScreen").classList.remove("hidden");
-    $("app").classList.add("hidden");
-    ACTIVE_LECTURE = "";
-    clearSelection();
-  }
+  function logout() { clearDoctorKey(); $("pinInput").value = ""; $("lockScreen").classList.remove("hidden"); $("app").classList.add("hidden"); ACTIVE_LECTURE = ""; clearSelection(); }
+  function goHome() { window.location.href = "index.html"; }
 
-  function goHome() { 
-    window.location.href = "index.html"; 
-  }
-
-  // ===================== Lecture Functions =====================
   function clearSelection() {
     ACTIVE_LECTURE = "";
     $("selectedLectureId").value = "";
@@ -614,174 +551,81 @@
     ACTIVE_LECTURE = id;
     $("selectedLectureId").value = id;
     $("studentRows").innerHTML = `<tr><td colspan="4">📌 اضغط "عرض الطلاب" لعرض الحضور.</td></tr>`;
-
     document.querySelectorAll("#lectureRows tr").forEach(tr => tr.classList.remove("active"));
     const tr = document.querySelector(`#lectureRows tr[data-id="${id}"]`);
-    if (tr) tr.classList.add("active");
+    if(tr) tr.classList.add("active");
   }
 
   function applyFilter() {
     const q = ($("searchBox").value || "").trim().toLowerCase();
-    const filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r => {
-      const a = (r.lectureId || "").toLowerCase();
-      const b = (r.course || "").toLowerCase();
-      const c = (r.section || "").toLowerCase();
-      return a.includes(q) || b.includes(q) || c.includes(q);
-    });
+    const filtered = !q ? ALL_LECTURES : ALL_LECTURES.filter(r => (r.lectureId||"").toLowerCase().includes(q) || (r.course||"").toLowerCase().includes(q) || (r.section||"").toLowerCase().includes(q));
     renderLectures(filtered);
   }
 
   function renderLectures(rows) {
     const tbody = $("lectureRows");
-    if (!rows || rows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6">📭 لا توجد محاضرات</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = rows.map(r => `
-      <tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId}')">
-        <td><b>${r.lectureId}</b></td>
-        <td>${r.course}</td>
-        <td>${r.section}</td>
-        <td>${r.start}</td>
-        <td>${r.end}</td>
-        <td>${r.state}</td>
-      </tr>
-    `).join("");
+    if(!rows || rows.length === 0){ tbody.innerHTML = `<tr><td colspan="6">📭 لا توجد محاضرات</td></tr>`; return; }
+    tbody.innerHTML = rows.map(r => `<tr data-id="${r.lectureId}" onclick="pickLecture('${r.lectureId}')"><td><b>${r.lectureId||""}</b></td><td>${r.course||""}</td><td>${r.section||""}</td><td>${r.start||""}</td><td>${r.end||""}</td><td>${r.state||""}</td></tr>`).join("");
   }
 
-  async function refreshAll() {
-    await loadLectures();
-  }
-
+  async function refreshAll() { await loadLectures(); }
   async function loadLectures() {
     const tbody = $("lectureRows");
     tbody.innerHTML = `<tr><td colspan="6">📡 جاري التحميل...</td></tr>`;
-
     let res;
-    try {
-      res = await doctorCall({ action: "listLectures" });
-    } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="6">❌ فشل الاتصال بالـ API: ${(e?.message || e)}</td></tr>`;
-      return;
-    }
-
-    if (!res || !res.ok) {
-      tbody.innerHTML = `<tr><td colspan="6">${(res && res.error) ? res.error : "❌ فشل تحميل المحاضرات"}</td></tr>`;
-      return;
-    }
-
-    ALL_LECTURES = (res.rows || []).filter(x => String(x.state || "").toLowerCase() !== "deleted");
+    try{ res = await doctorCall({ action:"listLectures" }); } catch(e){ tbody.innerHTML = `<tr><td colspan="6">❌ فشل الاتصال: ${e.message}</td></tr>`; return; }
+    if(!res || !res.ok){ tbody.innerHTML = `<tr><td colspan="6">${res?.error || "❌ فشل التحميل"}</td></tr>`; return; }
+    ALL_LECTURES = (res.rows || []).filter(x => String(x.state||"").toLowerCase() !== "deleted");
     applyFilter();
-
-    if (ACTIVE_LECTURE) {
-      const exists = ALL_LECTURES.some(x => x.lectureId === ACTIVE_LECTURE);
-      if (!exists) clearSelection();
-    }
+    if(ACTIVE_LECTURE && !ALL_LECTURES.some(x => x.lectureId === ACTIVE_LECTURE)) clearSelection();
   }
 
-  // ===================== Create Lecture =====================
   async function createLecture() {
     const st = $("createStatus");
     hideStatus(st);
-
-    const course = ($("course").value || "").trim();
-    const section = ($("section").value || "").trim();
-    const start = ($("start").value || "").trim();
-    const end = ($("end").value || "").trim();
-
-    if (!course || !section || !start || !end) {
-      showStatus(st, "bad", "⚠️ أكمل جميع الحقول");
-      return;
-    }
-
+    const course = ($("course").value||"").trim(), section = ($("section").value||"").trim(), start = ($("start").value||"").trim(), end = ($("end").value||"").trim();
+    if(!course || !section || !start || !end){ showStatus(st, "bad", "⚠️ أكمل جميع الحقول"); return; }
     setSpin("spCreate", true);
     showStatus(st, "warn", "🔄 جاري التنفيذ...");
-
-    try {
-      const res = await doctorCall({ action: "createLecture", course, section, start, end });
-      if (res && res.ok) {
-        showStatus(st, "ok", "✅ تم إنشاء المحاضرة");
-        $("course").value = "";
-        $("section").value = "";
-        $("start").value = "";
-        $("end").value = "";
-        await loadLectures();
-      } else {
-        showStatus(st, "bad", (res && res.error) ? res.error : "❌ فشل الإنشاء");
-      }
-    } catch (e) {
-      showStatus(st, "bad", "❌ فشل الاتصال: " + (e?.message || e));
-    } finally {
-      setSpin("spCreate", false);
-    }
+    try{
+      const res = await doctorCall({ action:"createLecture", course, section, start, end });
+      if(res && res.ok){ showStatus(st, "ok", "✅ تم إنشاء المحاضرة"); $("course").value = ""; $("section").value = ""; $("start").value = ""; $("end").value = ""; await loadLectures(); }
+      else { showStatus(st, "bad", res?.error || "❌ فشل الإنشاء"); }
+    } catch(e){ showStatus(st, "bad", "❌ فشل الاتصال: " + e.message); }
+    finally{ setSpin("spCreate", false); }
   }
 
-  // ===================== Create Schedule =====================
   async function createSchedule() {
     const st = $("scheduleStatus");
     hideStatus(st);
-
-    const course = ($("wCourse").value || "").trim();
-    const section = ($("wSection").value || "").trim();
-    const fromDate = ($("fromDate").value || "").trim();
-    const toDate = ($("toDate").value || "").trim();
-    const startTime = ($("wStartTime").value || "").trim();
-    const endTime = ($("wEndTime").value || "").trim();
-    const days = Array.from(document.querySelectorAll(".day:checked")).map(x => Number(x.value));
-
-    if (!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length === 0) {
-      showStatus(st, "bad", "⚠️ أكمل الحقول وحدد الأيام");
-      return;
-    }
-
+    const course = ($("wCourse").value||"").trim(), section = ($("wSection").value||"").trim(), fromDate = ($("fromDate").value||"").trim(), toDate = ($("toDate").value||"").trim(), startTime = ($("wStartTime").value||"").trim(), endTime = ($("wEndTime").value||"").trim();
+    const days = Array.from(document.querySelectorAll(".day:checked")).map(x=>Number(x.value));
+    if(!course || !section || !fromDate || !toDate || !startTime || !endTime || days.length===0){ showStatus(st, "bad", "⚠️ أكمل الحقول وحدد الأيام"); return; }
     setSpin("spSchedule", true);
     showStatus(st, "warn", "🔄 جاري إنشاء الجدول...");
-
-    try {
-      const res = await doctorCall({
-        action: "createWeeklySchedule",
-        course, section, fromDate, toDate, startTime, endTime, days
-      });
-
-      if (res && res.ok) {
-        showStatus(st, "ok", `✅ تم إنشاء الجدول (تم توليد ${res.created || 0} محاضرة)`);
-        $("wCourse").value = "";
-        $("wSection").value = "";
-        $("fromDate").value = "";
-        $("toDate").value = "";
-        $("wStartTime").value = "";
-        $("wEndTime").value = "";
-        document.querySelectorAll(".day:checked").forEach(cb => cb.checked = false);
-        await loadLectures();
-      } else {
-        showStatus(st, "bad", (res && res.error) ? res.error : "❌ فشل إنشاء الجدول");
-      }
-    } catch (e) {
-      showStatus(st, "bad", "❌ فشل الاتصال: " + (e?.message || e));
-    } finally {
-      setSpin("spSchedule", false);
-    }
+    try{
+      const res = await doctorCall({ action:"createWeeklySchedule", course, section, fromDate, toDate, startTime, endTime, days });
+      if(res && res.ok){ showStatus(st, "ok", `✅ تم إنشاء الجدول (${res.created||0} محاضرة)`); $("wCourse").value = ""; $("wSection").value = ""; $("fromDate").value = ""; $("toDate").value = ""; $("wStartTime").value = ""; $("wEndTime").value = ""; document.querySelectorAll(".day:checked").forEach(cb=>cb.checked=false); await loadLectures(); }
+      else { showStatus(st, "bad", res?.error || "❌ فشل إنشاء الجدول"); }
+    } catch(e){ showStatus(st, "bad", "❌ فشل الاتصال: " + e.message); }
+    finally{ setSpin("spSchedule", false); }
   }
 
-  // ===================== Generate Code =====================
   async function generateCode() {
     const st = $("codeStatus");
     hideStatus(st);
-
-    const lectureId = ($("selectedLectureId").value || "").trim();
-    if (!lectureId) {
-      showStatus(st, "bad", "⚠️ اختر LectureID أولاً");
-      return;
-    }
-
+    const lectureId = ($("selectedLectureId").value||"").trim();
+    if(!lectureId){ showStatus(st, "bad", "⚠️ اختر LectureID أولاً"); return; }
     setSpin("spCode", true);
     showStatus(st, "warn", "🔄 جاري توليد الرمز...");
-
-    try {
-      const res = await doctorCall({ action: "generateCode", lectureId });
-
-      if (res && res.ok) {
+    try{
+      const res = await doctorCall({ action:"generateCode", lectureId });
+      if(res && res.ok){
         $("codeText").textContent = "Code: " + (res.code || "—");
-        
-        const qrText = res.qrText || JSON.stringify({ lectureId, code: res.code || ""
+        const qrText = res.qrText || JSON.stringify({ lectureId, code: res.code || "" });
+        const img = $("qrImg");
+        img.src = "";
+        if(typeof renderQrToImg === 'function'){ LAST_QR_DATAURL = await renderQrToImg(img, qrText, 420); }
+        else { img.src = "https://api.qrserver.com/v1/create-qr-code/?size=420x420&data=" + encodeURIComponent(qrText); }
+        showStatus(st, "ok", "✅ تم توليد الكود و QR");
+      } else { showStatus(st, "bad", res?.error || "❌ فشل التوليد"); }
