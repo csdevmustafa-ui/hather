@@ -128,7 +128,7 @@
   <div id="summary" class="summary" style="display:none">
     <div class="pill"><span data-i18n="present">حضور</span>: <b id="sPresent">0</b></div>
     <div class="pill"><span data-i18n="late">تأخير</span>: <b id="sLate">0</b></div>
-    <div class="pill"><span data-i18n="absent">غياب</span>: <b id="sAbsent">0</b></div>
+    <div class="pill"><span data-i18n="absent"></span>: <b id="sAbsent">0</b></div>
   </div>
 
   <table id="table" style="display:none">
@@ -182,7 +182,7 @@
       const d = res.data;
       $("sPresent").textContent = d.present;
       $("sLate").textContent = d.late;
-      $("sAbsent").textContent = d.absent;
+      $("sAbsent").textContent = d.;
 
       $("summary").style.display="flex";
 
