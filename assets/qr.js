@@ -1,7 +1,6 @@
 /***********************
  * assets/qr.js
- * Always-render QR (local if possible, otherwise remote image fallback)
- ***********************/
+ 
 
 function qrFallbackUrl_(text, size = 360) {
   const t = String(text || "").trim();
@@ -10,8 +9,7 @@ function qrFallbackUrl_(text, size = 360) {
 }
 
 function getQrLib_() {
-  // qrcode@1.5.3 غالبًا يعطي window.QRCode (toDataURL)
-  // لكن لو ما طلع، نرجع null ونستخدم fallback
+ 
   const q = (typeof window !== "undefined") ? window.QRCode : null;
   if (!q) return null;
   if (typeof q.toDataURL !== "function") return null;
