@@ -7,7 +7,6 @@
  * - Language support for backend messages
  ****************************/
 
-// ✅ ضع رابط الـ Apps Script Web App هنا فقط
 const API_URL = "https://script.google.com/macros/s/AKfycbzOvQNQSDRwiNqr04MEOcp0Hmkywc651SZYqpo3a-T2cx47EmLIp02TLUgf19oC8u04/exec";
 
 // Storage keys
