@@ -1,5 +1,5 @@
 //***********************
- * assets/qr.js
+// * assets/qr.js
  
 
 function qrFallbackUrl_(text, size = 360) {
